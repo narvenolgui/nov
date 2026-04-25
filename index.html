@@ -3,399 +3,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Нейроквест «Путь самурая» — образцы для двуручного рисования</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <title>Бланки 9–11 лет · Полигон навыков</title>
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-            background: #faf8f0;
-            color: #333;
+            background: #e9ecf1;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        h1 {
-            text-align: center;
-            color: #b34b4b;
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-        .subtitle {
-            text-align: center;
-            font-style: italic;
-            margin-bottom: 2rem;
-            color: #666;
-        }
-        .sample-box {
+        .container { max-width: 900px; width: 100%; }
+        .sheet {
             background: white;
             border-radius: 20px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            padding: 25px 30px;
+            margin-bottom: 25px;
+            border: 1px solid #cad4e2;
+            page-break-after: always;
         }
-        .sample-box h2 {
-            margin: 0 0 0.8rem 0;
-            color: #2c5f2d;
-            font-size: 1.4rem;
-            border-left: 6px solid #e0a96d;
-            padding-left: 1rem;
+        h2 {
+            font-size: 22px;
+            color: #1e3a5f;
+            border-bottom: 2px solid #6c8eb2;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            font-weight: 600;
         }
-        .instruction {
-            font-size: 1rem;
-            margin-bottom: 1rem;
+        h3 {
+            font-size: 18px;
+            color: #2c3e50;
+            margin: 15px 0 8px;
+            font-weight: 500;
         }
-        .row {
+        label {
+            font-weight: 500;
+            color: #1e3a5f;
+            display: block;
+            margin-top: 10px;
+        }
+        input, textarea {
+            border: 1.5px solid #b0c4de;
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-family: inherit;
+            font-size: 14px;
+            width: 100%;
+            margin: 5px 0 12px;
+            background: #fbfdff;
+        }
+        textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+        .checkbox-group {
             display: flex;
-            align-items: center;
-            justify-content: space-around;
             flex-wrap: wrap;
-            gap: 1.5rem;
+            gap: 8px 16px;
+            margin: 8px 0;
         }
-        .pair {
+        .checkbox-item {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            background: #f4f1e1;
-            padding: 0.8rem 1.2rem;
-            border-radius: 14px;
+            gap: 6px;
+            font-size: 14px;
         }
-        .hand-symbol {
-            font-size: 1.6rem;
-        }
-        .figure {
-            font-size: 3.5rem;
-            line-height: 1;
-            letter-spacing: 0.3rem;
-        }
-        .arrow {
-            font-size: 1.4rem;
-            margin: 0 0.3rem;
-            color: #b34b4b;
-        }
-        .big-char {
-            font-size: 6rem;
-            line-height: 1;
-            margin: 0.3rem 0;
-            font-family: serif;
-        }
-        .canvas-wrap {
+        .silhouette-placeholder {
+            border: 3px dashed #6c8eb2;
+            background: #f4f9ff;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+            color: #3a6282;
+            font-size: 16px;
+            min-height: 250px;
             display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
         }
-        button {
-            display: block;
-            margin: 2.5rem auto 1rem;
-            background: #2c5f2d;
-            color: white;
-            border: none;
-            padding: 1rem 2.5rem;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transition: background 0.2s;
+        .lined-box {
+            border: 2px dashed #8ba3c4;
+            background: #f6f9fc;
+            padding: 15px;
+            border-radius: 14px;
+            margin: 15px 0;
         }
-        button:hover {
-            background: #1f4520;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
         }
-        button:active {
-            transform: translateY(1px);
+        th, td {
+            border: 1px solid #b0c4de;
+            padding: 8px;
+            text-align: left;
+            font-size: 13px;
+        }
+        th {
+            background: #eef3fa;
         }
         .footer-note {
-            text-align: center;
-            margin-top: 1rem;
-            color: #888;
-            font-size: 0.9rem;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #5e7a9a;
+            text-align: right;
+            border-top: 1px dotted #b0c4de;
+            padding-top: 10px;
+        }
+        .pdf-button {
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 40px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+            transition: 0.2s;
+            border: 1px solid #2c5a8c;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .pdf-button:hover { background: #0f2a44; }
+        @media print {
+            body { background: white; padding: 0.3in; }
+            .sheet { box-shadow: none; border: 1px solid #aaa; page-break-after: always; border-radius: 0; }
+            input, textarea { border: 1px solid #333; background: white; }
+            .no-print, .pdf-button { display: none; }
         }
     </style>
 </head>
 <body>
-    <h1>🌸 Зеркальные художники 🌸</h1>
-    <p class="subtitle">Образцы для двуручного рисования (нейроквест «Путь самурая»)</p>
+<button class="pdf-button no-print" onclick="window.print()">📥 Скачать PDF (сохранить через печать)</button>
+<div class="container">
 
-    <!-- 1. Линии и круги -->
-    <div class="sample-box">
-        <h2>1. Разминка — линии и круги</h2>
-        <p class="instruction">Начинаем с простых движений. Рисуем <strong>обеими руками одновременно</strong>.</p>
-        <div class="row">
-            <div class="pair">
-                <span class="hand-symbol">🖐️🤚</span>
-                <span class="figure">⬇️ ⬇️</span>
-                <span>Вертикальные линии</span>
-            </div>
-            <div class="pair">
-                <span class="hand-symbol">🖐️🤚</span>
-                <span class="figure">➡️ ⬅️</span>
-                <span>Горизонтальные в разные стороны</span>
-            </div>
-            <div class="pair">
-                <span class="hand-symbol">🖐️🤚</span>
-                <span class="figure">🔄 🔄</span>
-                <span>Круги в одну сторону</span>
-            </div>
-            <div class="pair">
-                <span class="hand-symbol">🖐️🤚</span>
-                <span class="figure">↩️ ↪️</span>
-                <span>Круги в разные стороны</span>
-            </div>
+    <!-- 1. Шкала СЕД -->
+    <div class="sheet">
+        <h2>📊 Шкала СЕД</h2>
+        <p><label>Занятие № ____</label> <label>Дата: _______________</label></p>
+        <p><strong>Инструкция:</strong> Оцени свой уровень напряжения прямо сейчас от 0 (полное спокойствие) до 10 (максимальный дистресс).</p>
+        <div style="display: flex; gap: 30px; margin: 20px 0;">
+            <div><label>ВХОД:</label> ___________</div>
+            <div><label>ВЫХОД:</label> ___________</div>
+        </div>
+        <p><label>Имя:</label> _________________________</p>
+        <div class="footer-note">Шкала используется на каждом занятии</div>
+    </div>
+
+    <!-- 2. Мой чертёж безопасности -->
+    <div class="sheet">
+        <h2>🏗️ Мой чертёж безопасности</h2>
+        <p><label>Имя:</label> _________________________ <label>Дата:</label> _______________</p>
+        <p>Это твой личный мост через Реку Тревоги. В каждом кирпичике напиши или нарисуй помощника.</p>
+        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; text-align: center; margin: 20px 0;">
+            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">1</div>
+            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">2</div>
+            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">3</div>
+            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">4</div>
+            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">5</div>
+            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">6</div>
+            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">7</div>
+            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">8</div>
+            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">9</div>
+            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">10</div>
+        </div>
+        <p><strong>Мой главный помощник:</strong> _______________________________</p>
+        <p><strong>Если мост начнёт шататься, я вспомню про:</strong> ___________________</p>
+    </div>
+
+    <!-- 3. Мой СТОП-сигнал -->
+    <div class="sheet">
+        <h2>🛑 Мой СТОП-сигнал</h2>
+        <p><label>Имя:</label> _________________________ <label>Дата:</label> _______________</p>
+        <h3>⚠️ Как я понимаю, что «перегреваюсь»?</h3>
+        <div class="checkbox-group">
+            <div class="checkbox-item"><input type="checkbox"> Сжимаются кулаки</div>
+            <div class="checkbox-item"><input type="checkbox"> Хочется топать ногами</div>
+            <div class="checkbox-item"><input type="checkbox"> Краснеет лицо</div>
+            <div class="checkbox-item"><input type="checkbox"> В груди горячо</div>
+            <div class="checkbox-item"><input type="checkbox"> Хочется кричать</div>
+            <div class="checkbox-item"><input type="checkbox"> Дрожат руки</div>
+            <div class="checkbox-item"><input type="checkbox"> Другое: _________________</div>
+        </div>
+        <h3>🛑 Моя команда «СТОП»</h3>
+        <div style="border: 3px solid #c0392b; padding: 15px; text-align: center; font-size: 22px; font-weight: bold; margin: 10px 0;">СТОП-СИСТЕМА!</div>
+        <h3>⏱️ Мои 5 секунд паузы</h3>
+        <div class="checkbox-group">
+            <div class="checkbox-item"><input type="checkbox"> Глубоко дышать</div>
+            <div class="checkbox-item"><input type="checkbox"> Смотреть на ладонь</div>
+            <div class="checkbox-item"><input type="checkbox"> Сжимать/разжимать кулак</div>
+            <div class="checkbox-item"><input type="checkbox"> Другое: _________________</div>
         </div>
     </div>
 
-    <!-- 2. Основные фигуры -->
-    <div class="sample-box">
-        <h2>2. Простые фигуры</h2>
-        <p class="instruction">Дети пробуют рисовать <strong>зеркально</strong> (левая рука рисует левую половинку, правая — правую) или <strong>одинаково</strong>.</p>
-        <div class="row">
-            <div class="pair">
-                <span class="hand-symbol">🤚🖐️</span>
-                <span class="figure">⬤ ⬤</span>
-                <span>Круг</span>
-            </div>
-            <div class="pair">
-                <span class="hand-symbol">🤚🖐️</span>
-                <span class="figure">▲ ▲</span>
-                <span>Треугольник</span>
-            </div>
-            <div class="pair">
-                <span class="hand-symbol">🤚🖐️</span>
-                <span class="figure">■ ■</span>
-                <span>Квадрат</span>
-            </div>
-            <div class="pair">
-                <span class="hand-symbol">🤚🖐️</span>
-                <span class="figure">♥ ♥</span>
-                <span>Сердечко</span>
-            </div>
-        </div>
+    <!-- 4. Фотоаппарат и художник -->
+    <div class="sheet">
+        <h2>📷 Фотоаппарат и Художник</h2>
+        <p><label>Имя:</label> _________________________ <label>Дата:</label> _______________</p>
+        <p><strong>Вспомни ситуацию, когда тебе показалось, что кто-то обиделся.</strong></p>
+        <textarea placeholder="Опиши ситуацию..."></textarea>
+        <h3>📷 Что видел фотоаппарат? (только факты)</h3>
+        <textarea placeholder="Я видел(а), что..."></textarea>
+        <h3>🎨 Что нарисовал художник? (мои догадки)</h3>
+        <textarea placeholder="Мне показалось, что..."></textarea>
+        <p><strong>Может ли быть другое объяснение?</strong> <textarea placeholder="Возможно..."></textarea></p>
     </div>
 
-    <!-- 3. Японские иероглифы -->
-    <div class="sample-box">
-        <h2>3. Японские символы (ка́ндзи)</h2>
-        <p class="instruction">Рисуем иероглиф одновременно двумя руками. Ведущий может показать крупный образец.</p>
-        <div class="row">
-            <div class="pair" style="flex-direction: column; align-items: center;">
-                <span class="big-char">山</span>
-                <span>Гора (яма)</span>
-            </div>
-            <div class="pair" style="flex-direction: column; align-items: center;">
-                <span class="big-char">川</span>
-                <span>Река (кава)</span>
-            </div>
-            <div class="pair" style="flex-direction: column; align-items: center;">
-                <span class="big-char">木</span>
-                <span>Дерево (ки)</span>
-            </div>
+    <!-- 5. Карта горячих точек -->
+    <div class="sheet">
+        <h2>🌡️ Карта горячих точек</h2>
+        <p><label>Имя:</label> _________________________ <label>Дата:</label> _______________</p>
+        <p>Раскрась на силуэте места, где ты чувствуешь: 🔴 злость, 🔵 грусть, 🟡 страх.</p>
+        <div class="silhouette-placeholder">
+            <p>⬇️ Место для силуэта человека ⬇️</p>
+            <p style="font-size: 36px;">🧑</p>
+            <p>(вклей или нарисуй контур)</p>
         </div>
+        <p><strong>Мой самый первый сигнал:</strong> _______________________________</p>
+        <p><strong>Что я сделаю, когда замечу этот сигнал?</strong> ___________________</p>
     </div>
 
-    <!-- 4. Ветка сакуры (схема) -->
-    <div class="sample-box">
-        <h2>4. Ветка сакуры</h2>
-        <p class="instruction">Левая рука рисует цветок (пять лепестков), правая рука одновременно дорисовывает лепестки вокруг. Можно наоборот. Главное — синхронно.</p>
-        <div class="canvas-wrap">
-            <canvas id="sakuraCanvas" width="300" height="160" style="background:#fffaf5; border-radius:16px;"></canvas>
+    <!-- 6. Мой аварийный набор -->
+    <div class="sheet">
+        <h2>🧰 Мой аварийный набор</h2>
+        <p><label>Имя:</label> _________________________ <label>Дата:</label> _______________</p>
+        <ol>
+            <li>_________________________ (главный тактильный инструмент)</li>
+            <li>_________________________ (что ещё можно сжать/погладить)</li>
+            <li>_________________________ (записка-напоминание)</li>
+            <li>_________________________ (что-то с приятным запахом/вкусом)</li>
+            <li>_________________________ (фото или рисунок поддержки)</li>
+        </ol>
+        <h3>Когда я достану набор?</h3>
+        <div class="checkbox-group">
+            <div class="checkbox-item"><input type="checkbox"> Когда сильно злюсь</div>
+            <div class="checkbox-item"><input type="checkbox"> Когда грустно и одиноко</div>
+            <div class="checkbox-item"><input type="checkbox"> Когда страшно</div>
+            <div class="checkbox-item"><input type="checkbox"> Когда хочется ударить/сломать</div>
+            <div class="checkbox-item"><input type="checkbox"> Когда хочется сделать больно себе</div>
         </div>
+        <p><strong>Мой план действий:</strong><br>1. Замечаю сигнал → 2. «СТОП-СИСТЕМА!» и 3 вдоха → 3. Достаю набор → 4. Если не легче — иду к взрослому: _______________</p>
     </div>
 
-    <button onclick="downloadPDF()">📥 Скачать PDF с образцами</button>
-    <p class="footer-note">Распечатайте PDF и покажите детям перед испытанием «Зеркальные художники»</p>
+    <!-- 7. Мой коммутатор -->
+    <div class="sheet">
+        <h2>📻 Мой коммутатор</h2>
+        <p><label>Имя:</label> _________________________ <label>Дата:</label> _______________</p>
+        <h3>Мои «Я-сообщения»</h3>
+        <p>Ситуация дома: «Когда ты ______________, я чувствую ______________, и мне хотелось бы ______________»</p>
+        <p>Ситуация в школе: «Когда ты ______________, я чувствую ______________, и мне хотелось бы ______________»</p>
+        <h3>🆘 Канал SOS</h3>
+        <p>Человек 1: ___________________ тел: _________________</p>
+        <p>Человек 2: ___________________ тел: _________________</p>
+        <p>Важный номер: 8-800-2000-122</p>
+        <p><strong>Мой секретный пароль:</strong> «У меня "красный код"» или своя фраза: _________________</p>
+    </div>
 
-    <script>
-        // Рисуем схему сакуры на canvas для наглядности
-        (function drawSakura() {
-            const canvas = document.getElementById('sakuraCanvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // Ветка
-            ctx.beginPath();
-            ctx.moveTo(50, 120);
-            ctx.quadraticCurveTo(150, 80, 250, 100);
-            ctx.strokeStyle = '#8B5A2B';
-            ctx.lineWidth = 4;
-            ctx.stroke();
-            // Левый цветок (красный контур)
-            function drawFlower(x, y, color) {
-                ctx.beginPath();
-                for (let i = 0; i < 5; i++) {
-                    let angle = i * (Math.PI * 2 / 5) - Math.PI / 2;
-                    let px = x + 14 * Math.cos(angle);
-                    let py = y + 14 * Math.sin(angle);
-                    ctx.lineTo(px, py);
-                }
-                ctx.closePath();
-                ctx.strokeStyle = color;
-                ctx.lineWidth = 2.5;
-                ctx.stroke();
-                ctx.fillStyle = color === '#d98695' ? '#f9c5d1' : '#f9d1c5';
-                ctx.fill();
-            }
-            // Левая рука рисует цветок (розовый) – позиция левее
-            drawFlower(100, 55, '#d98695');
-            // Правая рука дорисовывает лепестки (оранжеватые) – позиция правее
-            drawFlower(210, 65, '#e09f7e');
-            // Подписи
-            ctx.font = 'italic 12px "Segoe UI", sans-serif';
-            ctx.fillStyle = '#333';
-            ctx.fillText('🤚 левая', 65, 90);
-            ctx.fillText('🖐️ правая', 195, 100);
-        })();
+    <!-- 8. Бортовой журнал: Эмоциональный шторм -->
+    <div class="sheet">
+        <h2>📓 Бортовой журнал · Миссия «Эмоциональный шторм»</h2>
+        <p><label>Имя:</label> _________________________ <label>Дата:</label> _______________</p>
+        <p><strong>1. Сколько раз объявляли «ШТОРМ»?</strong> _____</p>
+        <p><strong>2. Удавалось ли замереть и дышать?</strong> <input type="checkbox"> Да, каждый раз <input type="checkbox"> Иногда <input type="checkbox"> Было трудно</p>
+        <p><strong>3. Что чувствовал во время ШТОРМА?</strong> <textarea></textarea></p>
+        <p><strong>4. Какие инструменты использовал?</strong></p>
+        <div class="checkbox-group">
+            <div class="checkbox-item"><input type="checkbox"> СТОП-система</div>
+            <div class="checkbox-item"><input type="checkbox"> Квадратное дыхание</div>
+            <div class="checkbox-item"><input type="checkbox"> Сейсмограф</div>
+            <div class="checkbox-item"><input type="checkbox"> Я-сообщение</div>
+            <div class="checkbox-item"><input type="checkbox"> Аварийный Набор</div>
+        </div>
+        <p><strong>5. Что помогало больше всего?</strong> <textarea></textarea></p>
+        <p><strong>6. Чему научился на испытании?</strong> <textarea></textarea></p>
+    </div>
 
-        async function downloadPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
+    <!-- 9. Паспорт навыка -->
+    <div class="sheet">
+        <h2>📘 Паспорт технического средства<br>«Навык саморегуляции»</h2>
+        <p><strong>Владелец:</strong> _________________________</p>
+        <p><strong>Модель системы (название):</strong> «_________________________»</p>
+        <h3>✅ Технические характеристики</h3>
+        <div class="checkbox-group">
+            <div class="checkbox-item"><input type="checkbox" checked> СТОП-СИСТЕМА</div>
+            <div class="checkbox-item"><input type="checkbox" checked> СЕЙСМОГРАФ</div>
+            <div class="checkbox-item"><input type="checkbox" checked> АВАРИЙНЫЙ НАБОР</div>
+            <div class="checkbox-item"><input type="checkbox" checked> КОММУТАТОР</div>
+            <div class="checkbox-item"><input type="checkbox" checked> ШТОРМ-ПРОТОКОЛ</div>
+        </div>
+        <h3>🛠️ Гарантийное обслуживание</h3>
+        <p>Основной контакт: ___________________ тел: ______________</p>
+        <p>Резервный: ___________________ тел: ______________</p>
+        <p>Горячая линия: 8-800-2000-122</p>
+        <p>Подпись владельца: _____________ Подпись наставника: _____________</p>
+    </div>
 
-            // --- Настройки ---
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const margin = 20;
-            let y = 25;
-            const lineHeight = 8;
-            const bigFontSize = 24;
+    <!-- 10. Диплом -->
+    <div class="sheet" style="text-align: center;">
+        <h2 style="border: none; font-size: 28px;">🌟 ДИПЛОМ 🌟</h2>
+        <p style="font-size: 18px;">НАСТОЯЩИМ ПОДТВЕРЖДАЕТСЯ, ЧТО</p>
+        <div style="border-bottom: 2px solid #1e3a5f; width: 80%; margin: 15px auto;"></div>
+        <p style="font-size: 26px; font-weight: bold;">________________________</p>
+        <div style="border-bottom: 2px solid #1e3a5f; width: 80%; margin: 15px auto;"></div>
+        <p>успешно прошёл(ла) курс «АРХИТЕКТОРЫ УСТОЙЧИВОСТИ»<br>и освоил(а) инженерные навыки:</p>
+        <p>🛑 СТОП-СИСТЕМА · 📡 СЕЙСМОГРАФ · 🧰 АВАРИЙНЫЙ НАБОР · 📻 КОММУТАТОР · 🌪️ ШТОРМ-ПРОТОКОЛ</p>
+        <p style="font-size: 22px; margin-top: 20px;">🏆 ИНЖЕНЕР СПОКОЙСТВИЯ I степени 🏆</p>
+        <p>Руководитель: _______________ Дата: _______________</p>
+    </div>
 
-            // Заголовок
-            doc.setFontSize(18);
-            doc.setTextColor(179, 75, 75);
-            doc.text('Образцы для двуручного рисования', pageWidth / 2, y, { align: 'center' });
-            y += 12;
-            doc.setFontSize(11);
-            doc.setTextColor(100, 100, 100);
-            doc.text('Нейроквест «Путь самурая» — «Зеркальные художники»', pageWidth / 2, y, { align: 'center' });
-            y += 14;
+    <!-- 11. План техобслуживания -->
+    <div class="sheet">
+        <h2>📋 План техобслуживания</h2>
+        <p><label>Инженер:</label> _________________________ <label>Период:</label> с _________ по _________</p>
+        <h3>🔧 Ежедневно</h3>
+        <p>1. _______________________________ 2. _______________________________</p>
+        <h3>🔩 Еженедельно</h3>
+        <p>1. _______________________________ 2. _______________________________</p>
+        <h3>🚨 Красные флаги</h3>
+        <div class="checkbox-group">
+            <div class="checkbox-item"><input type="checkbox"> Мысли о самоповреждении</div>
+            <div class="checkbox-item"><input type="checkbox"> Не могу встать с кровати</div>
+            <div class="checkbox-item"><input type="checkbox"> Сильная тревога не проходит</div>
+        </div>
+        <p><strong>При красных флагах:</strong> 1. Звоню _________________ 2. Горячая линия 8-800-2000-122</p>
+        <p>Подпись: __________________</p>
+    </div>
 
-            // Вспомогательная функция для рисования иероглифов линиями (упрощённо)
-            function drawKanji(doc, x, y, kanjiType) {
-                doc.setDrawColor(0, 0, 0);
-                doc.setLineWidth(0.7);
-                const l = 8; // базовый размер
-                if (kanjiType === 'yama') { // 山
-                    // три вертикальные черты + нижняя горизонтальная
-                    doc.line(x, y, x, y + l);           // левая
-                    doc.line(x + l/2, y + l/4, x + l/2, y + l); // центральная (чуть ниже начало)
-                    doc.line(x + l, y, x + l, y + l);   // правая
-                    doc.line(x, y + l, x + l, y + l);   // горизонталь
-                } else if (kanjiType === 'kawa') { // 川
-                    // три вертикальные линии
-                    doc.line(x, y, x, y + l);
-                    doc.line(x + l/2, y, x + l/2, y + l);
-                    doc.line(x + l, y, x + l, y + l);
-                } else if (kanjiType === 'ki') { // 木
-                    // горизонталь, диагонали, вертикаль
-                    doc.line(x, y + l/2, x + l, y + l/2); // горизонталь
-                    doc.line(x, y, x + l, y + l); // диагональ вниз
-                    doc.line(x + l, y, x, y + l); // диагональ вниз
-                    doc.line(x + l/2, y, x + l/2, y + l); // вертикаль
-                }
-            }
-
-            // Раздел 1: Линии и круги
-            doc.setFontSize(14);
-            doc.setTextColor(44, 95, 45);
-            doc.text('1. Разминка — линии и круги', margin, y);
-            y += 9;
-            doc.setFontSize(10);
-            doc.setTextColor(80);
-            const items1 = [
-                'Вертикальные линии            |  ⬇️ ⬇️  (обе руки вниз)',
-                'Горизонтальные в стороны |  ➡️ ⬅️  (левая влево, правая вправо)',
-                'Круги в одну сторону        |  🔄 🔄',
-                'Круги в разные стороны   |  ↩️  ↪️'
-            ];
-            items1.forEach(t => {
-                doc.text(t, margin, y);
-                y += 7;
-            });
-            y += 4;
-
-            // Раздел 2: Фигуры
-            doc.setFontSize(14);
-            doc.setTextColor(44, 95, 45);
-            doc.text('2. Простые фигуры', margin, y);
-            y += 9;
-            doc.setFontSize(10);
-            doc.setTextColor(80);
-            const items2 = [
-                '●   Круг           (два круга одновременно)',
-                '▲   Треугольник',
-                '■   Квадрат',
-                '♥   Сердечко'
-            ];
-            items2.forEach(t => {
-                doc.text(t, margin, y);
-                y += 7;
-            });
-            y += 4;
-
-            // Раздел 3: Иероглифы
-            doc.setFontSize(14);
-            doc.setTextColor(44, 95, 45);
-            doc.text('3. Японские символы', margin, y);
-            y += 12;
-
-            // Рисуем иероглифы в строку с подписями
-            const kanjiX = margin + 10;
-            const kanjiYstart = y;
-            // Гора
-            drawKanji(doc, kanjiX, kanjiYstart, 'yama');
-            doc.setFontSize(10);
-            doc.text('Гора', kanjiX + 10, kanjiYstart + 12);
-            // Река
-            drawKanji(doc, kanjiX + 40, kanjiYstart, 'kawa');
-            doc.text('Река', kanjiX + 50, kanjiYstart + 12);
-            // Дерево
-            drawKanji(doc, kanjiX + 80, kanjiYstart, 'ki');
-            doc.text('Дерево', kanjiX + 90, kanjiYstart + 12);
-
-            y += 22;
-
-            // Раздел 4: Ветка сакуры (схематично)
-            doc.setFontSize(14);
-            doc.setTextColor(44, 95, 45);
-            doc.text('4. Ветка сакуры', margin, y);
-            y += 9;
-            doc.setFontSize(10);
-            doc.setTextColor(80);
-            doc.text('Левая рука — цветок (розовый), правая — лепестки вокруг (оранжевый).', margin, y);
-            y += 7;
-            doc.text('Рисовать синхронно!', margin, y);
-            y += 5;
-            // Простой рисунок ветки
-            doc.setDrawColor(139, 90, 43);
-            doc.setLineWidth(0.6);
-            doc.line(margin + 20, y + 10, margin + 120, y + 10); // ветка
-            // Левый цветок
-            const cx1 = margin + 40, cy1 = y + 6;
-            doc.setDrawColor(217, 134, 149);
-            doc.setLineWidth(0.5);
-            for (let i = 0; i < 5; i++) {
-                let angle = i * (2 * Math.PI / 5) - Math.PI / 2;
-                let px = cx1 + 5 * Math.cos(angle);
-                let py = cy1 + 5 * Math.sin(angle);
-                if (i === 0) doc.circle(px, py, 0.6, 'F');
-            }
-            // Правый цветок
-            const cx2 = margin + 100, cy2 = y + 8;
-            doc.setDrawColor(224, 159, 126);
-            for (let i = 0; i < 5; i++) {
-                let angle = i * (2 * Math.PI / 5) - Math.PI / 2;
-                let px = cx2 + 5 * Math.cos(angle);
-                let py = cy2 + 5 * Math.sin(angle);
-                if (i === 0) doc.circle(px, py, 0.6, 'F');
-            }
-            y += 25;
-
-            // Подвал
-            doc.setFontSize(9);
-            doc.setTextColor(150);
-            doc.text('Нейроквест «Путь самурая» — распечатайте и покажите детям', pageWidth / 2, 285, { align: 'center' });
-
-            // Сохраняем PDF
-            doc.save('obrazcy-dvuruchnogo-risovaniya.pdf');
-        }
-    </script>
+</div>
 </body>
 </html>
