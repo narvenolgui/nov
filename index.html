@@ -3,141 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бланки 9–11 лет · Полигон навыков</title>
+    <title>Бланки 12–14 лет · Полигон навыков</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background: #e9ecf1;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        body { background: #e9ecf1; font-family: 'Segoe UI', Arial, sans-serif; padding: 30px 20px; display: flex; flex-direction: column; align-items: center; }
         .container { max-width: 900px; width: 100%; }
-        .sheet {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            padding: 25px 30px;
-            margin-bottom: 25px;
-            border: 1px solid #cad4e2;
-            page-break-after: always;
-        }
-        h2 {
-            font-size: 22px;
-            color: #1e3a5f;
-            border-bottom: 2px solid #6c8eb2;
-            padding-bottom: 8px;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-        h3 {
-            font-size: 18px;
-            color: #2c3e50;
-            margin: 15px 0 8px;
-            font-weight: 500;
-        }
-        label {
-            font-weight: 500;
-            color: #1e3a5f;
-            display: block;
-            margin-top: 10px;
-        }
-        input, textarea {
-            border: 1.5px solid #b0c4de;
-            border-radius: 10px;
-            padding: 8px 12px;
-            font-family: inherit;
-            font-size: 14px;
-            width: 100%;
-            margin: 5px 0 12px;
-            background: #fbfdff;
-        }
-        textarea {
-            min-height: 60px;
-            resize: vertical;
-        }
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px 16px;
-            margin: 8px 0;
-        }
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 14px;
-        }
-        .silhouette-placeholder {
-            border: 3px dashed #6c8eb2;
-            background: #f4f9ff;
-            border-radius: 20px;
-            padding: 30px;
-            margin: 20px 0;
-            text-align: center;
-            color: #3a6282;
-            font-size: 16px;
-            min-height: 250px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .lined-box {
-            border: 2px dashed #8ba3c4;
-            background: #f6f9fc;
-            padding: 15px;
-            border-radius: 14px;
-            margin: 15px 0;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
-        }
-        th, td {
-            border: 1px solid #b0c4de;
-            padding: 8px;
-            text-align: left;
-            font-size: 13px;
-        }
-        th {
-            background: #eef3fa;
-        }
-        .footer-note {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #5e7a9a;
-            text-align: right;
-            border-top: 1px dotted #b0c4de;
-            padding-top: 10px;
-        }
-        .pdf-button {
-            background: #1e3a5f;
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 40px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-            margin-bottom: 30px;
-            transition: 0.2s;
-            border: 1px solid #2c5a8c;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
+        .sheet { background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); padding: 25px 30px; margin-bottom: 25px; border: 1px solid #cad4e2; page-break-after: always; }
+        h2 { font-size: 22px; color: #1e3a5f; border-bottom: 2px solid #6c8eb2; padding-bottom: 8px; margin-bottom: 15px; font-weight: 600; }
+        h3 { font-size: 18px; color: #2c3e50; margin: 15px 0 8px; font-weight: 500; }
+        label { font-weight: 500; color: #1e3a5f; display: block; margin-top: 10px; }
+        input, textarea { border: 1.5px solid #b0c4de; border-radius: 10px; padding: 8px 12px; font-family: inherit; font-size: 14px; width: 100%; margin: 5px 0 12px; background: #fbfdff; }
+        textarea { min-height: 60px; resize: vertical; }
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 8px 0; }
+        .checkbox-item { display: flex; align-items: center; gap: 6px; font-size: 14px; }
+        .silhouette-placeholder { border: 3px dashed #6c8eb2; background: #f4f9ff; border-radius: 20px; padding: 30px; margin: 20px 0; text-align: center; color: #3a6282; font-size: 16px; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .lined-box { border: 2px dashed #8ba3c4; background: #f6f9fc; padding: 15px; border-radius: 14px; margin: 15px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #b0c4de; padding: 8px; text-align: left; font-size: 13px; }
+        th { background: #eef3fa; }
+        .footer-note { margin-top: 20px; font-size: 12px; color: #5e7a9a; text-align: right; border-top: 1px dotted #b0c4de; padding-top: 10px; }
+        .pdf-button { background: #1e3a5f; color: white; border: none; padding: 14px 28px; border-radius: 40px; font-size: 18px; font-weight: 600; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.15); margin-bottom: 30px; transition: 0.2s; display: block; margin-left: auto; margin-right: auto; }
         .pdf-button:hover { background: #0f2a44; }
-        @media print {
-            body { background: white; padding: 0.3in; }
-            .sheet { box-shadow: none; border: 1px solid #aaa; page-break-after: always; border-radius: 0; }
-            input, textarea { border: 1px solid #333; background: white; }
-            .no-print, .pdf-button { display: none; }
-        }
+        @media print { body { background: white; padding: 0.3in; } .sheet { box-shadow: none; border: 1px solid #aaa; page-break-after: always; border-radius: 0; } input, textarea { border: 1px solid #333; background: white; } .no-print, .pdf-button { display: none; } }
     </style>
 </head>
 <body>
@@ -148,191 +35,177 @@
     <div class="sheet">
         <h2>📊 Шкала СЕД</h2>
         <p><label>Занятие № ____</label> <label>Дата: _______________</label></p>
-        <p><strong>Инструкция:</strong> Оцени свой уровень напряжения прямо сейчас от 0 (полное спокойствие) до 10 (максимальный дистресс).</p>
-        <div style="display: flex; gap: 30px; margin: 20px 0;">
-            <div><label>ВХОД:</label> ___________</div>
-            <div><label>ВЫХОД:</label> ___________</div>
-        </div>
+        <p>Оцени свой уровень напряжения сейчас от 0 (штиль) до 10 (максимальный дистресс).</p>
+        <div style="display: flex; gap: 30px; margin: 20px 0;"><div><label>ВХОД:</label> ___________</div><div><label>ВЫХОД:</label> ___________</div></div>
         <p><label>Имя:</label> _________________________</p>
-        <div class="footer-note">Шкала используется на каждом занятии</div>
     </div>
 
-    <!-- 2. Мой чертёж безопасности -->
+    <!-- 2. Моя схема эвакуации 2.0 -->
     <div class="sheet">
-        <h2>🏗️ Мой чертёж безопасности</h2>
-        <p><label>Имя:</label> _________________________ <label>Дата:</label> _______________</p>
-        <p>Это твой личный мост через Реку Тревоги. В каждом кирпичике напиши или нарисуй помощника.</p>
-        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; text-align: center; margin: 20px 0;">
-            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">1</div>
-            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">2</div>
-            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">3</div>
-            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">4</div>
-            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">5</div>
-            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">6</div>
-            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">7</div>
-            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">8</div>
-            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">9</div>
-            <div style="border: 2px solid #2c3e50; padding: 25px 5px; background: white; border-radius: 8px;">10</div>
-        </div>
-        <p><strong>Мой главный помощник:</strong> _______________________________</p>
-        <p><strong>Если мост начнёт шататься, я вспомню про:</strong> ___________________</p>
+        <h2>🗺️ Моя схема эвакуации 2.0 (карманная версия)</h2>
+        <p><label>Инженер:</label> _________________________ <label>Дата:</label> _______________</p>
+        <table>
+            <tr><td>🟢 Зона безопасности №1</td><td>_________________________</td></tr>
+            <tr><td>🔵 Зона безопасности №2</td><td>_________________________</td></tr>
+            <tr><td>🔴 Кнопка тревоги №1</td><td>Имя: ___________ Контакт: ___________</td></tr>
+            <tr><td>🟡 Кнопка тревоги №2</td><td>Имя: ___________ Контакт: ___________</td></tr>
+        </table>
+        <p><strong>🛠️ Пункт первой помощи (действие):</strong> ______________________________</p>
+        <p><strong>📱 Мобильная зона безопасности:</strong> ______________________________</p>
+        <div class="lined-box"><strong>ПОМНИ:</strong> сигналы тела → СТОП → ДЫХАНИЕ → СВЕРИТЬСЯ СО СХЕМОЙ → ДЕЙСТВОВАТЬ</div>
     </div>
 
-    <!-- 3. Мой СТОП-сигнал -->
+    <!-- 3. Дневник глушилки импульса -->
     <div class="sheet">
-        <h2>🛑 Мой СТОП-сигнал</h2>
-        <p><label>Имя:</label> _________________________ <label>Дата:</label> _______________</p>
-        <h3>⚠️ Как я понимаю, что «перегреваюсь»?</h3>
-        <div class="checkbox-group">
-            <div class="checkbox-item"><input type="checkbox"> Сжимаются кулаки</div>
-            <div class="checkbox-item"><input type="checkbox"> Хочется топать ногами</div>
-            <div class="checkbox-item"><input type="checkbox"> Краснеет лицо</div>
-            <div class="checkbox-item"><input type="checkbox"> В груди горячо</div>
-            <div class="checkbox-item"><input type="checkbox"> Хочется кричать</div>
-            <div class="checkbox-item"><input type="checkbox"> Дрожат руки</div>
-            <div class="checkbox-item"><input type="checkbox"> Другое: _________________</div>
-        </div>
-        <h3>🛑 Моя команда «СТОП»</h3>
-        <div style="border: 3px solid #c0392b; padding: 15px; text-align: center; font-size: 22px; font-weight: bold; margin: 10px 0;">СТОП-СИСТЕМА!</div>
-        <h3>⏱️ Мои 5 секунд паузы</h3>
-        <div class="checkbox-group">
-            <div class="checkbox-item"><input type="checkbox"> Глубоко дышать</div>
-            <div class="checkbox-item"><input type="checkbox"> Смотреть на ладонь</div>
-            <div class="checkbox-item"><input type="checkbox"> Сжимать/разжимать кулак</div>
-            <div class="checkbox-item"><input type="checkbox"> Другое: _________________</div>
-        </div>
+        <h2>📘 Дневник глушилки импульса</h2>
+        <p><label>Инженер:</label> _________________________ <label>Неделя:</label> с _______ по _______</p>
+        <p><strong>Ситуация:</strong> <textarea></textarea></p>
+        <p><strong>Какой импульс возник?</strong> <textarea placeholder="Хотелось закричать, ударить, убежать..."></textarea></p>
+        <p><strong>Что почувствовал(а) в теле?</strong> <textarea></textarea></p>
+        <p><strong>Удалось сделать паузу?</strong> <input type="checkbox"> Да <input type="checkbox"> Частично <input type="checkbox"> Нет</p>
+        <p><strong>Если да, что помогло?</strong> <textarea></textarea></p>
+        <p><strong>Результат:</strong> <textarea></textarea></p>
     </div>
 
-    <!-- 4. Фотоаппарат и художник -->
+    <!-- 4. Мой личный редактор новостей -->
     <div class="sheet">
-        <h2>📷 Фотоаппарат и Художник</h2>
-        <p><label>Имя:</label> _________________________ <label>Дата:</label> _______________</p>
-        <p><strong>Вспомни ситуацию, когда тебе показалось, что кто-то обиделся.</strong></p>
-        <textarea placeholder="Опиши ситуацию..."></textarea>
-        <h3>📷 Что видел фотоаппарат? (только факты)</h3>
-        <textarea placeholder="Я видел(а), что..."></textarea>
-        <h3>🎨 Что нарисовал художник? (мои догадки)</h3>
-        <textarea placeholder="Мне показалось, что..."></textarea>
-        <p><strong>Может ли быть другое объяснение?</strong> <textarea placeholder="Возможно..."></textarea></p>
+        <h2>📋 Мой личный Редактор новостей</h2>
+        <p><label>Инженер:</label> _________________________ <label>Дата:</label> _______________</p>
+        <p><strong>Ситуация:</strong> <textarea></textarea></p>
+        <p><strong>Эмоциональная версия:</strong> <textarea></textarea></p>
+        <p><strong>Отредактированная версия (только факты):</strong> <textarea></textarea></p>
+        <p><strong>Другие возможные объяснения:</strong> <textarea></textarea></p>
     </div>
 
-    <!-- 5. Карта горячих точек -->
+    <!-- 5. Биологическая обратная связь -->
     <div class="sheet">
-        <h2>🌡️ Карта горячих точек</h2>
-        <p><label>Имя:</label> _________________________ <label>Дата:</label> _______________</p>
-        <p>Раскрась на силуэте места, где ты чувствуешь: 🔴 злость, 🔵 грусть, 🟡 страх.</p>
+        <h2>📈 Биологическая обратная связь без приборов</h2>
+        <p><label>Инженер:</label> _________________________ <label>Дата:</label> _______________</p>
+        <table>
+            <tr><th>Задание</th><th>Пульс</th><th>Ладони</th><th>Челюсть</th><th>Дыхание</th><th>Другие ощущения</th></tr>
+            <tr><td>1. Арифметика</td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>2. Скороговорка</td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>3. Выступление</td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>4. Вопрос</td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>5. Равновесие</td><td></td><td></td><td></td><td></td><td></td></tr>
+        </table>
+        <p><small>Пульс: Ч – частый, Н – нормальный, Р – редкий. Ладони: Г – горячие, Т – теплые, Х – холодные. Челюсть: С – сильно, Сл – слабо, Н – нет. Дыхание: П – поверхностное, Г – глубокое, З – задержки.</small></p>
+        <p><strong>Мои «красные флажки»:</strong> ________________________________</p>
+        <p><strong>План действий:</strong> 1. _______________ 2. _______________</p>
+    </div>
+
+    <!-- 6. Карта тела (пустая) -->
+    <div class="sheet">
+        <h2>🧍 Карта тела</h2>
+        <p><label>Инженер:</label> _________________________ <label>Дата:</label> _______________</p>
+        <p>Раскрась зоны напряжения при стрессе. Красный – злость, синий – грусть, жёлтый – страх, фиолетовый – пустота.</p>
         <div class="silhouette-placeholder">
             <p>⬇️ Место для силуэта человека ⬇️</p>
             <p style="font-size: 36px;">🧑</p>
             <p>(вклей или нарисуй контур)</p>
         </div>
-        <p><strong>Мой самый первый сигнал:</strong> _______________________________</p>
-        <p><strong>Что я сделаю, когда замечу этот сигнал?</strong> ___________________</p>
+        <p><strong>Где чувствую напряжение:</strong> ________________________________</p>
     </div>
 
-    <!-- 6. Мой аварийный набор -->
+    <!-- 7. Аварийный чемоданчик 2.0 -->
     <div class="sheet">
-        <h2>🧰 Мой аварийный набор</h2>
-        <p><label>Имя:</label> _________________________ <label>Дата:</label> _______________</p>
+        <h2>🧰 Аварийный чемоданчик 2.0 · Паспорт</h2>
+        <p><label>Инженер:</label> _________________________ <label>Дата:</label> _______________</p>
         <ol>
-            <li>_________________________ (главный тактильный инструмент)</li>
-            <li>_________________________ (что ещё можно сжать/погладить)</li>
-            <li>_________________________ (записка-напоминание)</li>
-            <li>_________________________ (что-то с приятным запахом/вкусом)</li>
-            <li>_________________________ (фото или рисунок поддержки)</li>
+            <li>_________________________ (для состояния: _________)</li>
+            <li>_________________________ (для состояния: _________)</li>
+            <li>_________________________ (для состояния: _________)</li>
         </ol>
-        <h3>Когда я достану набор?</h3>
-        <div class="checkbox-group">
-            <div class="checkbox-item"><input type="checkbox"> Когда сильно злюсь</div>
-            <div class="checkbox-item"><input type="checkbox"> Когда грустно и одиноко</div>
-            <div class="checkbox-item"><input type="checkbox"> Когда страшно</div>
-            <div class="checkbox-item"><input type="checkbox"> Когда хочется ударить/сломать</div>
-            <div class="checkbox-item"><input type="checkbox"> Когда хочется сделать больно себе</div>
-        </div>
-        <p><strong>Мой план действий:</strong><br>1. Замечаю сигнал → 2. «СТОП-СИСТЕМА!» и 3 вдоха → 3. Достаю набор → 4. Если не легче — иду к взрослому: _______________</p>
+        <p><strong>Моя коупинг-фраза:</strong> «_________________________»</p>
+        <h3>Алгоритм при кризисе</h3>
+        <p>Заметил флажки → СТОП → 3 вдоха → достал чемоданчик → использовал 2–3 мин → оценил состояние.</p>
+        <p><strong>Если не помогло — звоню:</strong> _________________________</p>
     </div>
 
-    <!-- 7. Мой коммутатор -->
+    <!-- 8. Сценарий сложного разговора -->
     <div class="sheet">
-        <h2>📻 Мой коммутатор</h2>
-        <p><label>Имя:</label> _________________________ <label>Дата:</label> _______________</p>
-        <h3>Мои «Я-сообщения»</h3>
-        <p>Ситуация дома: «Когда ты ______________, я чувствую ______________, и мне хотелось бы ______________»</p>
-        <p>Ситуация в школе: «Когда ты ______________, я чувствую ______________, и мне хотелось бы ______________»</p>
-        <h3>🆘 Канал SOS</h3>
-        <p>Человек 1: ___________________ тел: _________________</p>
-        <p>Человек 2: ___________________ тел: _________________</p>
-        <p>Важный номер: 8-800-2000-122</p>
-        <p><strong>Мой секретный пароль:</strong> «У меня "красный код"» или своя фраза: _________________</p>
+        <h2>📝 Сценарий сложного разговора (Сэндвич)</h2>
+        <p><label>Инженер:</label> _________________________ <label>Дата:</label> _______________</p>
+        <p><strong>Ситуация:</strong> <textarea></textarea></p>
+        <p>🍞 <strong>Верхний слой:</strong> <textarea placeholder="Я понимаю, что ты..."></textarea></p>
+        <p>🥩 <strong>Начинка:</strong> <textarea placeholder="Когда ты ___, я чувствую ___, и для меня важно ___"></textarea></p>
+        <p>🍞 <strong>Нижний слой:</strong> <textarea placeholder="Давай договоримся..."></textarea></p>
+        <p><strong>Реальный сценарий (для домашней подготовки):</strong> <textarea></textarea></p>
     </div>
 
-    <!-- 8. Бортовой журнал: Эмоциональный шторм -->
+    <!-- 9. Бортовой журнал: Судный день -->
     <div class="sheet">
-        <h2>📓 Бортовой журнал · Миссия «Эмоциональный шторм»</h2>
-        <p><label>Имя:</label> _________________________ <label>Дата:</label> _______________</p>
-        <p><strong>1. Сколько раз объявляли «ШТОРМ»?</strong> _____</p>
-        <p><strong>2. Удавалось ли замереть и дышать?</strong> <input type="checkbox"> Да, каждый раз <input type="checkbox"> Иногда <input type="checkbox"> Было трудно</p>
-        <p><strong>3. Что чувствовал во время ШТОРМА?</strong> <textarea></textarea></p>
-        <p><strong>4. Какие инструменты использовал?</strong></p>
+        <h2>📓 Бортовой журнал · Миссия «Судный день»</h2>
+        <p><label>Инженер:</label> _________________________ <label>Дата:</label> _______________</p>
+        <p><strong>1. Навыки, которые использовал:</strong></p>
         <div class="checkbox-group">
-            <div class="checkbox-item"><input type="checkbox"> СТОП-система</div>
+            <div class="checkbox-item"><input type="checkbox"> СТОП</div>
             <div class="checkbox-item"><input type="checkbox"> Квадратное дыхание</div>
             <div class="checkbox-item"><input type="checkbox"> Сейсмограф</div>
-            <div class="checkbox-item"><input type="checkbox"> Я-сообщение</div>
-            <div class="checkbox-item"><input type="checkbox"> Аварийный Набор</div>
+            <div class="checkbox-item"><input type="checkbox"> Чемоданчик</div>
+            <div class="checkbox-item"><input type="checkbox"> Я-сообщение / Сэндвич</div>
+            <div class="checkbox-item"><input type="checkbox"> Заземление 5-4-3-2-1</div>
+            <div class="checkbox-item"><input type="checkbox"> Редактор новостей</div>
+            <div class="checkbox-item"><input type="checkbox"> Канал SOS</div>
         </div>
-        <p><strong>5. Что помогало больше всего?</strong> <textarea></textarea></p>
-        <p><strong>6. Чему научился на испытании?</strong> <textarea></textarea></p>
+        <p><strong>2. Самый трудный момент:</strong> <textarea></textarea></p>
+        <p><strong>3. Что помогло справиться:</strong> <textarea></textarea></p>
+        <p><strong>4. Оценка устойчивости (1-10):</strong> Шторм 1: ___ Шторм 2: ___</p>
+        <p><strong>5. Главный вывод:</strong> <textarea></textarea></p>
     </div>
 
-    <!-- 9. Паспорт навыка -->
+    <!-- 10. Технический паспорт -->
     <div class="sheet">
-        <h2>📘 Паспорт технического средства<br>«Навык саморегуляции»</h2>
+        <h2>📘 Технический паспорт «Навык саморегуляции»</h2>
         <p><strong>Владелец:</strong> _________________________</p>
-        <p><strong>Модель системы (название):</strong> «_________________________»</p>
-        <h3>✅ Технические характеристики</h3>
+        <p><strong>Модель системы:</strong> «_________________________»</p>
+        <p><strong>Дата выпуска:</strong> ___________ <strong>Дата ввода:</strong> ___________</p>
+        <h3>✅ Комплектация</h3>
         <div class="checkbox-group">
-            <div class="checkbox-item"><input type="checkbox" checked> СТОП-СИСТЕМА</div>
+            <div class="checkbox-item"><input type="checkbox" checked> СТОП-КРАН</div>
             <div class="checkbox-item"><input type="checkbox" checked> СЕЙСМОГРАФ</div>
-            <div class="checkbox-item"><input type="checkbox" checked> АВАРИЙНЫЙ НАБОР</div>
+            <div class="checkbox-item"><input type="checkbox" checked> АВАРИЙНЫЙ ЧЕМОДАНЧИК</div>
             <div class="checkbox-item"><input type="checkbox" checked> КОММУТАТОР</div>
+            <div class="checkbox-item"><input type="checkbox" checked> РЕДАКТОР НОВОСТЕЙ</div>
             <div class="checkbox-item"><input type="checkbox" checked> ШТОРМ-ПРОТОКОЛ</div>
         </div>
         <h3>🛠️ Гарантийное обслуживание</h3>
-        <p>Основной контакт: ___________________ тел: ______________</p>
-        <p>Резервный: ___________________ тел: ______________</p>
+        <p>Сервисный центр №1: ___________________ тел: ______________</p>
+        <p>Сервисный центр №2: ___________________ тел: ______________</p>
         <p>Горячая линия: 8-800-2000-122</p>
-        <p>Подпись владельца: _____________ Подпись наставника: _____________</p>
+        <p>Подпись владельца: _____________ Подпись инженера: _____________</p>
     </div>
 
-    <!-- 10. Диплом -->
+    <!-- 11. Диплом -->
     <div class="sheet" style="text-align: center;">
-        <h2 style="border: none; font-size: 28px;">🌟 ДИПЛОМ 🌟</h2>
+        <h2 style="border: none; font-size: 28px;">🏅 ДИПЛОМ 🏅</h2>
         <p style="font-size: 18px;">НАСТОЯЩИМ ПОДТВЕРЖДАЕТСЯ, ЧТО</p>
         <div style="border-bottom: 2px solid #1e3a5f; width: 80%; margin: 15px auto;"></div>
         <p style="font-size: 26px; font-weight: bold;">________________________</p>
         <div style="border-bottom: 2px solid #1e3a5f; width: 80%; margin: 15px auto;"></div>
-        <p>успешно прошёл(ла) курс «АРХИТЕКТОРЫ УСТОЙЧИВОСТИ»<br>и освоил(а) инженерные навыки:</p>
-        <p>🛑 СТОП-СИСТЕМА · 📡 СЕЙСМОГРАФ · 🧰 АВАРИЙНЫЙ НАБОР · 📻 КОММУТАТОР · 🌪️ ШТОРМ-ПРОТОКОЛ</p>
-        <p style="font-size: 22px; margin-top: 20px;">🏆 ИНЖЕНЕР СПОКОЙСТВИЯ I степени 🏆</p>
+        <p>успешно прошёл(ла) продвинутый курс «АРХИТЕКТОРЫ УСТОЙЧИВОСТИ»<br>и освоил(а) компетенции:</p>
+        <p>🛑 СТОП-КРАН · 📡 СЕЙСМОГРАФ · 🧰 ЧЕМОДАНЧИК · 📰 РЕДАКТОР · 🌪️ ШТОРМ-ПРОТОКОЛ</p>
+        <p style="font-size: 22px; margin-top: 20px;">🏆 ИНЖЕНЕР УСТОЙЧИВОСТИ II степени 🏆</p>
         <p>Руководитель: _______________ Дата: _______________</p>
     </div>
 
-    <!-- 11. План техобслуживания -->
+    <!-- 12. Регламент профилактических работ -->
     <div class="sheet">
-        <h2>📋 План техобслуживания</h2>
+        <h2>📋 Регламент профилактических работ</h2>
         <p><label>Инженер:</label> _________________________ <label>Период:</label> с _________ по _________</p>
         <h3>🔧 Ежедневно</h3>
-        <p>1. _______________________________ 2. _______________________________</p>
+        <p>Утро: _________________________ Вечер: _________________________</p>
         <h3>🔩 Еженедельно</h3>
-        <p>1. _______________________________ 2. _______________________________</p>
+        <p>1. Чемоданчик: _________________________</p>
+        <p>2. Редактор новостей: _________________________</p>
+        <p>3. Соц. контакт: _________________________</p>
         <h3>🚨 Красные флаги</h3>
         <div class="checkbox-group">
-            <div class="checkbox-item"><input type="checkbox"> Мысли о самоповреждении</div>
-            <div class="checkbox-item"><input type="checkbox"> Не могу встать с кровати</div>
-            <div class="checkbox-item"><input type="checkbox"> Сильная тревога не проходит</div>
+            <div class="checkbox-item"><input type="checkbox"> Мысли о СП/суициде</div>
+            <div class="checkbox-item"><input type="checkbox"> Не могу делать обычные дела 2+ дня</div>
+            <div class="checkbox-item"><input type="checkbox"> Тревога не проходит</div>
         </div>
-        <p><strong>При красных флагах:</strong> 1. Звоню _________________ 2. Горячая линия 8-800-2000-122</p>
+        <p><strong>При флагах:</strong> ШТОРМ-ПРОТОКОЛ → Звонок _________________ → Горячая линия 8-800-2000-122</p>
         <p>Подпись: __________________</p>
     </div>
 
