@@ -2,311 +2,539 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бланки 15–17 лет · Полигон навыков</title>
+    <title>Раздаточные материалы к программе «Агенты самоконтроля»</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        /* общие настройки для экрана и печати */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         body {
-            background: #e9ecf1;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            padding: 20px 15px;
+            font-family: 'Arial', sans-serif;
+            background: #f5f5f5;
+            color: #000;
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-        .container { max-width: 850px; width: 100%; }
-        .sheet {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-            padding: 18px 22px;
-            margin-bottom: 20px;
-            border: 1px solid #cad4e2;
-            page-break-after: always;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        h2 {
-            font-size: 20px;
-            color: #1e3a5f;
-            border-bottom: 2px solid #6c8eb2;
-            padding-bottom: 6px;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-        h3 {
-            font-size: 17px;
-            color: #2c3e50;
-            margin: 10px 0 6px;
-            font-weight: 500;
-        }
-        label {
-            font-weight: 500;
-            color: #1e3a5f;
-            display: block;
-            margin-top: 8px;
-        }
-        input, textarea {
-            border: 1.5px solid #b0c4de;
-            border-radius: 8px;
-            padding: 8px 10px;
-            font-family: inherit;
-            font-size: 14px;
-            width: 100%;
-            margin: 4px 0 10px;
-            background: #fbfdff;
-        }
-        textarea {
-            min-height: 80px;
-            flex-grow: 1;
-        }
-        .flex-row {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin: 10px 0;
-        }
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px 16px;
-            margin: 8px 0;
-        }
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 14px;
-        }
-        .silhouette-placeholder {
-            border: 3px dashed #6c8eb2;
-            background: #f4f9ff;
-            border-radius: 16px;
             padding: 20px;
-            margin: 15px 0;
+        }
+        .lesson {
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 40px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .page {
+            /* Каждая страница для печати */
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm 20mm 15mm 20mm;
+            margin: 10px auto;
+            background: white;
+            page-break-after: always;
+            position: relative;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        /* для карточек, которые нужно разрезать */
+        .cut-sheet {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5mm;
+            align-items: start;
+        }
+        .cut-sheet .card {
+            border: 2px dashed #aaa;
+            padding: 10px;
             text-align: center;
-            color: #3a6282;
-            font-size: 16px;
-            flex-grow: 1;
+            font-size: 20px;
+            min-height: 60mm;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            min-height: 200px;
+            background: #fafafa;
         }
-        .lined-box {
-            border: 2px dashed #8ba3c4;
-            background: #f6f9fc;
-            padding: 12px;
-            border-radius: 12px;
-            margin: 12px 0;
+        .cut-sheet .card h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
         }
-        table {
+        /* плакаты */
+        .poster {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: #f0f8ff;
+            border: 4px double #333;
+            padding: 30px;
+            font-weight: bold;
+            height: 100%;
+        }
+        .poster h1 {
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+        .poster .rule {
+            font-size: 28px;
+            margin: 20px 0;
+        }
+        .poster .sub {
+            font-size: 22px;
+            font-weight: normal;
+        }
+        /* бланки с линиями */
+        .blank {
+            border: 2px solid #000;
+            padding: 30px;
+            height: 100%;
+            font-size: 18px;
+        }
+        .blank h2 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+        .blank .field {
+            border-bottom: 1px solid #888;
+            padding: 10px 0;
+            margin: 20px 0;
+            font-size: 20px;
+        }
+        .blank .field label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .blank .draw-area {
+            border: 1px dashed #666;
+            min-height: 100px;
+            margin: 20px 0;
+            padding: 10px;
+            font-style: italic;
+        }
+        /* таблицы для бланков */
+        table.record {
             width: 100%;
             border-collapse: collapse;
-            margin: 8px 0;
-        }
-        th, td {
-            border: 1px solid #b0c4de;
-            padding: 8px;
-            text-align: left;
-            font-size: 13px;
-        }
-        th { background: #eef3fa; }
-        .footer-note {
-            margin-top: auto;
-            font-size: 12px;
-            color: #5e7a9a;
-            text-align: right;
-            border-top: 1px dotted #b0c4de;
-            padding-top: 8px;
-        }
-        .pdf-button {
-            background: #1e3a5f;
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 40px;
             font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-            margin-bottom: 25px;
-            transition: 0.2s;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
         }
-        .pdf-button:hover { background: #0f2a44; }
+        table.record th, table.record td {
+            border: 1px solid #333;
+            padding: 12px;
+            text-align: left;
+        }
+        table.record th {
+            background: #eee;
+            font-weight: bold;
+        }
+        /* наклейки/жетоны/медали (просто квадратики) */
+        .badge-sheet {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+            height: 100%;
+        }
+        .badge {
+            width: 60mm;
+            height: 60mm;
+            border: 2px solid gold;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            background: #fff9e6;
+            margin: 10mm;
+        }
+        /* скрываем лишнее при печати */
         @media print {
-            body { background: white; padding: 0.2in; }
-            .sheet { box-shadow: none; border: 1px solid #ccc; page-break-after: always; border-radius: 0; min-height: auto; }
-            input, textarea { border: 1px solid #333; background: white; }
-            .no-print, .pdf-button { display: none; }
+            body {
+                background: white;
+                padding: 0;
+            }
+            .lesson {
+                box-shadow: none;
+                margin: 0;
+            }
+            .page {
+                box-shadow: none;
+                border: none;
+                margin: 0 auto;
+                page-break-after: always;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+        .title-section {
+            text-align: center;
+            padding: 40px;
+            font-size: 32px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-<button class="pdf-button no-print" onclick="window.print()">📥 Скачать PDF (сохранить через печать)</button>
-<div class="container">
-
-    <!-- Шкала СЕД -->
-    <div class="sheet">
-        <h2>📊 Шкала СЕД</h2>
-        <div class="flex-row">
-            <p><label>Занятие № ____</label></p>
-            <p><label>Дата: _______________</label></p>
+    <!-- Занятие 1 -->
+    <div class="lesson">
+        <div class="page">
+            <div class="poster">
+                <h1>🛡️ КОДЕКС АГЕНТА</h1>
+                <div class="rule">🔴 КРАСНЫЙ СИГНАЛ — СТОП<br><span class="sub">Замри! Останови все действия.</span></div>
+                <div class="rule">🟡 ЖЁЛТЫЙ СИГНАЛ — ПОДУМАЙ<br><span class="sub">Спроси себя: «Что я хочу? К чему это приведёт?»</span></div>
+                <div class="rule">🟢 ЗЕЛЁНЫЙ СИГНАЛ — ДЕЙСТВУЙ<br><span class="sub">Только после того, как подумал!</span></div>
+            </div>
         </div>
-        <p>Оцени свой уровень напряжения сейчас от 0 (штиль) до 10 (максимальный дистресс).</p>
-        <div class="flex-row">
-            <div><label>ВХОД:</label> ___________</div>
-            <div><label>ВЫХОД:</label> ___________</div>
+
+        <div class="page">
+            <div class="cut-sheet">
+                <div class="card"><h3>🔴 СТОП</h3>Красный сигнал</div>
+                <div class="card"><h3>🟡 ПОДУМАЙ</h3>Жёлтый сигнал</div>
+                <div class="card"><h3>🟢 ДЕЙСТВУЙ</h3>Зелёный сигнал</div>
+                <div class="card" style="border: none; background: none;">&nbsp;</div>
+            </div>
+            <p style="text-align:center; margin-top:10px; font-size:16px;">Разрежьте по пунктирным линиям. Каждому агенту — набор карточек.</p>
         </div>
-        <p style="margin-top:20px;"><label>Имя:</label> _________________________</p>
-    </div>
 
-    <!-- Алгоритм выживания: Блок-схема -->
-    <div class="sheet">
-        <h2>🧩 Алгоритм выживания: Блок-схема</h2>
-        <p><label>Разработчик:</label> _________________________ <label>Дата:</label> _______________</p>
-        <div class="lined-box">
-            <p>📍 <strong>Точка входа:</strong> «Что я чувствую?»</p>
-            <p>🔹 СЕД 0–4 → Профилактика: <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea></p>
-            <p>🔹 СЕД 5–7 → Заземление: <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea></p>
-            <p>🔹 СЕД 8–10 → АВАРИЙНЫЙ ПРОТОКОЛ:</p>
-            <p>1. СТОП | 2. Квадратное дыхание | 3. Сигнал SOS (конт.1: <input type="text" style="width:80px;display:inline;">, конт.2: <input type="text" style="width:80px;display:inline;">) | 4. Замещение (лёд, дневник)</p>
-            <p>🔄 Переоценка СЕД → если не снизился → звонок <input type="text" style="width:100px;display:inline;"> или 112/8-800-2000-122</p>
+        <div class="page">
+            <div class="blank">
+                <h2>Секретное досье</h2>
+                <div class="field"><label>Имя агента:</label> _______________________________</div>
+                <div style="display: flex; justify-content: space-between; gap: 20px;">
+                    <div style="flex:1; border:1px solid #999; padding:15px; min-height:150px;">
+                        <strong>МОЁ СЕКРЕТНОЕ ОРУЖИЕ</strong><br>(что помогает быть спокойным и сильным)
+                        <div class="draw-area">Нарисуй или напиши здесь</div>
+                    </div>
+                    <div style="flex:1; border:1px solid #999; padding:15px; min-height:150px;">
+                        <strong>МОЙ ВРАГ</strong><br>(привычки, которые мешают)
+                        <div class="draw-area">Изобрази в виде чудовища</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <p><strong>Дополнительные ветки:</strong> <textarea></textarea></p>
     </div>
 
-    <!-- Когнитивный предохранитель -->
-    <div class="sheet">
-        <h2>⚡ Когнитивный предохранитель</h2>
-        <p><label>Разработчик:</label> _________________________ <label>Дата:</label> _______________</p>
-        <table>
-            <tr><th>Триггерная фраза</th><th>Действие вместо реакции</th></tr>
-            <tr><td><textarea></textarea></td><td><textarea></textarea></td></tr>
-            <tr><td><textarea></textarea></td><td><textarea></textarea></td></tr>
-            <tr><td><textarea></textarea></td><td><textarea></textarea></td></tr>
-        </table>
-        <p><strong>Базовое действие по умолчанию:</strong> Сжать кулак на 2 сек → разжать → глубокий вдох → сказать «Я здесь и сейчас».</p>
-        <p><strong>Моя контр-мантра:</strong> «<textarea rows="1" style="min-height:30px;width:60%;display:inline;"></textarea>»</p>
-    </div>
-
-    <!-- Суд присяжных -->
-    <div class="sheet">
-        <h2>⚖️ Суд присяжных: Доказательная база</h2>
-        <p><label>Судья (Я):</label> _________________________ <label>Дата:</label> _______________</p>
-        <p><strong>Фабула дела:</strong> <textarea></textarea></p>
-        <p><strong>Версия обвинения:</strong> <textarea></textarea></p>
-        <p><strong>Версия защиты:</strong> <textarea></textarea></p>
-        <p><strong>Доказательства (только факты):</strong> <textarea></textarea></p>
-        <p><strong>Вердикт:</strong> <input type="checkbox"> Виновен(а) <input type="checkbox"> Невиновен(а) <input type="checkbox"> Недостаточно доказательств</p>
-    </div>
-
-    <!-- Картография аффекта -->
-    <div class="sheet">
-        <h2>🗺️ Картография аффекта</h2>
-        <p><label>Исследователь:</label> _________________________ <label>Дата:</label> _______________</p>
-        <p>Раскрась на силуэте зоны: 🔴 тревога, 🔵 ярость, ⚫ пустота.</p>
-        <div class="silhouette-placeholder">
-            <p>⬇️ Место для силуэта человека ⬇️</p>
-            <p style="font-size: 36px;">🧑</p>
-            <p>(вклей или нарисуй контур)</p>
+    <!-- Занятие 2 -->
+    <div class="lesson">
+        <div class="page">
+            <div class="poster">
+                <h1>🌡️ ЭМОЦИОНАЛЬНЫЙ ГРАДУСНИК</h1>
+                <div style="font-size:24px; text-align:left;">
+                    <p>10 — 💥 ВЗРЫВ (кричу, дерусь)</p>
+                    <p>9 — 🔴 Очень зол</p>
+                    <p>8 — 🔴</p>
+                    <p>7 — 🟠</p>
+                    <p>6 — 🟠 Закипаю</p>
+                    <p>5 — 🟡 Недоволен</p>
+                    <p>4 — 🟡</p>
+                    <p>3 — 🟢</p>
+                    <p>2 — 🟢 Почти спокоен</p>
+                    <p>1 — 🟢</p>
+                    <p>0 — 💧 Спокоен как вода</p>
+                </div>
+            </div>
         </div>
-        <p><strong>Мой «сторожевой сигнал»:</strong> Тревога: <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea> Ярость: <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea> Пустота: <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea></p>
-        <p><strong>План раннего вмешательства:</strong> 1. Остановиться 2. 3 глубоких вдоха 3. Спросить: «Где я? Есть ли угроза?» 4. Переключиться на внешний объект.</p>
+
+        <div class="page">
+            <div class="blank">
+                <h2>Мой термометр</h2>
+                <div class="field"><label>Имя агента:</label> _______________________________</div>
+                <div style="display:flex; justify-content:space-between; padding:20px 0;">
+                    <div style="width:60px; height:300px; background:linear-gradient(to bottom, red 0%, orange 30%, yellow 60%, lightgreen 80%, blue 100%); border:1px solid #000; position:relative;">
+                        <span style="position:absolute; top:-25px; left:50%;">10</span>
+                        <span style="position:absolute; bottom:-25px; left:50%;">0</span>
+                    </div>
+                    <div style="flex:1; margin-left:20px;">
+                        <p><strong>Мои ситуации и градусы:</strong></p>
+                        <p>1. ___________________________ °</p>
+                        <p>2. ___________________________ °</p>
+                        <p>3. ___________________________ °</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page">
+            <div class="cut-sheet">
+                <div class="card">Учитель сделал замечание при всех</div>
+                <div class="card">Проиграл в любимой игре</div>
+                <div class="card">Не получается задача, а все уже сделали</div>
+                <div class="card">Одноклассник обозвал</div>
+                <div class="card">Сестра сломала мою поделку</div>
+                <div class="card">Родители запретили играть</div>
+            </div>
+            <p style="text-align:center;">Ситуации для обсуждения (разрезать)</p>
+        </div>
+
+        <div class="page">
+            <div style="text-align:center; padding:20px; border:2px solid #999; min-height:250px;">
+                <h2>Контур человека</h2>
+                (распечатайте контурное изображение человека или нарисуйте сами)<br>
+                <span style="font-size:24px;">🚶</span>
+                <p>Закрась красным, где чувствуешь злость. Синим — где спокойно.</p>
+            </div>
+        </div>
     </div>
 
-    <!-- Копинг-прошивка -->
-    <div class="sheet">
-        <h2>💾 Копинг-прошивка: Конфигурация v.1.0</h2>
-        <p><label>Разработчик:</label> _________________________ <label>Дата:</label> _______________</p>
-        <h3>⚡ Уровень 1: Виджеты (10–30 сек, незаметно)</h3>
-        <p>1. <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea> 2. <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea> 3. <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea></p>
-        <h3>📱 Уровень 2: Приложения (2–5 мин, уединение)</h3>
-        <p>1. <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea> 2. <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea> 3. <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea></p>
-        <h3>🚨 Уровень 3: Аварийный протокол (СЕД 8–10)</h3>
-        <p>1. <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea> 2. <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea> 3. Сигнал SOS: конт.1 <input type="text" style="width:100px;display:inline;"> конт.2 <input type="text" style="width:100px;display:inline;"></p>
-        <p><strong>Цифровая интеграция:</strong> Папка «SOS» на телефоне: быстрый набор, плейлист <input type="text" style="width:120px;display:inline;">, фраза: «<textarea rows="1" style="min-height:30px;width:60%;display:inline;"></textarea>»</p>
+    <!-- Занятие 3 -->
+    <div class="lesson">
+        <div class="page">
+            <div class="blank">
+                <h2>Мои рекорды паузы (Стоп-кран)</h2>
+                <table class="record">
+                    <tr><th>Ситуация</th><th>Секунд паузы</th></tr>
+                    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <!-- Дипломатический протокол -->
-    <div class="sheet">
-        <h2>🎙️ Дипломатический протокол</h2>
-        <p><label>Дипломат:</label> _________________________ <label>Дата:</label> _______________</p>
-        <table>
-            <tr><th>Утверждение критика</th><th>Дипломатические вопросы</th></tr>
-            <tr><td><textarea></textarea></td><td>1. На каких фактах основано?<br>2. Есть ли опровергающие факты?<br>3. Это абсолютная истина?<br>4. Что конкретно сделать?</td></tr>
-            <tr><td><textarea></textarea></td><td></td></tr>
-        </table>
-        <p><strong>Шпаргалка вопросов:</strong></p>
-        <p>• «На каких конкретных фактах основано?»<br>• «Есть ли факты, противоречащие этому?»<br>• «Это истина или преувеличение?»<br>• «Что я могу сделать в ближайшие 5 минут?»</p>
+    <!-- Занятие 4 -->
+    <div class="lesson">
+        <div class="page">
+            <div class="poster">
+                <h1>Формула дипломатического Я-сообщения</h1>
+                <div style="font-size:26px; text-align:left;">
+                    <p>Я ЧУВСТВУЮ… (обиду, злость, разочарование)</p>
+                    <p>КОГДА ТЫ… (конкретный факт)</p>
+                    <p>ПОТОМУ ЧТО ДЛЯ МЕНЯ ВАЖНО… (справедливость, уважение)</p>
+                    <p>И Я ХОЧУ… (конкретная просьба)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page">
+            <div class="blank">
+                <h2>Мост аргументов</h2>
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <p><strong>Моё желание:</strong> _______________________________</p>
+                    <p><strong>Требование взрослого:</strong> ________________________</p>
+                    <div style="width:80%; border:3px solid #a52a2a; padding:20px; margin:20px 0; text-align:center; background:#fff5e6;">
+                        <p>1. __________________________________</p>
+                        <p>2. __________________________________</p>
+                        <p>3. __________________________________</p>
+                    </div>
+                    <p><strong>Наш компромисс:</strong> _______________________________</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page">
+            <div class="cut-sheet">
+                <div class="card">Учитель требует переписать всю работу</div>
+                <div class="card">Одноклассник не даёт поиграть</div>
+                <div class="card">Родители запрещают гаджет</div>
+                <div class="card">Друг подвёл и опоздал</div>
+            </div>
+        </div>
+
+        <div class="page">
+            <div class="cut-sheet">
+                <div class="card" style="border-style:solid; background:white;">
+                    <h3>ДИПЛОМАТИЧЕСКИЙ ПАСПОРТ</h3>
+                    Агент: _______________<br>
+                    ☑ Я-сообщение<br>
+                    ☑ Мост аргументов<br>
+                    ☑ Пауза
+                </div>
+                <div class="card" style="border-style:solid; background:white;">
+                    <h3>ДИПЛОМАТИЧЕСКИЙ ПАСПОРТ</h3>
+                    Агент: _______________<br>
+                    ☑ Я-сообщение<br>
+                    ☑ Мост аргументов<br>
+                    ☑ Пауза
+                </div>
+                <div class="card" style="border-style:solid; background:white;">
+                    <h3>ДИПЛОМАТИЧЕСКИЙ ПАСПОРТ</h3>
+                    Агент: _______________<br>
+                    ☑ Я-сообщение<br>
+                    ☑ Мост аргументов<br>
+                    ☑ Пауза
+                </div>
+                <div class="card" style="border-style:solid; background:white;">
+                    <h3>ДИПЛОМАТИЧЕСКИЙ ПАСПОРТ</h3>
+                    Агент: _______________<br>
+                    ☑ Я-сообщение<br>
+                    ☑ Мост аргументов<br>
+                    ☑ Пауза
+                </div>
+            </div>
+            <p style="text-align:center;">Раздайте каждому агенту</p>
+        </div>
     </div>
 
-    <!-- Бортовой журнал: Аудиошторм -->
-    <div class="sheet">
-        <h2>📓 Бортовой журнал · Миссия «Аудиошторм»</h2>
-        <p><label>Инженер-испытатель:</label> _________________________ <label>Дата:</label> _______________</p>
-        <p><strong>1. Во время аудио-хаоса:</strong> Удавалось 5-4-3-2-1? <input type="checkbox"> Да <input type="checkbox"> С перерывами <input type="checkbox"> Нет</p>
-        <p>Самые сильные ощущения: <textarea rows="1" style="min-height:30px;"></textarea> Задела фраза: <textarea rows="1" style="min-height:30px;"></textarea></p>
-        <p><strong>2. Работа с кейсом (номер ___):</strong></p>
-        <p>Сторожевые сигналы: <textarea rows="1" style="min-height:30px;"></textarea></p>
-        <p>Инструменты Уровня 1: <textarea rows="1" style="min-height:30px;"></textarea> Уровня 2: <textarea rows="1" style="min-height:30px;"></textarea></p>
-        <p>Аварийный протокол: <textarea rows="1" style="min-height:30px;"></textarea></p>
-        <p>Дипломатические вопросы: <textarea rows="1" style="min-height:30px;"></textarea></p>
-        <p>Итоговый план: <textarea></textarea></p>
-        <p><strong>3. Оценка устойчивости (1-10):</strong> ____</p>
-        <p><strong>4. Главный вывод:</strong> <textarea></textarea></p>
+    <!-- Занятие 5 -->
+    <div class="lesson">
+        <div class="page">
+            <div class="poster">
+                <h1>ШКАЛА УСПЕХА АГЕНТА</h1>
+                <div style="font-size:28px;">
+                    <p>🔴 Контроль эмоций (насколько сдерживал гнев)</p>
+                    <p>🟡 Честность (не хитрил, не обвинял)</p>
+                    <p>🟢 Усидчивость (дождался конца игры)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page">
+            <div class="cut-sheet">
+                <div class="card" style="min-height:100mm; justify-content:flex-start;">
+                    <h3>Внутренний тренер против Критика</h3>
+                    <p><strong>Мой Критик говорит:</strong><br>___________________________</p>
+                    <p><strong>Мой Тренер говорит:</strong><br>___________________________</p>
+                </div>
+                <div class="card" style="min-height:100mm; justify-content:flex-start;">
+                    <h3>Внутренний тренер против Критика</h3>
+                    <p><strong>Мой Критик говорит:</strong><br>___________________________</p>
+                    <p><strong>Мой Тренер говорит:</strong><br>___________________________</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page">
+            <div class="badge-sheet">
+                <div class="badge">🏆<br>За честную игру</div>
+                <div class="badge">🏆<br>За честную игру</div>
+                <div class="badge">🏆<br>За честную игру</div>
+            </div>
+        </div>
     </div>
 
-    <!-- Проект планового техобслуживания -->
-    <div class="sheet">
-        <h2>📋 Проект «Плановое техобслуживание» (3 месяца)</h2>
-        <p><label>Главный инженер:</label> _________________________ <label>Период:</label> с _________ по _________</p>
-        <h3>🔧 Ежедневно</h3>
-        <p>1. <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea> (время: ____) 2. <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea></p>
-        <h3>🔩 Еженедельно</h3>
-        <p>Диагностика: <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea> Соц. контакт: <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea> Ревизия прошивки: <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea></p>
-        <h3>⚙️ Ежемесячно</h3>
-        <p>Обзор: <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea> Внешний аудит: <textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea></p>
-        <h3>🚨 Протокол «Красные флаги»</h3>
-        <p>Признаки: [ ] мысли о СП/суициде [ ] невозможность дел 3+ дня [ ] ухудшение сна/аппетита</p>
-        <p>Действия: 1. Аварийный протокол 2. Контакт: <textarea rows="1" style="min-height:30px;width:150px;display:inline;"></textarea> 3. Горячая линия 8-800-2000-122</p>
-        <p>Подпись: _____________</p>
+    <!-- Занятие 6 -->
+    <div class="lesson">
+        <div class="page">
+            <div class="poster" style="background:#fffacd;">
+                <h1>🍅 ПРАВИЛО «СЕКРЕТНЫЙ ПОМИДОР»</h1>
+                <div class="rule">10 МИНУТ РАБОТАЮ<br><span class="sub">не отвлекаюсь</span></div>
+                <div class="rule">⏳ 3 МИНУТЫ ОТДЫХАЮ<br><span class="sub">встаю, потягиваюсь</span></div>
+                <div class="rule">🔁 ПОВТОРЯЮ</div>
+            </div>
+        </div>
     </div>
 
-    <!-- Коммуникативный манифест -->
-    <div class="sheet">
-        <h2>📜 Мой коммуникативный манифест</h2>
-        <p><label>Инженер-испытатель:</label> _________________________ <label>Дата:</label> _______________</p>
-        <p><strong>Раздел 1: Как я буду говорить о своих чувствах и потребностях</strong></p>
-        <p>1. «Я имею право / Я буду ___________________________________»</p>
-        <p>2. «_______________________________________________________»</p>
-        <p><strong>Раздел 2: Как я буду просить о помощи</strong></p>
-        <p>1. «_______________________________________________________»</p>
-        <p>2. «_______________________________________________________»</p>
-        <p><strong>Раздел 3: Как я буду отвечать на обесценивание и критику</strong></p>
-        <p>1. «_______________________________________________________»</p>
-        <p>2. «_______________________________________________________»</p>
-        <p><strong>Моя мантра коммуникации:</strong> «<textarea rows="1" style="min-height:30px;width:80%;display:inline;"></textarea>»</p>
+    <!-- Занятие 7 -->
+    <div class="lesson">
+        <div class="page">
+            <div class="cut-sheet">
+                <div class="card">Он специально меня унижает</div>
+                <div class="card">Я никогда не научусь</div>
+                <div class="card">Все против меня</div>
+                <div class="card">Я никому не нужен</div>
+                <div class="card">Это невозможно</div>
+                <div class="card">Учитель меня ненавидит</div>
+            </div>
+        </div>
+
+        <div class="page">
+            <div class="blank">
+                <h2>Скамья подсудимых</h2>
+                <p><strong>Мысль подсудимая:</strong> _______________________________</p>
+                <div style="display:flex; gap:20px; margin:20px 0;">
+                    <div style="flex:1; border:1px solid #000; padding:15px;">
+                        <strong>Прокурор (за):</strong><br>
+                        1. _______________________<br>
+                        2. _______________________
+                    </div>
+                    <div style="flex:1; border:1px solid #000; padding:15px;">
+                        <strong>Адвокат (против):</strong><br>
+                        1. _______________________<br>
+                        2. _______________________
+                    </div>
+                </div>
+                <p><strong>Вердикт:</strong> мысль искажена / правдива (обвести)</p>
+                <p><strong>Исправленная мысль:</strong> _________________________</p>
+            </div>
+        </div>
     </div>
 
-    <!-- Диплом III степени -->
-    <div class="sheet" style="text-align: center; justify-content: center;">
-        <h2 style="border: none; font-size: 28px;">🏅 ДИПЛОМ 🏅</h2>
-        <p style="font-size: 20px;">НАСТОЯЩИМ ПОДТВЕРЖДАЕТСЯ, ЧТО</p>
-        <div style="border-bottom: 2px solid #1e3a5f; width: 80%; margin: 20px auto;"></div>
-        <p style="font-size: 30px; font-weight: bold;">________________________</p>
-        <div style="border-bottom: 2px solid #1e3a5f; width: 80%; margin: 20px auto;"></div>
-        <p style="font-size: 16px;">успешно прошёл(ла) системный курс «АРХИТЕКТОРЫ УСТОЙЧИВОСТИ»<br>и освоил(а) компетенции:</p>
-        <p style="font-size: 15px;">🛑 СТОП-КРАН · 📡 СЕЙСМОГРАФ · 💾 КОПИНГ-ПРОШИВКА · ⚖️ СУД ПРИСЯЖНЫХ · 🎙️ ДИПЛОМАТ. ПРОТОКОЛ · 🌪️ ШТОРМ-ПРОТОКОЛ</p>
-        <p style="font-size: 22px; margin-top: 25px;">🏆 ИНЖЕНЕР УСТОЙЧИВОСТИ III степени 🏆</p>
-        <p style="margin-top: 30px;">Руководитель: _______________ Дата: _______________</p>
+    <!-- Занятие 8 -->
+    <div class="lesson">
+        <div class="page">
+            <div class="poster">
+                <h1>🕊️ ТРИ ШАГА К МИРУ</h1>
+                <div class="rule">1⃣ ОСТАНОВИСЬ И ВЫСЛУШАЙ<br><span class="sub">каждый говорит по минуте, другой молчит</span></div>
+                <div class="rule">2⃣ СКАЖИ О ЧУВСТВАХ БЕЗ ОБВИНЕНИЙ<br><span class="sub">«Я чувствую… когда…»</span></div>
+                <div class="rule">3⃣ ПРЕДЛОЖИ РЕШЕНИЕ<br><span class="sub">минимум два варианта, выберите оба</span></div>
+            </div>
+        </div>
+
+        <div class="page">
+            <div class="cut-sheet">
+                <div class="card">Двое не могут поделить мяч</div>
+                <div class="card">Один обозвал другого</div>
+                <div class="card">Толкнули на перемене и не извинились</div>
+                <div class="card">Учитель обвинил в том, чего ты не делал</div>
+                <div class="card">Лучший друг рассказал твой секрет</div>
+                <div class="card">Кто-то занял твоё место за партой</div>
+            </div>
+        </div>
+
+        <div class="page">
+            <div class="blank">
+                <h2>Мишень мира</h2>
+                <div style="display:flex; justify-content:space-around;">
+                    <div style="text-align:center; width:40%;">
+                        <h3>Что я делал раньше</h3>
+                        <div style="border:1px solid #000; min-height:150px; padding:10px;"></div>
+                    </div>
+                    <div style="text-align:center; width:40%;">
+                        <h3>Что я буду делать теперь</h3>
+                        <div style="border:1px solid #000; min-height:150px; padding:10px;"></div>
+                    </div>
+                </div>
+                <p style="text-align:center; margin-top:40px;"><strong>Мой девиз миротворца:</strong> _________________________</p>
+            </div>
+        </div>
     </div>
 
-</div>
+    <!-- Занятие 9 -->
+    <div class="lesson">
+        <div class="page">
+            <div class="blank">
+                <h2>Маршрутный лист выпускной миссии</h2>
+                <p><strong>Имя агента:</strong> _____________________________</p>
+                <table class="record" style="margin-top:20px;">
+                    <tr><th>Станция</th><th>Оценка самоконтроля (1–10)</th></tr>
+                    <tr><td>Стоп-кран</td><td></td></tr>
+                    <tr><td>Дипломатическая</td><td></td></tr>
+                    <tr><td>Волевой мускул</td><td></td></tr>
+                    <tr><td>Суд над мыслью</td><td></td></tr>
+                </table>
+                <p style="text-align:center; margin-top:40px;"><strong>Итог миссии:</strong> ЗАЧЁТ</p>
+            </div>
+        </div>
+
+        <div class="page">
+            <div style="padding:40px; border:8px double #2c3e50; text-align:center; font-size:22px;">
+                <h1 style="font-size:42px;">ДИПЛОМ</h1>
+                <h2>АГЕНТА САМОКОНТРОЛЯ 1-го класса</h2>
+                <p>Выдан <strong>_____________________________</strong></p>
+                <p>за успешное овладение навыками:</p>
+                <div style="text-align:left; display:inline-block; margin:20px;">
+                    <p>🛑 Стоп-кран</p>
+                    <p>🌡️ Эмоциональный термометр</p>
+                    <p>🤝 Дипломатические переговоры</p>
+                    <p>🏆 Честная игра</p>
+                    <p>🍅 Волевой мускул</p>
+                    <p>⚖️ Суд над мыслью</p>
+                    <p>🕊️ Три шага к миру</p>
+                </div>
+                <p style="margin-top:40px;">Капитан Самоконтроль: _________________</p>
+                <p>Дата: «___» _________ 20__ г.</p>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
