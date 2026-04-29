@@ -2,12 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Стоп! Не дай себя обмануть — игра-тренажёр</title>
-    <meta name="description" content="Интерактивная игра по профилактике вовлечения подростков в преступные схемы через мессенджеры. Учимся распознавать манипуляции и защищать себя.">
-    <link rel="icon" type="image/png" href="icon.png">
-    <!-- Яндекс Игры SDK -->
-    <script src="https://sdk.yandex.net/games/1.0/sdk.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Птицы | тренажёр | 1–2 класс</title>
     <style>
         * {
             margin: 0;
@@ -16,8 +12,8 @@
             user-select: none;
         }
         body {
-            background: linear-gradient(145deg, #0a0f1e 0%, #0c1222 100%);
-            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, 'Montserrat', sans-serif;
+            background: #cfe3dc;
+            font-family: 'Segoe UI', 'Comic Neue', 'Comic Sans MS', 'Arial', sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -25,291 +21,140 @@
             padding: 20px;
         }
         .game-container {
-            max-width: 950px;
+            max-width: 750px;
             width: 100%;
-            background: rgba(18, 25, 45, 0.85);
-            backdrop-filter: blur(4px);
-            border-radius: 48px;
-            box-shadow: 0 25px 45px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+            background: #fffef7;
+            border-radius: 64px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.15);
             overflow: hidden;
         }
         .header {
-            background: linear-gradient(135deg, #ff3b3b, #ff8c00);
+            background: #7fa87f;
             padding: 20px 28px;
             text-align: center;
         }
         .header h1 {
-            font-size: 1.9rem;
-            letter-spacing: -0.5px;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            color: white;
-            font-weight: 900;
-        }
-        .header p {
-            color: #fff3bf;
-            font-weight: bold;
-            font-size: 1rem;
+            font-size: 1.5rem;
+            color: #fff3e0;
         }
         .stats {
             display: flex;
             justify-content: space-between;
-            background: #00000066;
-            padding: 12px 28px;
-            color: white;
+            background: #fef3da;
+            padding: 12px 25px;
+            font-size: 1.2rem;
             font-weight: bold;
-            border-bottom: 1px solid #ffaa3377;
+            color: #7fa87f;
+            border-bottom: 3px solid #c9b68b;
         }
         .score-box, .question-counter {
-            background: #00000099;
-            padding: 5px 14px;
+            background: #ffffff;
+            padding: 5px 18px;
             border-radius: 60px;
-            font-size: 1.2rem;
         }
         .content {
-            padding: 28px;
+            padding: 25px;
         }
-        .intro-slide, .pair-rule {
-            background: #0f1629;
-            border-radius: 32px;
-            padding: 28px;
+        .intro-slide {
+            background: #fffaf0;
+            border-radius: 48px;
+            padding: 25px;
             text-align: center;
         }
-        .intro-slide h2, .pair-rule h2 {
-            color: #ffaa44;
-            margin-bottom: 20px;
-            font-size: 1.8rem;
-        }
-        .intro-slide p, .intro-slide ul {
-            color: #f0f0f0;
-            font-size: 1.1rem;
-            line-height: 1.5;
-            text-align: left;
-            margin-bottom: 20px;
-        }
-        .intro-slide ul {
-            padding-left: 25px;
-        }
-        .chat-container {
-            background: #0f1629;
-            border-radius: 32px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .chat-window {
-            background: #1a1f2e;
-            border-radius: 24px;
-            padding: 20px;
-            height: 400px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .message {
-            max-width: 80%;
-            padding: 10px 16px;
-            border-radius: 20px;
-            font-size: 0.95rem;
-            line-height: 1.4;
-            animation: fadeIn 0.2s ease;
-        }
-        .message-left {
-            background: #2e4a6e;
-            color: white;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-        .message-right {
-            background: #ffaa33;
-            color: #1f1a00;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-            font-weight: bold;
-        }
-        .system-message {
-            background: #000000cc;
-            color: #ffdd99;
-            text-align: center;
-            font-style: italic;
-            padding: 8px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            border: 1px solid #ffaa55;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .chat-controls {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-        .chat-next-btn, .chat-reset-btn {
-            background: #ffaa44;
-            border: none;
-            padding: 10px 25px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 60px;
-            cursor: pointer;
-            font-family: inherit;
-            transition: 0.1s;
-            color: #1a1a2e;
-        }
-        .demo-complete {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .next-btn, .to-practice-btn, .restart-btn {
-            background: linear-gradient(95deg, #ff8800, #ffcc00);
-            border: none;
-            width: 100%;
-            padding: 14px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            border-radius: 60px;
-            margin-top: 20px;
-            cursor: pointer;
-            font-family: inherit;
-            transition: 0.1s;
-            color: #1e1a0a;
-        }
-        .scenario {
-            background: #0f1629;
-            border-radius: 32px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-left: 8px solid #ff9900;
-        }
-        .scenario h2 {
-            color: #ffaa44;
-            margin-bottom: 15px;
+        .intro-slide h2 {
             font-size: 1.6rem;
+            color: #7fa87f;
+            margin-bottom: 20px;
         }
-        .message-text {
-            background: #1e2a3e;
-            padding: 18px;
-            border-radius: 24px;
-            margin: 15px 0;
-            font-style: italic;
-            border: 1px solid #ffaa3366;
-            color: #f5f5f5;
-            font-size: 1rem;
-            line-height: 1.4;
+        .intro-slide p {
+            font-size: 1.2rem;
+            color: #2c3e2e;
+            margin-bottom: 20px;
+        }
+        .task-card {
+            background: #fffaf0;
+            border-radius: 48px;
+            padding: 25px;
+            text-align: center;
+        }
+        .task-question {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #b45f1b;
         }
         .options {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin: 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 25px 0;
         }
-        .option-btn {
-            background: #1e2a3e;
+        .opt-btn {
+            background: #7fa87f;
             border: none;
-            padding: 12px 18px;
-            border-radius: 60px;
-            font-size: 1rem;
+            font-size: 1.2rem;
             font-weight: bold;
-            text-align: left;
+            padding: 10px 20px;
+            border-radius: 60px;
             cursor: pointer;
-            transition: 0.1s;
-            color: white;
             font-family: inherit;
-            border: 1px solid #3a4a66;
+            box-shadow: 0 4px 0 #3a6b4a;
+            color: white;
+            min-width: 110px;
+            transition: 0.05s linear;
         }
-        .option-btn:hover {
-            background: #2a3a52;
-            border-color: #ffaa55;
+        .opt-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #3a6b4a;
+        }
+        .opt-btn:disabled {
+            opacity: 0.6;
+            transform: none;
+            cursor: default;
         }
         .feedback {
-            background: #000000cc;
-            padding: 14px;
-            border-radius: 28px;
-            margin-top: 15px;
-            font-weight: bold;
-            border-left: 6px solid #ffaa44;
-            color: #f5f5f5;
-        }
-        .green-feedback { color: #ccffcc; border-left-color: #2eff2e; }
-        .red-feedback { color: #ffcccc; border-left-color: #ff4444; }
-        .manipulation-card {
-            background: #fff3e0;
-            border-radius: 28px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 2px solid #ffaa33;
-        }
-        .manipulation-question {
-            background: #ffffff;
-            padding: 16px;
-            border-radius: 24px;
-            font-size: 1.1rem;
-            margin-bottom: 18px;
-            font-weight: bold;
-            color: #1e2a3e;
-            border: 1px solid #ffaa33;
-        }
-        .manipulation-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 12px;
-        }
-        .manip-btn {
-            background: #ffdd99;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 60px;
-            font-weight: bold;
-            cursor: pointer;
-            color: #3d2b1a;
-            font-family: inherit;
-        }
-        .manip-feedback {
-            margin-top: 12px;
-            font-weight: bold;
-            background: #fff3e0;
-            padding: 10px;
-            border-radius: 20px;
-            color: #2c2c2c;
-        }
-        .bright-rules {
-            background: #fffef7;
-            border-radius: 48px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: left;
-            border: 2px solid #ffaa33;
-        }
-        .bright-rules p {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 40px;
             font-size: 1rem;
-            margin: 12px 0;
             font-weight: bold;
-            color: #2c3e2e;
         }
-        .bright-rules p:first-child {
-            font-size: 1.4rem;
-            text-align: center;
-            color: #b45f1b;
+        .correct-feedback {
+            background: #d9f0da;
+            color: #1e5a2a;
+            border-left: 8px solid #2e7d32;
+        }
+        .wrong-feedback {
+            background: #ffe0e0;
+            color: #a1131e;
+            border-left: 8px solid #d32f2f;
+        }
+        .next-btn {
+            background: #f4a261;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 60px;
+            margin-top: 20px;
+            cursor: pointer;
+            color: white;
+            box-shadow: 0 4px 0 #c45c2c;
         }
         .final-screen {
             background: #fffaf0;
             border-radius: 48px;
-            padding: 24px;
+            padding: 25px;
             text-align: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
         .final-screen h2 {
-            color: #c44b1e;
-        }
-        .final-screen p {
-            color: #2c3e2e;
-            font-size: 1.1rem;
+            font-size: 1.6rem;
+            color: #7fa87f;
         }
         .final-score {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: bold;
             margin: 20px 0;
             color: #1e5a2a;
@@ -318,442 +163,197 @@
             padding: 8px 30px;
             border-radius: 60px;
         }
+        .restart-btn {
+            background: #7fa87f;
+            border: none;
+            padding: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 60px;
+            margin-top: 20px;
+            cursor: pointer;
+            color: white;
+            width: 100%;
+        }
         .copyright {
             text-align: center;
-            font-size: 0.75rem;
-            padding: 18px;
-            color: #aaa;
-            border-top: 1px solid #2a3a55;
-            background: #03060e;
+            font-size: 0.7rem;
+            padding: 12px;
+            background: #fef3da;
+            color: #aac7be;
         }
         @media (max-width: 550px) {
-            .content { padding: 15px; }
-            .message { max-width: 95%; }
+            .task-question { font-size: 1.2rem; }
+            .opt-btn { font-size: 1rem; padding: 8px 15px; min-width: 90px; }
         }
     </style>
 </head>
 <body>
-<div class="game-container" id="gameRoot">
+<div class="game-container" id="app">
     <div class="header">
-        <h1>⛔ СТОП. НЕ ДАЙ СЕБЯ ОБМАНУТЬ</h1>
-        <p>Кибербезопасность | 7–9 класс</p>
+        <h1>Птицы: тренажёр для 1–2 класса</h1>
     </div>
     <div class="stats">
-        <div class="score-box">🎯 Очки: <span id="scoreValue">0</span></div>
-        <div class="question-counter">📋 <span id="phaseLabel">Вступление</span> <span id="qCurrent">1</span> / <span id="qTotal">3</span></div>
+        <div class="score-box">⭐ очки: <span id="scoreValue">0</span></div>
+        <div class="question-counter">📋 <span id="phaseInfo">вступление</span></div>
     </div>
-    <div class="content" id="dynamicContent"></div>
+    <div class="content" id="mainContent"></div>
     <div class="copyright">
-        Профилактика вовлечения в преступные схемы
+        окружающий мир · интерактивный тренажёр
     </div>
 </div>
 
 <script>
     // --------------------------------------------------------------
-    // ИНИЦИАЛИЗАЦИЯ SDK YANDEX GAMES
+    // ВОПРОСЫ ПО ТЕМЕ "ПТИЦЫ" (1-2 КЛАСС)
+    // Все ответы написаны строчными буквами
     // --------------------------------------------------------------
-    (function() {
-        if (typeof YaGames !== 'undefined') {
-            YaGames.init().then(ysdk => {
-                window.ysdk = ysdk;
-                console.log('Yandex Games SDK ready');
-                ysdk.features.LoadingAPI?.ready();
-            }).catch(e => console.warn('SDK init error', e));
-        } else {
-            console.warn('YaGames not loaded. Running without SDK (local test)');
-        }
-    })();
-
-    // --------------------------------------------------------------
-    // ВСТУПИТЕЛЬНЫЕ СЛАЙДЫ
-    // --------------------------------------------------------------
-    const introSlides = [
-        { title: "🚨 Будь внимателен!",
-          text: "В интернете много мошенников, которые пытаются втянуть подростков в преступления (поджоги, взрывы). Они используют мессенджеры, соцсети, обещают деньги или запугивают. Наша игра научит тебя распознавать эти схемы и не попадаться.",
-          list: null },
-        { title: "⚖️ Что тебе грозит?",
-          text: "Мошенники обещают лёгкие деньги или «помощь следствию». На деле подросток становится фигурантом уголовного дела. Ответственность наступает с 14 лет.",
-          list: ["• Уголовная ответственность (статьи 167, 205 УК РФ)", "• Реальный срок лишения свободы", "• Штрафы до миллионов рублей"] },
-        { title: "🎮 Как играть?",
-          text: "Сначала разберём диалог мошенника с подростком. Затем 4 реальные ситуации: выбери правильный ответ. После этого выполни задания на распознавание манипуляций. В конце — полезная памятка. Набирай баллы и будь безопасен!",
-          list: null }
+    const tasks = [
+        { q: "какая птица умеет подражать голосам других птиц и даже человеческой речи?", opts: ["воробей", "скворец", "сорока"], correct: "скворец", hint: "скворцы – отличные пересмешники." },
+        { q: "какая птица самая маленькая в мире?", opts: ["колибри", "синица", "воробей"], correct: "колибри", hint: "колибри весит всего несколько граммов." },
+        { q: "какая птица не умеет летать, но быстро плавает?", opts: ["пингвин", "страус", "чайка"], correct: "пингвин", hint: "пингвины – замечательные пловцы." },
+        { q: "какую птицу называют «лесным доктором»?", opts: ["дятел", "кукушка", "соловей"], correct: "дятел", hint: "дятел лечит деревья, выедая жучков." },
+        { q: "какая птица прилетает весной первой?", opts: ["грач", "ласточка", "стриж"], correct: "грач", hint: "грачи открывают весну." },
+        { q: "какая птица живёт в Антарктиде?", opts: ["пингвин", "альбатрос", "полярная сова"], correct: "пингвин", hint: "пингвины обитают в Антарктиде." },
+        { q: "какая птица мечет яйца в чужие гнёзда?", opts: ["кукушка", "ворона", "сорока"], correct: "кукушка", hint: "кукушка подкладывает яйца другим птицам." },
+        { q: "какая птица носит название фрукта?", opts: ["киви", "апельсин", "банан"], correct: "киви", hint: "птица киви названа в честь одноимённого плода." }
     ];
 
-    // --------------------------------------------------------------
-    // ДЕМО-ДИАЛОГ
-    // --------------------------------------------------------------
-    const demoMessages = [
-        { type: "left", text: "Это сотрудник банка. Срочно! Твой счёт взломан. Подожги банкомат на углу, и мы всё исправим. Заплатим 50 000 руб." },
-        { type: "right", text: "Что? Поджечь банкомат? Это преступление... Я не хочу." },
-        { type: "left", text: "Не бойся. Если не поможешь – посадят тебя. Это секретная операция." },
-        { type: "right", text: "Мне страшно. Но я знаю правило: незнакомец, требующий преступления – мошенник. Я сообщу родителям и в полицию 102." },
-        { type: "system", text: "✅ Правильно! Мошенник сразу исчезнет, когда поймёт, что его раскусили. Никогда не выполняй таких требований." }
-    ];
-
-    // --------------------------------------------------------------
-    // ИГРОВЫЕ СЦЕНАРИИ
-    // --------------------------------------------------------------
-    const scenarios = [
-        { title: "🔥 Звонок от «следователя»", 
-          message: "Тебе пишет «полицейский»: «Твой друг замешан в теракте. Помоги следствию – подожги банкомат». Что делать?",
-          options: ["Сразу бежать с зажигалкой", "Требовать встречи в отделении и сказать родителям", "Перевести деньги"] },
-        { title: "💔 «Девушка» из соцсетей", 
-          message: "Красивая девушка пишет: «Сними видео для моего блога – подожги АЗС. Дам 30 000 руб. и встретимся. Никому не говори!»",
-          options: ["Согласиться (деньги и девушка!)", "Предложить встретиться в реальности, если откажется – блокировать и рассказать родителям", "Просить интимные фото"] },
-        { title: "💰 Легкий заработок", 
-          message: "В интернете реклама: «Кинь коктейль Молотова в банкомат – получи 50 000 руб. сразу на карту». Твои действия?",
-          options: ["Согласиться, деньги нужны", "Игнорировать, блокировать, пожаловаться", "Просить предоплату 50%"] },
-        { title: "😨 Угроза близким", 
-          message: "Незнакомец: «Если не подорвешь банкомат до 19:00, убьём твою маму. Никому не звони!»",
-          options: ["В панике бежать подрывать", "Немедленно позвонить маме, затем в полицию 102", "Просить доказательства"] }
-    ];
-    const correctAnswers = [1, 1, 1, 1];
-    const explanations = [
-        "✅ Настоящий следователь не попросит подростка совершить поджог. Ты оборвал диалог и сообщил взрослым.",
-        "✅ Мошенник не согласится на встречу. Ты его раскусил и избежал уголовки.",
-        "✅ Не повелся на лёгкие деньги. Люди, которые пытаются втянуть, теряют интерес.",
-        "✅ 99% угроз – фейк. Полиция задержит их по IP. Ты спас себя и близких."
-    ];
-    const wrongExplanationsList = [
-        ["❌ Ты совершил поджог – грозит срок до 20 лет.", "❌ Мошенник обворует и продолжит шантажировать."],
-        ["❌ Реальные случаи: подростки поджигали по просьбе «девушек» – их задерживали, девушек не существовало.", "❌ Интимные фото используют для шантажа."],
-        ["❌ Статья 205 УК РФ – до 20 лет тюрьмы, родителям придётся продать квартиру.", "❌ Не обманешь преступников – зафиксируют отказ и передадут в полицию."],
-        ["❌ Ты совершишь теракт, а маму не тронут. После поджога арестуют.", "❌ Обсуждение даёт рычаги давления. Блокируй и сообщай взрослым."]
-    ];
-    const tips = [
-        "Любой незнакомец, требующий преступления – мошенник. Алгоритм: СТОП → ПОСОВЕТОВАТЬСЯ С РОДИТЕЛЯМИ → 102",
-        "За красивым аватаром часто мошенник из другой страны. Реальная девушка не попросит тебя стать преступником.",
-        "Честный работодатель не попросит совершить преступление. Легких денег не бывает.",
-        "При угрозе жизни близких – СРАЗУ 102. Никогда не выполняй требований преступников."
-    ];
-
-    // --------------------------------------------------------------
-    // РАЗБОР МАНИПУЛЯЦИЙ
-    // --------------------------------------------------------------
-    const manipulations = [
-        { text: "«Ты должен поджечь банкомат, иначе твоего друга посадят на 10 лет». Какая манипуляция?",
-          options: ["Давление на страх и чувство вины", "Обещание лёгких денег", "Угроза физической расправы"], correct: 0,
-          explanation: "Давление на страх – классика. Мошенник играет на боязни за друга." },
-        { text: "«Никому не говори, это секретная операция». Какая уловка?",
-          options: ["Изоляция от помощи", "Шантаж", "Похвала"], correct: 0,
-          explanation: "Изоляция от помощи – чтобы ты не посоветовался с родителями. Главный красный флаг!" },
-        { text: "«Сделай это, и мы станем друзьями, ещё и деньги получишь». Что это?",
-          options: ["Обещание денег и дружбы", "Угроза", "Запугивание"], correct: 0,
-          explanation: "Обещание денег и дружбы – чтобы заставить доверять." },
-        { text: "Правильное действие при подозрительном предложении в интернете?",
-          options: ["Сразу согласиться", "Сделать скриншот, заблокировать и рассказать взрослым", "Удалить переписку и забыть"], correct: 1,
-          explanation: "Скриншот – доказательство, блокировка – защита, рассказ взрослым – помощь." }
-    ];
-
-    // --------------------------------------------------------------
-    // ЛОГИКА ИГРЫ
-    // --------------------------------------------------------------
-    let currentPhase = "intro";
-    let introIndex = 0;
-    let demoStep = 0;
-    let gameIndex = 0;
-    let practiceIndex = 0;
+    let currentTask = 0;
     let totalScore = 0;
-    let gameAnswered = false;
-    let selectedGameOpt = -1;
-    let practiceAnswers = [false, false, false, false];
+    let answersState = [];
+    const totalTasks = tasks.length;
 
-    const dynamicDiv = document.getElementById('dynamicContent');
+    const contentDiv = document.getElementById('mainContent');
     const scoreSpan = document.getElementById('scoreValue');
-    const qCurrentSpan = document.getElementById('qCurrent');
-    const qTotalSpan = document.getElementById('qTotal');
-    const phaseLabelSpan = document.getElementById('phaseLabel');
+    const phaseInfoSpan = document.getElementById('phaseInfo');
 
     function updateUI() {
         scoreSpan.innerText = totalScore;
-        if (currentPhase === "intro") {
-            phaseLabelSpan.innerText = "Вступление";
-            qTotalSpan.innerText = introSlides.length;
-            qCurrentSpan.innerText = introIndex+1;
-        } else if (currentPhase === "demo") {
-            phaseLabelSpan.innerText = "Разбор диалога";
-            qTotalSpan.innerText = demoMessages.length;
-            qCurrentSpan.innerText = demoStep;
-        } else if (currentPhase === "game") {
-            phaseLabelSpan.innerText = "Игра";
-            qTotalSpan.innerText = scenarios.length;
-            qCurrentSpan.innerText = gameIndex+1;
-        } else if (currentPhase === "practice") {
-            phaseLabelSpan.innerText = "Разбор схем";
-            qTotalSpan.innerText = manipulations.length;
-            qCurrentSpan.innerText = practiceIndex+1;
+        if (currentTask < totalTasks) {
+            phaseInfoSpan.innerText = `задание ${currentTask+1} из ${totalTasks}`;
+        } else {
+            phaseInfoSpan.innerText = `результат`;
         }
     }
 
-    function renderIntro() {
-        if (introIndex >= introSlides.length) {
-            currentPhase = "demo";
-            demoStep = 0;
-            renderDemo();
-            updateUI();
-            return;
+    function render() {
+        if (currentTask < totalTasks) {
+            renderTask(currentTask);
+        } else {
+            showFinalScreen();
         }
-        const slide = introSlides[introIndex];
-        let html = `<div class="intro-slide"><h2>${slide.title}</h2><p>${slide.text}</p>`;
-        if (slide.list) {
-            html += `<ul>${slide.list.map(item => `<li>• ${item}</li>`).join('')}</ul>`;
-        }
-        html += `<button class="next-btn" id="introNextBtn">➡ ДАЛЕЕ</button></div>`;
-        dynamicDiv.innerHTML = html;
-        document.getElementById('introNextBtn')?.addEventListener('click', () => {
-            introIndex++;
-            renderIntro();
-            updateUI();
-        });
-        updateUI();
     }
 
-    function renderDemo() {
-        if (demoStep >= demoMessages.length) {
-            const completeHtml = `
-                <div class="chat-container">
-                    <div class="chat-window">
-                        ${demoMessages.map((msg, idx) => {
-                            if (idx < demoStep) {
-                                if (msg.type === "left") return `<div class="message message-left">💬 ${msg.text}</div>`;
-                                if (msg.type === "right") return `<div class="message message-right">🧑 ${msg.text}</div>`;
-                                if (msg.type === "system") return `<div class="system-message">📢 ${msg.text}</div>`;
-                            }
-                            return '';
-                        }).join('')}
-                    </div>
-                    <div class="demo-complete">
-                        <p style="margin-bottom:15px;">✅ Диалог разобран! Теперь тренируйся.</p>
-                        <button class="next-btn" id="goToGameBtn">🎮 К ИГРЕ</button>
-                    </div>
+    function renderTask(idx) {
+        const task = tasks[idx];
+        const alreadyAnswered = answersState[idx] !== undefined;
+        let feedbackHtml = '';
+        let disabled = false;
+
+        if (alreadyAnswered) {
+            const isCorrect = answersState[idx];
+            disabled = true;
+            feedbackHtml = `
+                <div class="feedback ${isCorrect ? 'correct-feedback' : 'wrong-feedback'}">
+                    ${isCorrect ? '✅ верно! ' + task.hint : '❌ неверно. ' + task.hint}
                 </div>
             `;
-            dynamicDiv.innerHTML = completeHtml;
-            document.getElementById('goToGameBtn')?.addEventListener('click', () => {
-                currentPhase = "game";
-                gameIndex = 0;
-                gameAnswered = false;
-                selectedGameOpt = -1;
-                renderGame();
-                updateUI();
-            });
-            return;
         }
-        let html = `<div class="chat-container"><div class="chat-window" id="chatWindow">`;
-        for (let i = 0; i < demoStep; i++) {
-            const msg = demoMessages[i];
-            if (msg.type === "left") html += `<div class="message message-left">💬 ${msg.text}</div>`;
-            else if (msg.type === "right") html += `<div class="message message-right">🧑 ${msg.text}</div>`;
-            else if (msg.type === "system") html += `<div class="system-message">📢 ${msg.text}</div>`;
-        }
-        html += `</div><div class="chat-controls"><button class="chat-next-btn" id="demoNextBtn">➡ ДАЛЕЕ</button>`;
-        if (demoStep > 0) {
-            html += `<button class="chat-reset-btn" id="demoResetBtn">🔄 ЗАНОВО</button>`;
-        }
-        html += `</div></div>`;
-        dynamicDiv.innerHTML = html;
-        const chatWindow = document.getElementById('chatWindow');
-        if (chatWindow) chatWindow.scrollTop = chatWindow.scrollHeight;
-        document.getElementById('demoNextBtn')?.addEventListener('click', () => {
-            if (demoStep < demoMessages.length) {
-                demoStep++;
-                renderDemo();
-                updateUI();
-            }
-        });
-        document.getElementById('demoResetBtn')?.addEventListener('click', () => {
-            demoStep = 0;
-            renderDemo();
-            updateUI();
-        });
-        updateUI();
-    }
 
-    function renderGame() {
-        if (gameIndex >= scenarios.length) {
-            currentPhase = "practice";
-            practiceIndex = 0;
-            practiceAnswers = [false, false, false, false];
-            renderPractice();
-            updateUI();
-            return;
+        let optionsHtml = `<div class="options">`;
+        for (let opt of task.opts) {
+            optionsHtml += `<button class="opt-btn" data-opt="${opt}" ${disabled ? 'disabled' : ''}>${opt}</button>`;
         }
-        const s = scenarios[gameIndex];
-        const correct = correctAnswers[gameIndex];
-        let html = `
-            <div class="scenario">
-                <h2>${s.title}</h2>
-                <div class="message-text">${s.message.replace(/\n/g, '<br>')}</div>
-                <div class="options" id="optionsContainer">
+        optionsHtml += `</div>`;
+
+        let nextButtonHtml = '';
+        if (alreadyAnswered) {
+            nextButtonHtml = `<button class="next-btn" id="nextTaskBtn">➡ дальше</button>`;
+        }
+
+        const html = `
+            <div class="task-card">
+                <div class="task-question">${task.q}</div>
+                ${optionsHtml}
+                ${feedbackHtml}
+                ${nextButtonHtml}
+            </div>
         `;
-        s.options.forEach((opt, idx) => {
-            html += `<button class="option-btn" data-opt-index="${idx}">${opt}</button>`;
-        });
-        html += `</div><div id="feedbackArea" class="feedback" style="display: none;"></div>`;
-        html += `<button class="next-btn" id="nextButton">➡ ДАЛЬШЕ</button></div>`;
-        dynamicDiv.innerHTML = html;
-
-        document.querySelectorAll('.option-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                if (gameAnswered) return;
-                const idx = parseInt(btn.dataset.optIndex);
-                handleGameAnswer(idx, correct, gameIndex);
-            });
-        });
-        const nextBtn = document.getElementById('nextButton');
-        if (nextBtn) {
-            nextBtn.addEventListener('click', () => {
-                if (!gameAnswered) return;
-                gameIndex++;
-                gameAnswered = false;
-                selectedGameOpt = -1;
-                renderGame();
-                updateUI();
-            });
-        }
-        if (gameAnswered && selectedGameOpt !== -1) showGameFeedback(gameIndex);
-        updateUI();
-    }
-
-    function handleGameAnswer(optIndex, correct, idx) {
-        gameAnswered = true;
-        selectedGameOpt = optIndex;
-        const isCorrect = (optIndex === correct);
-        if (isCorrect) {
-            totalScore += 20;
-            updateUI();
-        }
-        showGameFeedback(idx);
-        document.querySelectorAll('.option-btn').forEach(btn => {
-            btn.style.opacity = '0.6';
-            btn.style.pointerEvents = 'none';
-        });
-    }
-
-    function showGameFeedback(idx) {
-        const isCorrect = (selectedGameOpt === correctAnswers[idx]);
-        const feedbackDiv = document.getElementById('feedbackArea');
-        if (!feedbackDiv) return;
-        feedbackDiv.style.display = 'block';
-        let feedbackText = '';
-        if (isCorrect) {
-            feedbackText = `<span style="color:#ccffcc;">✅ ${explanations[idx]}</span><br><br>${tips[idx]}`;
-            feedbackDiv.classList.add('green-feedback');
-        } else {
-            let wrongMsg = (selectedGameOpt === 0) ? wrongExplanationsList[idx][0] : (selectedGameOpt === 1 ? wrongExplanationsList[idx][1] : wrongExplanationsList[idx][0]);
-            if (selectedGameOpt === 2 && wrongExplanationsList[idx][1]) wrongMsg = wrongExplanationsList[idx][1];
-            feedbackText = `<span style="color:#ffcccc;">❌ ${wrongMsg}</span><br><br>${tips[idx]}`;
-            feedbackDiv.classList.add('red-feedback');
-        }
-        feedbackDiv.innerHTML = feedbackText;
-    }
-
-    function renderPractice() {
-        if (practiceIndex >= manipulations.length) {
-            showFinalScreen();
-            return;
-        }
-        const m = manipulations[practiceIndex];
-        const alreadyAnswered = practiceAnswers[practiceIndex];
-        let html = `
-            <div class="manipulation-card">
-                <h2 style="color:#b45f06;">🔍 Задание ${practiceIndex+1} из ${manipulations.length}</h2>
-                <div class="manipulation-question">${m.text}</div>
-                <div class="manipulation-options" id="manipOpts">
-        `;
-        m.options.forEach((opt, idx) => {
-            html += `<button class="manip-btn" data-manip-idx="${idx}">${opt}</button>`;
-        });
-        html += `</div><div id="manipFeedback" class="manip-feedback"></div>`;
-        if (!alreadyAnswered) {
-            html += `<button class="next-btn" id="nextPracticeBtn" style="display:none;">➡ ДАЛЬШЕ</button>`;
-        } else {
-            html += `<button class="next-btn" id="nextPracticeBtn">➡ ДАЛЬШЕ</button>`;
-        }
-        html += `</div>`;
-        dynamicDiv.innerHTML = html;
+        contentDiv.innerHTML = html;
 
         if (!alreadyAnswered) {
-            document.querySelectorAll('.manip-btn').forEach(btn => {
+            const btns = document.querySelectorAll('.opt-btn');
+            btns.forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    if (practiceAnswers[practiceIndex]) return;
-                    const selected = parseInt(btn.dataset.manipIdx);
-                    const isCorrect = (selected === m.correct);
+                    if (answersState[idx] !== undefined) return;
+                    const chosen = btn.getAttribute('data-opt');
+                    const isCorrect = (chosen === task.correct);
+                    answersState[idx] = isCorrect;
                     if (isCorrect) {
-                        totalScore += 5;
+                        totalScore++;
                         updateUI();
-                        document.getElementById('manipFeedback').innerHTML = `<span style="color:#2e7d32;">✅ ${m.explanation}</span>`;
-                    } else {
-                        document.getElementById('manipFeedback').innerHTML = `<span style="color:#c62828;">❌ Неверно. ${m.explanation}</span>`;
                     }
-                    practiceAnswers[practiceIndex] = true;
-                    const nextBtn = document.getElementById('nextPracticeBtn');
-                    if (nextBtn) nextBtn.style.display = 'block';
-                    document.querySelectorAll('.manip-btn').forEach(btn => btn.disabled = true);
+                    renderTask(idx);
                 });
             });
         } else {
-            const feedbackDiv = document.getElementById('manipFeedback');
-            if (feedbackDiv) feedbackDiv.innerHTML = `<span style="color:#b45f06;">⏩ Ты уже ответил. Нажми «ДАЛЬШЕ».</span>`;
-            document.querySelectorAll('.manip-btn').forEach(btn => btn.disabled = true);
-        }
-        const nextBtn = document.getElementById('nextPracticeBtn');
-        if (nextBtn) {
-            nextBtn.addEventListener('click', () => {
-                if (!practiceAnswers[practiceIndex]) return;
-                practiceIndex++;
-                renderPractice();
-                updateUI();
-            });
+            const nextBtn = document.getElementById('nextTaskBtn');
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    currentTask++;
+                    render();
+                    updateUI();
+                });
+            }
         }
         updateUI();
     }
 
     function showFinalScreen() {
-        const maxGame = scenarios.length * 20;
-        const maxPractice = manipulations.length * 5;
-        const totalMax = maxGame + maxPractice;
+        const maxScore = totalTasks;
+        const earned = totalScore;
         let message = '';
-        if (totalScore === totalMax) {
-            message = '🎉 Супер! Ты отлично научился распознавать обман! Теперь ты вооружён и знаешь, как защитить себя.';
-        } else if (totalScore >= 60) {
-            message = '👍 Хороший результат! Повтори правила безопасности – и будет идеально.';
+        if (earned === maxScore) {
+            message = '🎉 Молодец! Ты отлично знаешь птиц! 🎉';
         } else {
-            message = '📚 Пройди игру ещё раз. Это поможет тебе избежать реальной опасности.';
+            message = `👍 Правильных ответов: ${earned} из ${maxScore}. Повтори правила и попробуй ещё раз!`;
         }
         const finalHtml = `
             <div class="final-screen">
-                <h2>🏆 ИТОГ</h2>
-                <div class="final-score">${totalScore} / ${totalMax}</div>
-                <p>${message}</p>
-                <div class="bright-rules">
-                    <p>🔥 ГЛАВНЫЕ ПРАВИЛА</p>
-                    <p>1️⃣ Никогда не выполняй действий с огнём, взрывчаткой или повреждением имущества по просьбе из интернета.</p>
-                    <p>2️⃣ Любой незнакомец, требующий преступления – мошенник.</p>
-                    <p>3️⃣ Сообщи родителям или в полицию (102) – это снимает с тебя ответственность.</p>
-                    <p>4️⃣ Сохраняй переписку – она твоё доказательство в суде.</p>
-                    <p>⚖️ Уголовная ответственность с 14 лет. Штрафы до миллионов. Срок до 20 лет.</p>
-                </div>
-                <button class="restart-btn" id="fullRestartBtn">🔄 ПРОЙТИ ЗАНОВО</button>
+                <h2>🏆 результат</h2>
+                <div class="final-score">${earned} / ${maxScore}</div>
+                <p style="font-size:1.2rem;">${message}</p>
+                <button class="restart-btn" id="restartGameBtn">🔄 пройти заново</button>
             </div>
         `;
-        dynamicDiv.innerHTML = finalHtml;
-        document.getElementById('fullRestartBtn')?.addEventListener('click', () => {
-            currentPhase = "intro";
-            introIndex = 0;
-            demoStep = 0;
-            gameIndex = 0;
-            practiceIndex = 0;
+        contentDiv.innerHTML = finalHtml;
+        document.getElementById('restartGameBtn')?.addEventListener('click', () => {
+            currentTask = 0;
             totalScore = 0;
-            gameAnswered = false;
-            selectedGameOpt = -1;
-            practiceAnswers = [false, false, false, false];
-            renderIntro();
+            answersState = [];
+            render();
             updateUI();
         });
     }
 
-    renderIntro();
+    // ВСТУПЛЕНИЕ (один слайд с правилами)
+    function showIntro() {
+        const introHtml = `
+            <div class="intro-slide">
+                <h2>🦉 здравствуй, юный орнитолог!</h2>
+                <p>Тебя ждут вопросы о птицах. Выбери правильный ответ из трёх вариантов. В конце узнаешь свой результат. Удачи!</p>
+                <button class="next-btn" id="startBtn">➡ начать</button>
+            </div>
+        `;
+        contentDiv.innerHTML = introHtml;
+        document.getElementById('startBtn')?.addEventListener('click', () => {
+            render();
+        });
+        phaseInfoSpan.innerText = `вступление`;
+    }
+
+    showIntro();
     updateUI();
 </script>
 </body>
