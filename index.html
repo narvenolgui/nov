@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="description" content="Игра «Стоп! Не дай себя обмануть» — тренажёр по профилактике вовлечения подростков в преступные схемы. Полная поддержка двух языков, автоопределение языка, отсутствие прокрутки.">
+    <meta name="description" content="Игра «Стоп! Не дай себя обмануть» — тренажёр по профилактике вовлечения подростков в преступные схемы. Полная поддержка двух языков, автоопределение языка, отсутствие прокрутки, пошаговый диалог с автоскроллом.">
     <title>Стоп! Не дай себя обмануть</title>
     <!-- Яндекс Игры SDK -->
     <script src="https://sdk.yandex.net/games/1.0/sdk.js"></script>
@@ -44,14 +44,10 @@
             flex-direction: column;
             scrollbar-width: none;
             -ms-overflow-style: none;
-            /* Дополнительная блокировка прокрутки через JS */
+            touch-action: pan-x; /* дополнительная блокировка вертикального скролла внутри контейнера */
         }
         .game-container::-webkit-scrollbar {
             display: none;
-        }
-        /* Запрещаем прокрутку жестами на touch-устройствах (доп. страховка) */
-        .game-container {
-            touch-action: pan-x; /* только горизонтальная прокрутка, вертикальная блокируется */
         }
         .header {
             background: linear-gradient(135deg, #ff3b3b, #ff8c00);
@@ -114,19 +110,20 @@
             background: #1a1f2e;
             border-radius: 24px;
             padding: 16px;
-            height: 320px;
+            height: 400px; /* увеличил высоту */
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 16px;
         }
         .message {
-            max-width: 80%;
-            padding: 10px 14px;
+            max-width: 85%;
+            padding: 10px 16px;
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             line-height: 1.4;
+            word-wrap: break-word;
         }
         .message-left {
             background: #2e4a6e;
@@ -157,8 +154,8 @@
         .chat-next-btn {
             background: #ffaa44;
             border: none;
-            padding: 8px 20px;
-            font-size: 1rem;
+            padding: 10px 24px;
+            font-size: 1.1rem;
             font-weight: bold;
             border-radius: 60px;
             cursor: pointer;
@@ -271,6 +268,7 @@
         @media (max-width: 550px) {
             .header h1 { font-size: 1.3rem; }
             .message-text { font-size: 0.85rem; }
+            .chat-window { height: 320px; }
         }
     </style>
 </head>
@@ -475,6 +473,10 @@
         gameState.practiceChoicesShuffled = mans.map(m => shuffleWithMapping(m.opts, m.correctIdx));
     }
 
+    function autoScrollChat(container) {
+        if (container) container.scrollTop = container.scrollHeight;
+    }
+
     function render() {
         if (gameState.phase === "intro") renderIntro();
         else if (gameState.phase === "demo") renderDemo();
@@ -510,16 +512,25 @@
             render();
             return;
         }
-        let chatHtml = `<div class="intro-slide"><h2>📱 Разбор диалога</h2><div class="chat-window">`;
+        // Строим все сообщения до текущего step
+        let messagesHtml = '';
         for (let i = 0; i <= gameState.demoStep; i++) {
             let msg = demoArr[i];
-            if (msg.type === "left") chatHtml += `<div class="message message-left">${msg.text}</div>`;
-            else if (msg.type === "right") chatHtml += `<div class="message message-right">${msg.text}</div>`;
-            else chatHtml += `<div class="system-message">${msg.text}</div>`;
+            if (msg.type === "left") messagesHtml += `<div class="message message-left">${msg.text}</div>`;
+            else if (msg.type === "right") messagesHtml += `<div class="message message-right">${msg.text}</div>`;
+            else messagesHtml += `<div class="system-message">${msg.text}</div>`;
         }
-        chatHtml += `</div><div class="chat-controls"><button class="chat-next-btn" id="demoNext">${langData[currentLang].demoNext}</button></div></div>`;
+        let chatHtml = `<div class="intro-slide"><h2>📱 Разбор диалога</h2>
+            <div class="chat-window" id="demoChatWindow">${messagesHtml}</div>
+            <div class="chat-controls"><button class="chat-next-btn" id="demoNext">${langData[currentLang].demoNext}</button></div>
+        </div>`;
         contentDiv.innerHTML = chatHtml;
-        document.getElementById("demoNext")?.addEventListener("click", () => { gameState.demoStep++; render(); });
+        const chatContainer = document.getElementById("demoChatWindow");
+        if (chatContainer) autoScrollChat(chatContainer);
+        document.getElementById("demoNext")?.addEventListener("click", () => {
+            gameState.demoStep++;
+            render();
+        });
     }
 
     function renderScenario() {
@@ -625,11 +636,21 @@
     }
 
     function blockTouchMove(e) {
-        e.preventDefault();
+        // Запрещаем все движения, которые могут вызвать прокрутку страницы
+        if (e.target.closest('.chat-window')) {
+            // внутри окна чата разрешаем прокрутку (она нужна)
+            if (e.target.closest('.chat-window') && e.target.closest('.chat-window') === e.currentTarget.querySelector('.chat-window')) {
+                // оставляем стандартное поведение для прокрутки чата
+                return;
+            }
+        }
+        // В остальных местах – блокируем любые движения, которые могут вызвать скролл страницы
+        if (!e.target.closest('.chat-window')) {
+            e.preventDefault();
+        }
     }
 
     function initSDK() {
-        // Дополнительная блокировка прокрутки на всём контейнере
         const container = document.getElementById("gameRoot");
         container.addEventListener("touchmove", blockTouchMove, { passive: false });
         document.body.addEventListener("touchmove", blockTouchMove, { passive: false });
