@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="description" content="Игра «Стоп! Не дай себя обмануть» — тренажёр по профилактике вовлечения подростков в преступные схемы. Полная поддержка двух языков, автоопределение языка, отсутствие прокрутки, пошаговый диалог с автоскроллом.">
+    <meta name="description" content="Игра «Стоп! Не дай себя обмануть» — тренажёр по профилактике вовлечения подростков в преступные схемы. Полная поддержка двух языков, автоопределение языка, отсутствие прокрутки, пошаговый диалог.">
     <title>Стоп! Не дай себя обмануть</title>
-    <!-- Яндекс Игры SDK -->
     <script src="https://sdk.yandex.net/games/1.0/sdk.js"></script>
     <style>
         * {
@@ -22,7 +21,7 @@
             position: fixed;
             background: linear-gradient(145deg, #0a0f1e 0%, #0c1222 100%);
             font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
-            touch-action: pan-x pan-y; /* запрет вертикального скролла */
+            touch-action: pan-x pan-y;
         }
         body {
             display: flex;
@@ -44,7 +43,6 @@
             flex-direction: column;
             scrollbar-width: none;
             -ms-overflow-style: none;
-            touch-action: pan-x; /* дополнительная блокировка вертикального скролла внутри контейнера */
         }
         .game-container::-webkit-scrollbar {
             display: none;
@@ -106,50 +104,51 @@
             color: #ddd;
             margin: 15px 0 15px 25px;
         }
-        .chat-window {
+        /* Cтили для пошагового диалога */
+        .demo-message-box {
             background: #1a1f2e;
-            border-radius: 24px;
-            padding: 16px;
-            height: 400px; /* увеличил высоту */
-            overflow-y: auto;
+            border-radius: 28px;
+            padding: 25px;
+            margin: 15px 0;
+            min-height: 200px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 16px;
+            justify-content: center;
         }
-        .message {
-            max-width: 85%;
-            padding: 10px 16px;
-            border-radius: 20px;
-            font-size: 0.95rem;
-            line-height: 1.4;
-            word-wrap: break-word;
+        .demo-message {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            padding: 20px;
+            border-radius: 28px;
+            text-align: left;
         }
-        .message-left {
+        .demo-message-left {
             background: #2e4a6e;
             color: white;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
+            border-bottom-left-radius: 8px;
         }
-        .message-right {
+        .demo-message-right {
             background: #ffaa33;
             color: #1f1a00;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 8px;
         }
-        .system-message {
+        .demo-message-system {
             background: #000000cc;
             color: #ffdd99;
             text-align: center;
-            padding: 8px;
-            border-radius: 20px;
+            border: 1px solid #ffaa55;
+        }
+        .demo-counter {
+            text-align: center;
+            margin-top: 10px;
+            color: #aaa;
             font-size: 0.85rem;
         }
         .chat-controls {
             display: flex;
             gap: 15px;
             justify-content: center;
-            margin-top: 10px;
+            margin-top: 20px;
         }
         .chat-next-btn {
             background: #ffaa44;
@@ -268,7 +267,7 @@
         @media (max-width: 550px) {
             .header h1 { font-size: 1.3rem; }
             .message-text { font-size: 0.85rem; }
-            .chat-window { height: 320px; }
+            .demo-message { font-size: 0.9rem; padding: 12px; }
         }
     </style>
 </head>
@@ -285,14 +284,14 @@
 </div>
 
 <script>
-    // ========== РАСШИРЕННАЯ БАЗА: 14 СЦЕНАРИЕВ + 16 МАНИПУЛЯЦИЙ = 30 ЗАДАНИЙ (длительность > 45 минут) ==========
+    // ========== РАСШИРЕННАЯ БАЗА: 14 СЦЕНАРИЕВ + 16 МАНИПУЛЯЦИЙ = 30 ЗАДАНИЙ ==========
     const langData = {
         ru: {
             gameTitle: "Стоп! Не дай себя обмануть",
             intro: [
                 { title: "🚨 Будь внимателен!", text: "В интернете много мошенников, которые пытаются втянуть подростков в преступления (поджоги, взрывы). Они используют мессенджеры, соцсети, обещают деньги или запугивают. Наша игра научит тебя распознавать эти схемы и не попадаться." },
                 { title: "⚖️ Что тебе грозит?", text: "Мошенники обещают лёгкие деньги или «помощь следствию». На деле подросток становится фигурантом уголовного дела. Ответственность с 14 лет.", list: ["Уголовная ответственность (ст. 167, 205 УК РФ)", "Реальный срок лишения свободы", "Штрафы до миллионов рублей"] },
-                { title: "🎮 Как играть?", text: "Сначала разберём диалог мошенника. Затем 14 ситуаций — выбери правильный ответ. После этого 16 заданий на распознавание манипуляций. В конце — памятка. Набирай баллы и будь безопасен!" }
+                { title: "🎮 Как играть?", text: "Сначала разберём диалог мошенника (каждое сообщение появляется отдельно). Затем 14 ситуаций — выбери правильный ответ. После этого 16 заданий на распознавание манипуляций. В конце — памятка. Набирай баллы и будь безопасен!" }
             ],
             demo: [
                 { type: "left", text: "Это сотрудник банка. Срочно! Твой счёт взломан. Подожги банкомат на углу, и мы всё исправим. Заплатим 50 000 руб." },
@@ -352,7 +351,7 @@
             intro: [
                 { title: "🚨 Be careful!", text: "Scammers online try to involve teens in crimes. Our game teaches you to recognize these schemes." },
                 { title: "⚖️ What's at stake?", text: "Easy money promises lead to criminal charges. Responsibility from age 14.", list: ["Criminal liability", "Prison sentence", "Large fines"] },
-                { title: "🎮 How to play?", text: "We analyze a dialogue. Then 14 situations – choose the right answer. Then 16 manipulation recognition tasks. Finally – a memo." }
+                { title: "🎮 How to play?", text: "We analyze a dialogue (each message appears separately). Then 14 situations – choose the right answer. Then 16 manipulation recognition tasks. Finally – a memo." }
             ],
             demo: [
                 { type: "left", text: "Bank employee: Your account is hacked. Set the ATM on fire, we'll pay 50,000 rubles." },
@@ -473,10 +472,6 @@
         gameState.practiceChoicesShuffled = mans.map(m => shuffleWithMapping(m.opts, m.correctIdx));
     }
 
-    function autoScrollChat(container) {
-        if (container) container.scrollTop = container.scrollHeight;
-    }
-
     function render() {
         if (gameState.phase === "intro") renderIntro();
         else if (gameState.phase === "demo") renderDemo();
@@ -502,6 +497,7 @@
         document.getElementById("introNext")?.addEventListener("click", () => { gameState.introIdx++; render(); });
     }
 
+    // ПОШАГОВЫЙ ДИАЛОГ: показываем ТОЛЬКО ТЕКУЩЕЕ сообщение, без накопления
     function renderDemo() {
         const demoArr = langData[currentLang].demo;
         if (gameState.demoStep >= demoArr.length) {
@@ -512,21 +508,25 @@
             render();
             return;
         }
-        // Строим все сообщения до текущего step
-        let messagesHtml = '';
-        for (let i = 0; i <= gameState.demoStep; i++) {
-            let msg = demoArr[i];
-            if (msg.type === "left") messagesHtml += `<div class="message message-left">${msg.text}</div>`;
-            else if (msg.type === "right") messagesHtml += `<div class="message message-right">${msg.text}</div>`;
-            else messagesHtml += `<div class="system-message">${msg.text}</div>`;
-        }
-        let chatHtml = `<div class="intro-slide"><h2>📱 Разбор диалога</h2>
-            <div class="chat-window" id="demoChatWindow">${messagesHtml}</div>
-            <div class="chat-controls"><button class="chat-next-btn" id="demoNext">${langData[currentLang].demoNext}</button></div>
+        const msg = demoArr[gameState.demoStep];
+        let msgClass = "";
+        if (msg.type === "left") msgClass = "demo-message-left";
+        else if (msg.type === "right") msgClass = "demo-message-right";
+        else msgClass = "demo-message-system";
+        
+        const total = demoArr.length;
+        const current = gameState.demoStep + 1;
+        let html = `<div class="intro-slide">
+            <h2>📱 Разбор диалога</h2>
+            <div class="demo-message-box">
+                <div class="demo-message ${msgClass}">${msg.text}</div>
+            </div>
+            <div class="demo-counter">${current} / ${total}</div>
+            <div class="chat-controls">
+                <button class="chat-next-btn" id="demoNext">${langData[currentLang].demoNext}</button>
+            </div>
         </div>`;
-        contentDiv.innerHTML = chatHtml;
-        const chatContainer = document.getElementById("demoChatWindow");
-        if (chatContainer) autoScrollChat(chatContainer);
+        contentDiv.innerHTML = html;
         document.getElementById("demoNext")?.addEventListener("click", () => {
             gameState.demoStep++;
             render();
@@ -635,26 +635,7 @@
         render();
     }
 
-    function blockTouchMove(e) {
-        // Запрещаем все движения, которые могут вызвать прокрутку страницы
-        if (e.target.closest('.chat-window')) {
-            // внутри окна чата разрешаем прокрутку (она нужна)
-            if (e.target.closest('.chat-window') && e.target.closest('.chat-window') === e.currentTarget.querySelector('.chat-window')) {
-                // оставляем стандартное поведение для прокрутки чата
-                return;
-            }
-        }
-        // В остальных местах – блокируем любые движения, которые могут вызвать скролл страницы
-        if (!e.target.closest('.chat-window')) {
-            e.preventDefault();
-        }
-    }
-
     function initSDK() {
-        const container = document.getElementById("gameRoot");
-        container.addEventListener("touchmove", blockTouchMove, { passive: false });
-        document.body.addEventListener("touchmove", blockTouchMove, { passive: false });
-
         if (typeof YaGames !== "undefined") {
             YaGames.init().then(ysdk => {
                 window.ysdk = ysdk;
