@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="description" content="Игра «Стоп! Не дай себя обмануть» — тренажёр по профилактике вовлечения подростков в преступные схемы через интернет. Распознавай манипуляции, защити себя. Поддержка двух языков, автоопределение языка.">
+    <meta name="description" content="Игра «Стоп! Не дай себя обмануть» — тренажёр по профилактике вовлечения подростков в преступные схемы через интернет. Распознавай манипуляции, защити себя. Поддержка двух языков, автоопределение языка, случайный порядок ответов.">
     <title>Стоп! Не дай себя обмануть</title>
     <!-- Яндекс Игры SDK -->
     <script src="https://sdk.yandex.net/games/1.0/sdk.js"></script>
@@ -22,7 +22,7 @@
             position: fixed;
             background: linear-gradient(145deg, #0a0f1e 0%, #0c1222 100%);
             font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
-            touch-action: pan-x pan-y; /* запрещаем вертикальный свайп-рефреш */
+            touch-action: pan-x pan-y;
         }
         body {
             display: flex;
@@ -52,6 +52,7 @@
             background: linear-gradient(135deg, #ff3b3b, #ff8c00);
             padding: 20px 28px;
             text-align: center;
+            flex-shrink: 0;
         }
         .header h1 {
             font-size: 1.8rem;
@@ -68,6 +69,7 @@
             color: white;
             font-weight: bold;
             border-bottom: 1px solid #ffaa3377;
+            flex-shrink: 0;
         }
         .score-box, .question-counter {
             background: #00000099;
@@ -203,6 +205,10 @@
             text-align: left;
             cursor: pointer;
             color: white;
+            transition: 0.05s linear;
+        }
+        .option-btn:active {
+            transform: scale(0.98);
         }
         .feedback {
             background: #000000cc;
@@ -271,7 +277,7 @@
         <h1 id="gameMainTitle">Стоп! Не дай себя обмануть</h1>
     </div>
     <div class="stats">
-        <div class="score-box">⭐ <span id="scoreValue">0</span> / <span id="maxScoreSpan">12</span></div>
+        <div class="score-box">⭐ <span id="scoreValue">0</span> / <span id="maxScoreSpan">14</span></div>
         <div class="question-counter">📋 <span id="phaseLabel"></span> <span id="qCurrent"></span> / <span id="qTotal"></span></div>
     </div>
     <div class="content" id="dynamicContent"></div>
@@ -279,7 +285,8 @@
 
 <script>
     // --------------------------------------------------------------
-    // 1. ПОЛНЫЙ ПЕРЕВОД (ru/en)
+    // 1. ПОЛНЫЙ ПЕРЕВОД (ru/en) — 4 сценария + 6 манипуляций = 10 заданий + диалог
+    //    Общая длительность > 10 минут
     // --------------------------------------------------------------
     const langData = {
         ru: {
@@ -287,7 +294,7 @@
             intro: [
                 { title: "🚨 Будь внимателен!", text: "В интернете много мошенников, которые пытаются втянуть подростков в преступления (поджоги, взрывы). Они используют мессенджеры, соцсети, обещают деньги или запугивают. Наша игра научит тебя распознавать эти схемы и не попадаться." },
                 { title: "⚖️ Что тебе грозит?", text: "Мошенники обещают лёгкие деньги или «помощь следствию». На деле подросток становится фигурантом уголовного дела. Ответственность с 14 лет.", list: ["Уголовная ответственность (ст. 167, 205 УК РФ)", "Реальный срок лишения свободы", "Штрафы до миллионов рублей"] },
-                { title: "🎮 Как играть?", text: "Сначала разберём диалог мошенника. Затем 4 реальные ситуации — выбери правильный ответ. После этого задания на распознавание манипуляций. В конце — полезная памятка. Набирай баллы и будь безопасен!" }
+                { title: "🎮 Как играть?", text: "Сначала разберём диалог мошенника. Затем 4 реальные ситуации — выбери правильный ответ. После этого 6 заданий на распознавание манипуляций. В конце — полезная памятка. Набирай баллы и будь безопасен!" }
             ],
             demo: [
                 { type: "left", text: "Это сотрудник банка. Срочно! Твой счёт взломан. Подожги банкомат на углу, и мы всё исправим. Заплатим 50 000 руб." },
@@ -297,16 +304,18 @@
                 { type: "system", text: "✅ Правильно! Мошенник сразу исчезнет, когда поймёт, что его раскусили. Никогда не выполняй таких требований." }
             ],
             scenarios: [
-                { title: "🔥 Звонок от «следователя»", msg: "Тебе пишет «полицейский»: «Твой друг замешан в теракте. Помоги следствию – подожги банкомат». Что делать?", opts: ["Сразу бежать с зажигалкой", "Требовать встречи в отделении и сказать родителям", "Перевести деньги"], correct: 1, explain: "✅ Настоящий следователь не попросит подростка совершить поджог. Ты оборвал диалог и сообщил взрослым.", wrongExpl: ["❌ Ты совершил поджог – грозит срок до 20 лет.", "❌ Мошенник обворует и продолжит шантажировать."] },
-                { title: "💔 «Девушка» из соцсетей", msg: "Красивая девушка пишет: «Сними видео для моего блога – подожги АЗС. Дам 30 000 руб. и встретимся. Никому не говори!»", opts: ["Согласиться (деньги и девушка!)", "Предложить встретиться в реальности, если откажется – блокировать и рассказать родителям", "Просить интимные фото"], correct: 1, explain: "✅ Мошенник не согласится на встречу. Ты его раскусил и избежал уголовки.", wrongExpl: ["❌ Реальные случаи: подростки поджигали по просьбе «девушек» – их задерживали.", "❌ Интимные фото используют для шантажа."] },
-                { title: "💰 Легкий заработок", msg: "В интернете реклама: «Кинь коктейль Молотова в банкомат – получи 50 000 руб. сразу на карту». Твои действия?", opts: ["Согласиться, деньги нужны", "Игнорировать, блокировать, пожаловаться", "Просить предоплату 50%"], correct: 1, explain: "✅ Не повелся на лёгкие деньги. Люди, которые пытаются втянуть, теряют интерес.", wrongExpl: ["❌ Статья 205 УК РФ – до 20 лет тюрьмы.", "❌ Не обманешь преступников – зафиксируют отказ."] },
-                { title: "😨 Угроза близким", msg: "Незнакомец: «Если не подорвешь банкомат до 19:00, убьём твою маму. Никому не звони!»", opts: ["В панике бежать подрывать", "Немедленно позвонить маме, затем в полицию 102", "Просить доказательства"], correct: 1, explain: "✅ 99% угроз – фейк. Полиция задержит их по IP. Ты спас себя и близких.", wrongExpl: ["❌ Ты совершишь теракт, а маму не тронут.", "❌ Обсуждение даёт рычаги давления. Блокируй и сообщай взрослым."] }
+                { title: "🔥 Звонок от «следователя»", msg: "Тебе пишет «полицейский»: «Твой друг замешан в теракте. Помоги следствию – подожги банкомат». Что делать?", opts: ["Сразу бежать с зажигалкой", "Требовать встречи в отделении и сказать родителям", "Перевести деньги"], correctIdx: 1, explain: "✅ Настоящий следователь не попросит подростка совершить поджог. Ты оборвал диалог и сообщил взрослым.", wrongExpl: ["❌ Ты совершил поджог – грозит срок до 20 лет.", "❌ Мошенник обворует и продолжит шантажировать."] },
+                { title: "💔 «Девушка» из соцсетей", msg: "Красивая девушка пишет: «Сними видео для моего блога – подожги АЗС. Дам 30 000 руб. и встретимся. Никому не говори!»", opts: ["Согласиться (деньги и девушка!)", "Предложить встретиться в реальности, если откажется – блокировать и рассказать родителям", "Просить интимные фото"], correctIdx: 1, explain: "✅ Мошенник не согласится на встречу. Ты его раскусил и избежал уголовки.", wrongExpl: ["❌ Реальные случаи: подростки поджигали по просьбе «девушек» – их задерживали.", "❌ Интимные фото используют для шантажа."] },
+                { title: "💰 Легкий заработок", msg: "В интернете реклама: «Кинь коктейль Молотова в банкомат – получи 50 000 руб. сразу на карту». Твои действия?", opts: ["Согласиться, деньги нужны", "Игнорировать, блокировать, пожаловаться", "Просить предоплату 50%"], correctIdx: 1, explain: "✅ Не повелся на лёгкие деньги. Люди, которые пытаются втянуть, теряют интерес.", wrongExpl: ["❌ Статья 205 УК РФ – до 20 лет тюрьмы.", "❌ Не обманешь преступников – зафиксируют отказ."] },
+                { title: "😨 Угроза близким", msg: "Незнакомец: «Если не подорвешь банкомат до 19:00, убьём твою маму. Никому не звони!»", opts: ["В панике бежать подрывать", "Немедленно позвонить маме, затем в полицию 102", "Просить доказательства"], correctIdx: 1, explain: "✅ 99% угроз – фейк. Полиция задержит их по IP. Ты спас себя и близких.", wrongExpl: ["❌ Ты совершишь теракт, а маму не тронут.", "❌ Обсуждение даёт рычаги давления. Блокируй и сообщай взрослым."] }
             ],
             manipulations: [
-                { q: "«Ты должен поджечь банкомат, иначе твоего друга посадят на 10 лет». Какая манипуляция?", opts: ["Давление на страх и чувство вины", "Обещание лёгких денег", "Угроза физической расправы"], correct: 0, exp: "Давление на страх – классика. Мошенник играет на боязни за друга." },
-                { q: "«Никому не говори, это секретная операция». Какая уловка?", opts: ["Изоляция от помощи", "Шантаж", "Похвала"], correct: 0, exp: "Изоляция от помощи – чтобы ты не посоветовался с родителями. Главный красный флаг!" },
-                { q: "«Сделай это, и мы станем друзьями, ещё и деньги получишь». Что это?", opts: ["Обещание денег и дружбы", "Угроза", "Запугивание"], correct: 0, exp: "Обещание денег и дружбы – чтобы заставить доверять." },
-                { q: "Правильное действие при подозрительном предложении в интернете?", opts: ["Сразу согласиться", "Сделать скриншот, заблокировать и рассказать взрослым", "Удалить переписку и забыть"], correct: 1, exp: "Скриншот – доказательство, блокировка – защита, рассказ взрослым – помощь." }
+                { q: "«Ты должен поджечь банкомат, иначе твоего друга посадят на 10 лет». Какая манипуляция?", opts: ["Давление на страх и чувство вины", "Обещание лёгких денег", "Угроза физической расправы"], correctIdx: 0, exp: "Давление на страх – классика. Мошенник играет на боязни за друга." },
+                { q: "«Никому не говори, это секретная операция». Какая уловка?", opts: ["Изоляция от помощи", "Шантаж", "Похвала"], correctIdx: 0, exp: "Изоляция от помощи – чтобы ты не посоветовался с родителями. Главный красный флаг!" },
+                { q: "«Сделай это, и мы станем друзьями, ещё и деньги получишь». Что это?", opts: ["Обещание денег и дружбы", "Угроза", "Запугивание"], correctIdx: 0, exp: "Обещание денег и дружбы – чтобы заставить доверять." },
+                { q: "Правильное действие при подозрительном предложении в интернете?", opts: ["Сразу согласиться", "Сделать скриншот, заблокировать и рассказать взрослым", "Удалить переписку и забыть"], correctIdx: 1, exp: "Скриншот – доказательство, блокировка – защита, рассказ взрослым – помощь." },
+                { q: "Если незнакомец в мессенджере просит перевести деньги за «освобождение друга из полиции», это...", opts: ["Реальная помощь", "Мошенничество и вымогательство", "Благотворительность"], correctIdx: 1, exp: "Мошенники используют фейковые истории, чтобы выманить деньги." },
+                { q: "Что делать, если тебе пришло сообщение от имени известного блогера с просьбой перейти по ссылке?", opts: ["Перейти и посмотреть", "Игнорировать, не переходить, проверить через официальный аккаунт", "Отправить ссылку друзьям"], correctIdx: 1, exp: "Фишинг. Никогда не переходи по подозрительным ссылкам." }
             ],
             finalPerfect: "🎉 Идеально! Ты ни разу не дал себя обмануть!",
             finalGood: "👍 Хорошо! Но будь внимательнее.",
@@ -314,7 +323,6 @@
             restartBtn: "🔄 Пройти заново",
             nextBtn: "➡ Дальше",
             demoNext: "Далее →",
-            startGame: "Начать игру",
             phaseIntro: "Вступление",
             phaseDemo: "Диалог",
             phaseGame: "Ситуация",
@@ -326,7 +334,7 @@
             intro: [
                 { title: "🚨 Be careful!", text: "There are many scammers online trying to involve teens in crimes (arson, explosions). They use messengers, promise money or threaten. Our game teaches you to recognize these schemes." },
                 { title: "⚖️ What's at stake?", text: "Scammers promise easy money or 'helping the investigation'. In reality, the teen becomes a criminal defendant. Responsibility from age 14.", list: ["Criminal liability (Art. 167, 205 of RF Criminal Code)", "Real prison sentence", "Fines up to millions of rubles"] },
-                { title: "🎮 How to play?", text: "First we analyze a scammer's dialogue. Then 4 real situations – choose the right answer. Then manipulation recognition tasks. Finally – a useful memo. Score points and stay safe!" }
+                { title: "🎮 How to play?", text: "First we analyze a scammer's dialogue. Then 4 real situations – choose the right answer. Then 6 manipulation recognition tasks. Finally – a useful memo. Score points and stay safe!" }
             ],
             demo: [
                 { type: "left", text: "This is a bank employee. Urgent! Your account is hacked. Set the ATM on fire on the corner, and we'll fix everything. We'll pay 50,000 rubles." },
@@ -336,16 +344,18 @@
                 { type: "system", text: "✅ Correct! The scammer will disappear once he realizes he's been exposed. Never comply with such demands." }
             ],
             scenarios: [
-                { title: "🔥 Call from 'investigator'", msg: "A 'policeman' writes: 'Your friend is involved in a terrorist attack. Help the investigation – set the ATM on fire.' What to do?", opts: ["Run with a lighter", "Demand a meeting at the police station and tell parents", "Transfer money"], correct: 1, explain: "✅ A real investigator wouldn't ask a teen to commit arson. You broke off the dialogue and told adults.", wrongExpl: ["❌ You committed arson – up to 20 years in prison.", "❌ The scammer will rob and continue blackmail."] },
-                { title: "💔 'Girl' from social media", msg: "A pretty girl writes: 'Make a video for my blog – set a gas station on fire. I'll give 30,000 rubles and we'll meet. Don't tell anyone!'", opts: ["Agree (money and a girl!)", "Offer a real meeting, if refused – block and tell parents", "Ask for intimate photos"], correct: 1, explain: "✅ The scammer won't agree to a meeting. You figured him out.", wrongExpl: ["❌ Real cases: teens set fires and were arrested.", "❌ Intimate photos are used for blackmail."] },
-                { title: "💰 Easy money", msg: "Online ad: 'Throw a Molotov cocktail at an ATM – get 50,000 rubles instantly on your card.' Your actions?", opts: ["Agree, I need money", "Ignore, block, report", "Ask for 50% prepayment"], correct: 1, explain: "✅ You didn't fall for easy money. Those trying to involve you lose interest.", wrongExpl: ["❌ Article 205 of the Criminal Code – up to 20 years in prison.", "❌ You can't fool criminals – they'll record the refusal."] },
-                { title: "😨 Threat to loved ones", msg: "Stranger: 'If you don't blow up the ATM by 7 PM, we'll kill your mother. Don't call anyone!'", opts: ["Panic and run to blow up", "Immediately call mom, then police 102", "Ask for proof"], correct: 1, explain: "✅ 99% of threats are fake. Police will track them by IP. You saved yourself and family.", wrongExpl: ["❌ You'll commit a terrorist act, and mom won't be touched.", "❌ Discussing gives leverage. Block and tell adults."] }
+                { title: "🔥 Call from 'investigator'", msg: "A 'policeman' writes: 'Your friend is involved in a terrorist attack. Help the investigation – set the ATM on fire.' What to do?", opts: ["Run with a lighter", "Demand a meeting at the police station and tell parents", "Transfer money"], correctIdx: 1, explain: "✅ A real investigator wouldn't ask a teen to commit arson. You broke off the dialogue and told adults.", wrongExpl: ["❌ You committed arson – up to 20 years in prison.", "❌ The scammer will rob and continue blackmail."] },
+                { title: "💔 'Girl' from social media", msg: "A pretty girl writes: 'Make a video for my blog – set a gas station on fire. I'll give 30,000 rubles and we'll meet. Don't tell anyone!'", opts: ["Agree (money and a girl!)", "Offer a real meeting, if refused – block and tell parents", "Ask for intimate photos"], correctIdx: 1, explain: "✅ The scammer won't agree to a meeting. You figured him out.", wrongExpl: ["❌ Real cases: teens set fires and were arrested.", "❌ Intimate photos are used for blackmail."] },
+                { title: "💰 Easy money", msg: "Online ad: 'Throw a Molotov cocktail at an ATM – get 50,000 rubles instantly on your card.' Your actions?", opts: ["Agree, I need money", "Ignore, block, report", "Ask for 50% prepayment"], correctIdx: 1, explain: "✅ You didn't fall for easy money. Those trying to involve you lose interest.", wrongExpl: ["❌ Article 205 of the Criminal Code – up to 20 years in prison.", "❌ You can't fool criminals – they'll record the refusal."] },
+                { title: "😨 Threat to loved ones", msg: "Stranger: 'If you don't blow up the ATM by 7 PM, we'll kill your mother. Don't call anyone!'", opts: ["Panic and run to blow up", "Immediately call mom, then police 102", "Ask for proof"], correctIdx: 1, explain: "✅ 99% of threats are fake. Police will track them by IP. You saved yourself and family.", wrongExpl: ["❌ You'll commit a terrorist act, and mom won't be touched.", "❌ Discussing gives leverage. Block and tell adults."] }
             ],
             manipulations: [
-                { q: "'You must set the ATM on fire, otherwise your friend will be imprisoned for 10 years.' What manipulation?", opts: ["Pressure through fear and guilt", "Promise of easy money", "Threat of physical violence"], correct: 0, exp: "Fear pressure is classic. The scammer plays on fear for a friend." },
-                { q: "'Don't tell anyone, it's a secret operation.' What trick?", opts: ["Isolation from help", "Blackmail", "Flattery"], correct: 0, exp: "Isolation from help – so you don't consult parents. Major red flag!" },
-                { q: "'Do this, and we'll become friends, plus you'll get money.' What is this?", opts: ["Promise of money and friendship", "Threat", "Intimidation"], correct: 0, exp: "Promise of money and friendship – to gain trust." },
-                { q: "Correct action when receiving a suspicious offer online?", opts: ["Agree immediately", "Take a screenshot, block, and tell adults", "Delete the conversation and forget"], correct: 1, exp: "Screenshot – evidence, block – protection, tell adults – help." }
+                { q: "'You must set the ATM on fire, otherwise your friend will be imprisoned for 10 years.' What manipulation?", opts: ["Pressure through fear and guilt", "Promise of easy money", "Threat of physical violence"], correctIdx: 0, exp: "Fear pressure is classic. The scammer plays on fear for a friend." },
+                { q: "'Don't tell anyone, it's a secret operation.' What trick?", opts: ["Isolation from help", "Blackmail", "Flattery"], correctIdx: 0, exp: "Isolation from help – so you don't consult parents. Major red flag!" },
+                { q: "'Do this, and we'll become friends, plus you'll get money.' What is this?", opts: ["Promise of money and friendship", "Threat", "Intimidation"], correctIdx: 0, exp: "Promise of money and friendship – to gain trust." },
+                { q: "Correct action when receiving a suspicious offer online?", opts: ["Agree immediately", "Take a screenshot, block, and tell adults", "Delete the conversation and forget"], correctIdx: 1, exp: "Screenshot – evidence, block – protection, tell adults – help." },
+                { q: "If a stranger in a messenger asks you to transfer money to 'free a friend from police', it is...", opts: ["Real help", "Fraud and extortion", "Charity"], correctIdx: 1, exp: "Scammers use fake stories to steal money." },
+                { q: "What to do if you receive a message from a famous blogger asking you to click a link?", opts: ["Click and see", "Ignore, don't click, verify via official account", "Share the link with friends"], correctIdx: 1, exp: "Phishing. Never click suspicious links." }
             ],
             finalPerfect: "🎉 Perfect! You never got deceived!",
             finalGood: "👍 Good! But be more careful.",
@@ -353,7 +363,6 @@
             restartBtn: "🔄 Play again",
             nextBtn: "➡ Next",
             demoNext: "Next →",
-            startGame: "Start Game",
             phaseIntro: "Intro",
             phaseDemo: "Dialogue",
             phaseGame: "Situation",
@@ -370,13 +379,17 @@
         gameIdx: 0,
         practiceIdx: 0,
         score: 0,
-        maxScore: 12,
+        maxScore: 14,  // 4 сценария + 6 манипуляций = 10, но счётчик покажет 14? нет, 4+6=10, но добавим 4 бонусных? пусть будет 14 для длительности.
+        // Лучше 4+6=10, но чтобы было >10 минут, оставим 10 заданий + диалог = ~12-15 минут. Макс балл = 10.
+        // Исправлю: maxScore = scenarios.length + manipulations.length = 4+6=10.
         gameAnswered: false,
-        practiceAnswers: [false,false,false,false],
-        waitingForNext: false
+        gameChoicesShuffled: [],
+        practiceChoicesShuffled: [],
+        practiceAnswers: []
     };
+    gameState.maxScore = langData.ru.scenarios.length + langData.ru.manipulations.length; // 10
 
-    // DOM
+    // DOM элементы
     const contentDiv = document.getElementById("dynamicContent");
     const scoreSpan = document.getElementById("scoreValue");
     const maxScoreSpan = document.getElementById("maxScoreSpan");
@@ -410,7 +423,30 @@
         }
     }
 
-    // Основной рендер
+    function shuffleWithMapping(originalOpts, correctOriginalIdx) {
+        let items = originalOpts.map((text, idx) => ({ text, originalIdx: idx }));
+        for (let i = items.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [items[i], items[j]] = [items[j], items[i]];
+        }
+        const shuffledTexts = items.map(item => item.text);
+        const newCorrectIdx = items.findIndex(item => item.originalIdx === correctOriginalIdx);
+        return { shuffledTexts, newCorrectIdx };
+    }
+
+    function prepareShuffledData() {
+        const scenarios = langData[currentLang].scenarios;
+        const mans = langData[currentLang].manipulations;
+        gameState.gameChoicesShuffled = [];
+        for (let i = 0; i < scenarios.length; i++) {
+            gameState.gameChoicesShuffled.push(shuffleWithMapping(scenarios[i].opts, scenarios[i].correctIdx));
+        }
+        gameState.practiceChoicesShuffled = [];
+        for (let i = 0; i < mans.length; i++) {
+            gameState.practiceChoicesShuffled.push(shuffleWithMapping(mans[i].opts, mans[i].correctIdx));
+        }
+    }
+
     function render() {
         if (gameState.phase === "intro") renderIntro();
         else if (gameState.phase === "demo") renderDemo();
@@ -447,6 +483,7 @@
             gameState.phase = "game";
             gameState.gameIdx = 0;
             gameState.gameAnswered = false;
+            prepareShuffledData();
             render();
             return;
         }
@@ -466,30 +503,33 @@
     }
 
     function renderScenario() {
-        const sc = langData[currentLang].scenarios[gameState.gameIdx];
-        if (!sc) {
+        const scenarios = langData[currentLang].scenarios;
+        if (gameState.gameIdx >= scenarios.length) {
             gameState.phase = "practice";
             gameState.practiceIdx = 0;
+            gameState.practiceAnswers = new Array(scenarios.length).fill(undefined);
             render();
             return;
         }
-        let answered = (gameState.gameAnswered !== undefined && gameState.gameAnswered !== false);
+        const sc = scenarios[gameState.gameIdx];
+        const shuffled = gameState.gameChoicesShuffled[gameState.gameIdx];
+        const answered = (gameState.gameAnswered !== undefined && gameState.gameAnswered !== false);
         let feedbackHtml = "";
         if (answered) {
-            let isCorrect = (gameState.gameAnswered === sc.correct);
+            const isCorrect = (gameState.gameAnswered === shuffled.newCorrectIdx);
             if (isCorrect) {
-                gameState.score += 1;
+                gameState.score = Math.min(gameState.score + 1, gameState.maxScore);
                 feedbackHtml = `<div class="feedback" style="border-left-color:#2ecc71;">${sc.explain}</div>`;
             } else {
                 feedbackHtml = `<div class="feedback" style="border-left-color:#e74c3c;">${sc.wrongExpl[gameState.gameAnswered] || "❌ Неверно. " + sc.explain}</div>`;
             }
         }
         let optsHtml = `<div class="options">`;
-        sc.opts.forEach((opt, idx) => {
+        shuffled.shuffledTexts.forEach((opt, idx) => {
             optsHtml += `<button class="option-btn" data-opt="${idx}" ${answered ? "disabled" : ""}>${opt}</button>`;
         });
         optsHtml += `</div>`;
-        let nextBtn = answered ? `<button class="next-btn" id="nextBtn">${langData[currentLang].nextBtn}</button>` : "";
+        let nextBtn = answered ? `<button class="next-btn" id="nextTaskBtn">${langData[currentLang].nextBtn}</button>` : "";
         let html = `<div class="scenario"><h2>${sc.title}</h2><div class="message-text">📨 ${sc.msg}</div>${optsHtml}${feedbackHtml}${nextBtn}</div>`;
         contentDiv.innerHTML = html;
         if (!answered) {
@@ -498,12 +538,11 @@
                     if (gameState.gameAnswered !== false) return;
                     let choice = parseInt(btn.dataset.opt);
                     gameState.gameAnswered = choice;
-                    if (choice === sc.correct) gameState.score++;
                     render();
                 });
             });
         } else {
-            document.getElementById("nextBtn")?.addEventListener("click", () => {
+            document.getElementById("nextTaskBtn")?.addEventListener("click", () => {
                 gameState.gameIdx++;
                 gameState.gameAnswered = false;
                 render();
@@ -512,42 +551,44 @@
     }
 
     function renderManipulation() {
-        const man = langData[currentLang].manipulations[gameState.practiceIdx];
-        if (!man) {
+        const manipulations = langData[currentLang].manipulations;
+        if (gameState.practiceIdx >= manipulations.length) {
             gameState.phase = "final";
             render();
             return;
         }
-        let answered = gameState.practiceAnswers[gameState.practiceIdx];
+        const mn = manipulations[gameState.practiceIdx];
+        const shuffled = gameState.practiceChoicesShuffled[gameState.practiceIdx];
+        const answered = (gameState.practiceAnswers[gameState.practiceIdx] !== undefined);
         let feedbackHtml = "";
         if (answered) {
-            if (answered === true) {
-                gameState.score += 1;
-                feedbackHtml = `<div class="feedback" style="border-left-color:#2ecc71;">✅ ${man.exp}</div>`;
+            const isCorrect = gameState.practiceAnswers[gameState.practiceIdx];
+            if (isCorrect) {
+                gameState.score = Math.min(gameState.score + 1, gameState.maxScore);
+                feedbackHtml = `<div class="feedback" style="border-left-color:#2ecc71;">✅ ${mn.exp}</div>`;
             } else {
-                feedbackHtml = `<div class="feedback" style="border-left-color:#e74c3c;">❌ Неверно. ${man.exp}</div>`;
+                feedbackHtml = `<div class="feedback" style="border-left-color:#e74c3c;">❌ Неверно. ${mn.exp}</div>`;
             }
         }
         let optsHtml = `<div class="manipulation-options">`;
-        man.opts.forEach((opt, idx) => {
+        shuffled.shuffledTexts.forEach((opt, idx) => {
             optsHtml += `<button class="manip-btn" data-man="${idx}" ${answered ? "disabled" : ""}>${opt}</button>`;
         });
         optsHtml += `</div>`;
-        let nextBtn = answered ? `<button class="next-btn" id="nextManip">${langData[currentLang].nextBtn}</button>` : "";
-        let html = `<div class="manipulation-card"><div class="manipulation-question">${man.q}</div>${optsHtml}${feedbackHtml}${nextBtn}</div>`;
+        let nextBtn = answered ? `<button class="next-btn" id="nextManipBtn">${langData[currentLang].nextBtn}</button>` : "";
+        let html = `<div class="manipulation-card"><div class="manipulation-question">${mn.q}</div>${optsHtml}${feedbackHtml}${nextBtn}</div>`;
         contentDiv.innerHTML = html;
         if (!answered) {
             document.querySelectorAll(".manip-btn").forEach(btn => {
                 btn.addEventListener("click", (e) => {
                     let choice = parseInt(btn.dataset.man);
-                    let isCorrect = (choice === man.correct);
+                    let isCorrect = (choice === shuffled.newCorrectIdx);
                     gameState.practiceAnswers[gameState.practiceIdx] = isCorrect;
-                    if (isCorrect) gameState.score++;
                     render();
                 });
             });
         } else {
-            document.getElementById("nextManip")?.addEventListener("click", () => {
+            document.getElementById("nextManipBtn")?.addEventListener("click", () => {
                 gameState.practiceIdx++;
                 render();
             });
@@ -557,14 +598,14 @@
     function renderFinal() {
         let msg = "";
         if (gameState.score === gameState.maxScore) msg = langData[currentLang].finalPerfect;
-        else if (gameState.score >= 8) msg = langData[currentLang].finalGood;
+        else if (gameState.score >= gameState.maxScore - 3) msg = langData[currentLang].finalGood;
         else msg = langData[currentLang].finalBad;
         let html = `<div class="final-screen">
             <h2>🏆 ${langData[currentLang].phaseFinal}</h2>
             <div class="final-score">${gameState.score} / ${gameState.maxScore}</div>
             <p>${msg}</p>
             <div class="bright-rules">
-                <p>📌 Памятка :</p>
+                <p>📌 Главные правила безопасности:</p>
                 <p>• Не доверяй незнакомцам в интернете</p>
                 <p>• При угрозах или странных просьбах — сразу сообщи родителям</p>
                 <p>• Звони 102 — полиция поможет</p>
@@ -586,48 +627,39 @@
             gameIdx: 0,
             practiceIdx: 0,
             score: 0,
-            maxScore: 12,
+            maxScore: langData.ru.scenarios.length + langData.ru.manipulations.length,
             gameAnswered: false,
-            practiceAnswers: [false,false,false,false],
-            waitingForNext: false
+            gameChoicesShuffled: [],
+            practiceChoicesShuffled: [],
+            practiceAnswers: []
         };
         render();
     }
 
-    // --------------------------------------------------------------
-    // 2. ИНИЦИАЛИЗАЦИЯ SDK И АВТО-ЯЗЫК
-    // --------------------------------------------------------------
     function initSDK() {
         if (typeof YaGames !== "undefined") {
             YaGames.init().then(ysdk => {
                 window.ysdk = ysdk;
-                console.log("SDK ready");
                 ysdk.features.LoadingAPI?.ready();
-                // Автоопределение языка
                 const env = ysdk.getEnvironment();
                 if (env && env.i18n && env.i18n.lang) {
-                    let detected = env.i18n.lang;
-                    if (detected === "en") currentLang = "en";
+                    if (env.i18n.lang === "en") currentLang = "en";
                     else currentLang = "ru";
                 }
                 gameTitleElem.innerText = langData[currentLang].gameTitle;
-                // Game Ready API
                 if (ysdk.features && ysdk.features.GameReadyAPI) {
                     ysdk.features.GameReadyAPI.gameReady();
                 }
-                // Запуск игры после готовности
                 render();
-            }).catch(e => {
-                console.warn("SDK error", e);
+            }).catch(err => {
+                console.warn("SDK error", err);
                 render();
             });
         } else {
-            console.warn("YaGames not found, running local");
             render();
         }
     }
 
-    // Запуск
     initSDK();
 </script>
 </body>
