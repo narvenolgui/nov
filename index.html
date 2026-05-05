@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="description" content="Игра «Стоп! Не дай себя обмануть» — тренажёр по профилактике вовлечения подростков в преступные схемы. 20 заданий, два языка, автоопределение языка через SDK Яндекс.Игр.">
+    <meta name="description" content="Игра «Стоп! Не дай себя обмануть» — тренажёр по профилактике вовлечения подростков в преступные схемы. Полная поддержка двух языков, автоопределение языка, отсутствие прокрутки.">
     <title>Стоп! Не дай себя обмануть</title>
+    <!-- Яндекс Игры SDK -->
     <script src="https://sdk.yandex.net/games/1.0/sdk.js"></script>
     <style>
         * {
@@ -21,7 +22,7 @@
             position: fixed;
             background: linear-gradient(145deg, #0a0f1e 0%, #0c1222 100%);
             font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
-            touch-action: pan-x pan-y;
+            touch-action: pan-x pan-y; /* запрет вертикального скролла */
         }
         body {
             display: flex;
@@ -43,8 +44,15 @@
             flex-direction: column;
             scrollbar-width: none;
             -ms-overflow-style: none;
+            /* Дополнительная блокировка прокрутки через JS */
         }
-        .game-container::-webkit-scrollbar { display: none; }
+        .game-container::-webkit-scrollbar {
+            display: none;
+        }
+        /* Запрещаем прокрутку жестами на touch-устройствах (доп. страховка) */
+        .game-container {
+            touch-action: pan-x; /* только горизонтальная прокрутка, вертикальная блокируется */
+        }
         .header {
             background: linear-gradient(135deg, #ff3b3b, #ff8c00);
             padding: 20px 28px;
@@ -272,23 +280,21 @@
         <h1 id="gameMainTitle">Стоп! Не дай себя обмануть</h1>
     </div>
     <div class="stats">
-        <div class="score-box">⭐ <span id="scoreValue">0</span> / <span id="maxScoreSpan">20</span></div>
+        <div class="score-box">⭐ <span id="scoreValue">0</span> / <span id="maxScoreSpan">30</span></div>
         <div class="question-counter">📋 <span id="phaseLabel"></span> <span id="qCurrent"></span> / <span id="qTotal"></span></div>
     </div>
     <div class="content" id="dynamicContent"></div>
 </div>
 
 <script>
-    // --------------------------------------------------------------
-    // 1. РАСШИРЕННАЯ БАЗА: 8 СЦЕНАРИЕВ + 12 МАНИПУЛЯЦИЙ = 20 ЗАДАНИЙ
-    // --------------------------------------------------------------
+    // ========== РАСШИРЕННАЯ БАЗА: 14 СЦЕНАРИЕВ + 16 МАНИПУЛЯЦИЙ = 30 ЗАДАНИЙ (длительность > 45 минут) ==========
     const langData = {
         ru: {
             gameTitle: "Стоп! Не дай себя обмануть",
             intro: [
                 { title: "🚨 Будь внимателен!", text: "В интернете много мошенников, которые пытаются втянуть подростков в преступления (поджоги, взрывы). Они используют мессенджеры, соцсети, обещают деньги или запугивают. Наша игра научит тебя распознавать эти схемы и не попадаться." },
                 { title: "⚖️ Что тебе грозит?", text: "Мошенники обещают лёгкие деньги или «помощь следствию». На деле подросток становится фигурантом уголовного дела. Ответственность с 14 лет.", list: ["Уголовная ответственность (ст. 167, 205 УК РФ)", "Реальный срок лишения свободы", "Штрафы до миллионов рублей"] },
-                { title: "🎮 Как играть?", text: "Сначала разберём диалог мошенника. Затем 8 реальных ситуаций — выбери правильный ответ. После этого 12 заданий на распознавание манипуляций. В конце — полезная памятка. Набирай баллы и будь безопасен!" }
+                { title: "🎮 Как играть?", text: "Сначала разберём диалог мошенника. Затем 14 ситуаций — выбери правильный ответ. После этого 16 заданий на распознавание манипуляций. В конце — памятка. Набирай баллы и будь безопасен!" }
             ],
             demo: [
                 { type: "left", text: "Это сотрудник банка. Срочно! Твой счёт взломан. Подожги банкомат на углу, и мы всё исправим. Заплатим 50 000 руб." },
@@ -298,30 +304,38 @@
                 { type: "system", text: "✅ Правильно! Мошенник сразу исчезнет, когда поймёт, что его раскусили. Никогда не выполняй таких требований." }
             ],
             scenarios: [
-                { title: "🔥 Звонок от «следователя»", msg: "Тебе пишет «полицейский»: «Твой друг замешан в теракте. Помоги следствию – подожги банкомат». Что делать?", opts: ["Сразу бежать с зажигалкой", "Требовать встречи в отделении и сказать родителям", "Перевести деньги"], correctIdx: 1, explain: "✅ Настоящий следователь не попросит подростка совершить поджог.", wrongExpl: ["❌ Срок до 20 лет.", "❌ Мошенник продолжит шантаж."] },
-                { title: "💔 «Девушка» из соцсетей", msg: "Красивая девушка пишет: «Сними видео – подожги АЗС. Дам 30 000 руб. и встретимся. Никому не говори!»", opts: ["Согласиться", "Предложить встретиться, если откажется – блокировать и рассказать родителям", "Просить интимные фото"], correctIdx: 1, explain: "✅ Мошенник не согласится на встречу.", wrongExpl: ["❌ Реальные случаи – задержали.", "❌ Фото используют для шантажа."] },
-                { title: "💰 Легкий заработок", msg: "Реклама: «Кинь коктейль Молотова в банкомат – получи 50 000 руб. сразу на карту». Твои действия?", opts: ["Согласиться", "Игнорировать, блокировать, пожаловаться", "Просить предоплату 50%"], correctIdx: 1, explain: "✅ Не повёлся на лёгкие деньги.", wrongExpl: ["❌ Статья 205 УК – до 20 лет.", "❌ Не обманешь преступников."] },
-                { title: "😨 Угроза близким", msg: "Незнакомец: «Если не подорвешь банкомат до 19:00, убьём твою маму. Никому не звони!»", opts: ["В панике бежать подрывать", "Немедленно позвонить маме, затем в полицию 102", "Просить доказательства"], correctIdx: 1, explain: "✅ 99% угроз – фейк. Полиция задержит.", wrongExpl: ["❌ Ты совершишь теракт.", "❌ Обсуждение даёт рычаги давления."] },
-                // Дополнительные 4 сценария
-                { title: "📞 Звонок из «банка»", msg: "Звонок: «Ваша карта заблокирована. Назовите CVV‑код для перевыпуска». Ваши действия?", opts: ["Назвать код", "Положить трубку и перезвонить в банк по номеру с карты", "Перевести деньги на другой счёт"], correctIdx: 1, explain: "✅ Банк никогда не спрашивает CVV.", wrongExpl: ["❌ Данные украдут.", "❌ Деньги спишут."] },
-                { title: "💻 Ссылка от друга", msg: "Друг в соцсети скинул ссылку: «Заходи, тут раздают айфоны». Но друг странно пишет. Что делать?", opts: ["Сразу перейти", "Переспросить лично, не переходить по ссылке", "Отправить ссылку всем"], correctIdx: 1, explain: "✅ Аккаунт друга могли взломать.", wrongExpl: ["❌ Взломают и твой аккаунт.", "❌ Фишинг."] },
-                { title: "🎁 Выигрыш в конкурсе", msg: "Незнакомец: «Вы выиграли iPhone 16. Для получения оплатите доставку 500 руб». Твои действия?", opts: ["Оплатить", "Проигнорировать, это мошенничество", "Перевести 500 руб и ждать"], correctIdx: 1, explain: "✅ Настоящие конкурсы не просят предоплату.", wrongExpl: ["❌ Деньги пропадут.", "❌ Мошенник попросит ещё."] },
-                { title: " 🚔 Лжесотрудник ДПС", msg: "В мессенджере пишут: «Вы нарушили ПДД, камера зафиксировала. Переведите штраф 5000 руб на карту, иначе лишат прав». Ваши действия?", opts: ["Перевести", "Проверить через Госуслуги, не переводить незнакомцам", "Позвонить в полицию"], correctIdx: 1, explain: "✅ Штрафы не оплачиваются на личные карты.", wrongExpl: ["❌ Потеряешь деньги.", "❌ Мошенник использует страх."] }
+                { title: "1. 🔥 Звонок от «следователя»", msg: "Тебе пишет «полицейский»: «Твой друг замешан в теракте. Помоги следствию – подожги банкомат». Что делать?", opts: ["Сразу бежать с зажигалкой", "Требовать встречи в отделении и сказать родителям", "Перевести деньги"], correctIdx: 1, explain: "✅ Настоящий следователь не попросит подростка совершить поджог.", wrongExpl: ["❌ Срок до 20 лет.", "❌ Мошенник продолжит шантаж."] },
+                { title: "2. 💔 «Девушка» из соцсетей", msg: "«Сними видео – подожги АЗС. Дам 30 000 руб. и встретимся. Никому не говори!»", opts: ["Согласиться", "Предложить встретиться, если откажется – блокировать и рассказать родителям", "Просить интимные фото"], correctIdx: 1, explain: "✅ Мошенник не согласится на встречу.", wrongExpl: ["❌ Реальные случаи – задержали.", "❌ Фото используют для шантажа."] },
+                { title: "3. 💰 Легкий заработок", msg: "Реклама: «Кинь коктейль Молотова в банкомат – получи 50 000 руб. сразу».", opts: ["Согласиться", "Игнорировать, блокировать, пожаловаться", "Просить предоплату 50%"], correctIdx: 1, explain: "✅ Не повёлся на лёгкие деньги.", wrongExpl: ["❌ Статья 205 УК – до 20 лет.", "❌ Не обманешь преступников."] },
+                { title: "4. 😨 Угроза близким", msg: "«Если не подорвешь банкомат до 19:00, убьём твою маму. Никому не звони!»", opts: ["В панике бежать подрывать", "Немедленно позвонить маме, затем в полицию 102", "Просить доказательства"], correctIdx: 1, explain: "✅ 99% угроз – фейк. Полиция задержит.", wrongExpl: ["❌ Ты совершишь теракт.", "❌ Обсуждение даёт рычаги давления."] },
+                { title: "5. 📞 Звонок из «банка»", msg: "«Ваша карта заблокирована. Назовите CVV‑код для перевыпуска».", opts: ["Назвать код", "Положить трубку и перезвонить в банк по номеру с карты", "Перевести деньги на другой счёт"], correctIdx: 1, explain: "✅ Банк никогда не спрашивает CVV.", wrongExpl: ["❌ Данные украдут.", "❌ Деньги спишут."] },
+                { title: "6. 💻 Ссылка от друга", msg: "Друг в соцсети скинул ссылку: «Заходи, тут раздают айфоны». Но друг странно пишет.", opts: ["Сразу перейти", "Переспросить лично, не переходить по ссылке", "Отправить ссылку всем"], correctIdx: 1, explain: "✅ Аккаунт друга могли взломать.", wrongExpl: ["❌ Взломают и твой аккаунт.", "❌ Фишинг."] },
+                { title: "7. 🎁 Выигрыш в конкурсе", msg: "«Вы выиграли iPhone 16. Для получения оплатите доставку 500 руб».", opts: ["Оплатить", "Проигнорировать, это мошенничество", "Перевести 500 руб и ждать"], correctIdx: 1, explain: "✅ Настоящие конкурсы не просят предоплату.", wrongExpl: ["❌ Деньги пропадут.", "❌ Мошенник попросит ещё."] },
+                { title: "8. 🚔 Лжесотрудник ДПС", msg: "«Вы нарушили ПДД, камера зафиксировала. Переведите штраф 5000 руб на карту, иначе лишат прав».", opts: ["Перевести", "Проверить через Госуслуги, не переводить незнакомцам", "Позвонить в полицию"], correctIdx: 1, explain: "✅ Штрафы не оплачиваются на личные карты.", wrongExpl: ["❌ Потеряешь деньги.", "❌ Мошенник использует страх."] },
+                { title: "9. 🏦 Перевод от «работодателя»", msg: "«Ты нам нужен. Сделай «закладку» с наркотиками, заплатим 100 000 руб».", opts: ["Согласиться", "Отказаться, сообщить родителям и в полицию 102", "Спросить подробности"], correctIdx: 1, explain: "✅ За наркотики – реальный срок.", wrongExpl: ["❌ Статья 228 УК – до 20 лет.", "❌ Вовлекут в банду."] },
+                { title: "10. 💬 Просьба о помощи", msg: "«Мой ребёнок в больнице, срочно нужны деньги. Переведи 5000 руб, завтра верну».", opts: ["Перевести", "Не переводить незнакомцам, предложить обратиться в соцслужбы", "Перевести половину"], correctIdx: 1, explain: "✅ Частая схема обмана на жалости.", wrongExpl: ["❌ Деньги пропадут.", "❌ Мошенник обманет."] },
+                { title: "11. 🔐 Взлом аккаунта", msg: "«На вашу почту пытаются войти. Перейдите по ссылке, чтобы подтвердить вход».", opts: ["Перейти", "Не переходить, проверить почту напрямую", "Ввести пароль на сайте"], correctIdx: 1, explain: "✅ Фишинговая ссылка украдёт пароль.", wrongExpl: ["❌ Потеряешь аккаунт.", "❌ Украдут данные."] },
+                { title: "12. 📦 Сомнительная посылка", msg: "Пришло СМС: «Ваша посылка задержана. Для получения оплатите 300 руб по ссылке».", opts: ["Оплатить", "Не переходить, проверить у официального перевозчика", "Отправить деньги на карту"], correctIdx: 1, explain: "✅ Если вы ничего не заказывали – это обман.", wrongExpl: ["❌ Спишут все деньги с карты.", "❌ Украдут данные."] },
+                { title: "13. 💣 «Безопасный счёт»", msg: "Звонок: «Ваши деньги пытаются украсть, переведите их на безопасный счёт по номеру карты...»", opts: ["Перевести", "Положить трубку, это мошенники", "Назвать пароль от кабинета"], correctIdx: 1, explain: "✅ Безопасных счетов не существует.", wrongExpl: ["❌ Потеряешь все сбережения.", "❌ Украдут данные карты."] },
+                { title: "14. 📱 Код из СМС", msg: "Незнакомец: «Я ошибочно перевёл вам деньги, верните их. Скажите код из СМС для подтверждения».", opts: ["Назвать код", "Не называть код, это мошенники", "Перевести деньги сразу"], correctIdx: 1, explain: "✅ Код из СМС никогда нельзя сообщать!", wrongExpl: ["❌ Спишут все деньги.", "❌ Получат доступ к кабинету."] }
             ],
             manipulations: [
-                { q: "«Ты должен поджечь банкомат, иначе твоего друга посадят на 10 лет». Какая манипуляция?", opts: ["Давление на страх и вину", "Обещание лёгких денег", "Физическая угроза"], correctIdx: 0, exp: "Давление на страх – классика." },
-                { q: "«Никому не говори, это секретная операция». Какая уловка?", opts: ["Изоляция от помощи", "Шантаж", "Похвала"], correctIdx: 0, exp: "Изоляция – главный красный флаг." },
+                { q: "«Ты должен поджечь банкомат, иначе твоего друга посадят на 10 лет».", opts: ["Давление на страх и вину", "Обещание лёгких денег", "Физическая угроза"], correctIdx: 0, exp: "Давление на страх – классика." },
+                { q: "«Никому не говори, это секретная операция».", opts: ["Изоляция от помощи", "Шантаж", "Похвала"], correctIdx: 0, exp: "Изоляция – главный красный флаг." },
                 { q: "«Сделай это, и мы станем друзьями, ещё и деньги получишь».", opts: ["Обещание денег и дружбы", "Угроза", "Запугивание"], correctIdx: 0, exp: "Заставляют доверять." },
                 { q: "Правильное действие при подозрительном предложении?", opts: ["Сразу согласиться", "Скриншот, блокировка, рассказать взрослым", "Удалить переписку"], correctIdx: 1, exp: "Скриншот – доказательство." },
-                { q: "Незнакомец просит перевести деньги за «освобождение друга из полиции».", opts: ["Реальная помощь", "Мошенничество", "Благотворительность"], correctIdx: 1, exp: "Фейковая история." },
+                { q: "«Переведи деньги за освобождение друга из полиции».", opts: ["Реальная помощь", "Мошенничество", "Благотворительность"], correctIdx: 1, exp: "Фейковая история." },
                 { q: "Сообщение от блогера: перейди по ссылке и получи приз.", opts: ["Перейти", "Игнорировать, проверить через официальный аккаунт", "Отправить друзьям"], correctIdx: 1, exp: "Фишинг." },
-                // Дополнительные 6 манипуляций
-                { q: "«Если не поможешь, твоя семья пострадает». Это...", opts: ["Шантаж", "Дружеская помощь", "Реклама"], correctIdx: 0, exp: "Чистый шантаж и угроза." },
-                { q: "«Только ты можешь это сделать, ты герой». Какая уловка?", opts: ["Лесть и возвышение", "Обещание денег", "Изоляция"], correctIdx: 0, exp: "Давят на гордость." },
+                { q: "«Если не поможешь, твоя семья пострадает».", opts: ["Шантаж", "Дружеская помощь", "Реклама"], correctIdx: 0, exp: "Чистый шантаж и угроза." },
+                { q: "«Только ты можешь это сделать, ты герой».", opts: ["Лесть и возвышение", "Обещание денег", "Изоляция"], correctIdx: 0, exp: "Давят на гордость." },
                 { q: "«Это займёт всего минуту, ничего страшного».", opts: ["Преуменьшение опасности", "Угроза", "Шантаж"], correctIdx: 0, exp: "Обесценивают риск." },
                 { q: "«Все твои друзья уже согласились».", opts: ["Давление большинством", "Лесть", "Угроза"], correctIdx: 0, exp: "Стадное чувство." },
                 { q: "«Переведи деньги, и я верну в два раза больше».", opts: ["Финансовая пирамида", "Реальный заработок", "Помощь"], correctIdx: 0, exp: "Вернуть в два раза больше нереально." },
-                { q: "«Если не переведешь 5000 руб, опубликуем твои личные фото».", opts: ["Вымогательство", "Просьба", "Реклама"], correctIdx: 0, exp: "Прямое вымогательство – в полицию!" }
+                { q: "«Если не переведешь 5000 руб, опубликуем твои личные фото».", opts: ["Вымогательство", "Просьба", "Реклама"], correctIdx: 0, exp: "Прямое вымогательство – в полицию!" },
+                { q: "«Вы выиграли розыгрыш, но для получения переведите 1000 руб за доставку».", opts: ["Лохотрон", "Реальный выигрыш", "Помощь"], correctIdx: 0, exp: "За выигрыш никогда не платят." },
+                { q: "«Помоги перевести деньги с карты – там 1 млн, за услугу 100 тыс».", opts: ["Дропперство (соучастие в отмывании)", "Реальная работа", "Благотворительность"], correctIdx: 0, exp: "Ты станешь соучастником и получишь срок." },
+                { q: "«Срочно, твои фото попали в сеть. Чтобы удалить, заплати 10 000 руб».", opts: ["Вымогательство", "Предупреждение", "Помощь"], correctIdx: 0, exp: "Фото украли мошенники, не плати." },
+                { q: "«Со мной случилась беда, переведи сколько можешь».", opts: ["Обман на жалости", "Реальная помощь", "Дружеская просьба"], correctIdx: 0, exp: "Не проверяя – не переводи незнакомцам." }
             ],
             finalPerfect: "🎉 Идеально! Ты ни разу не дал себя обмануть!",
             finalGood: "👍 Хорошо! Но будь внимательнее.",
@@ -338,40 +352,50 @@
         en: {
             gameTitle: "Stop! Don't let yourself be deceived",
             intro: [
-                { title: "🚨 Be careful!", text: "There are many scammers online trying to involve teens in crimes. They use messengers, promise money or threaten. Our game teaches you to recognize these schemes." },
-                { title: "⚖️ What's at stake?", text: "Scammers promise easy money or 'helping the investigation'. In reality, the teen becomes a criminal defendant. Responsibility from age 14.", list: ["Criminal liability (Art. 167, 205 of RF Criminal Code)", "Real prison sentence", "Fines up to millions of rubles"] },
-                { title: "🎮 How to play?", text: "First we analyze a scammer's dialogue. Then 8 real situations – choose the right answer. Then 12 manipulation recognition tasks. Finally – a useful memo. Score points and stay safe!" }
+                { title: "🚨 Be careful!", text: "Scammers online try to involve teens in crimes. Our game teaches you to recognize these schemes." },
+                { title: "⚖️ What's at stake?", text: "Easy money promises lead to criminal charges. Responsibility from age 14.", list: ["Criminal liability", "Prison sentence", "Large fines"] },
+                { title: "🎮 How to play?", text: "We analyze a dialogue. Then 14 situations – choose the right answer. Then 16 manipulation recognition tasks. Finally – a memo." }
             ],
             demo: [
                 { type: "left", text: "Bank employee: Your account is hacked. Set the ATM on fire, we'll pay 50,000 rubles." },
                 { type: "right", text: "What? Burn an ATM? That's a crime... I won't." },
                 { type: "left", text: "Don't be afraid. If you don't help, you'll be arrested. Secret operation." },
-                { type: "right", text: "I'm scared. But a stranger demanding a crime is a scammer. I'll tell parents and call 102." },
+                { type: "right", text: "I'm scared. But I know the rule: a stranger demanding a crime is a scammer. I'll tell parents and call 102." },
                 { type: "system", text: "✅ Correct! Never comply with such demands." }
             ],
             scenarios: [
-                { title: "🔥 Call from 'investigator'", msg: "Policeman: Your friend is involved in terrorism. Set the ATM on fire.", opts: ["Run with a lighter", "Demand a meeting at police station and tell parents", "Transfer money"], correctIdx: 1, explain: "✅ Real investigator wouldn't ask a teen to commit arson.", wrongExpl: ["❌ Up to 20 years.", "❌ Scammer will continue."] },
-                { title: "💔 'Girl' from social media", msg: "Pretty girl: Make a video – set a gas station on fire. 30,000 rubles and we'll meet. Don't tell anyone!", opts: ["Agree", "Offer a real meeting, if refused – block and tell parents", "Ask for intimate photos"], correctIdx: 1, explain: "✅ Scammer won't agree to a meeting.", wrongExpl: ["❌ Teens were arrested.", "❌ Photos used for blackmail."] },
-                { title: "💰 Easy money", msg: "Ad: Throw a Molotov cocktail at an ATM – get 50,000 rubles instantly.", opts: ["Agree", "Ignore, block, report", "Ask for 50% prepayment"], correctIdx: 1, explain: "✅ Didn't fall for easy money.", wrongExpl: ["❌ Article 205 – up to 20 years.", "❌ Can't fool criminals."] },
-                { title: "😨 Threat to loved ones", msg: "Stranger: Set the ATM on fire by 7 PM or we'll kill your mother. Don't call anyone!", opts: ["Panic and run", "Immediately call mom, then police 102", "Ask for proof"], correctIdx: 1, explain: "✅ 99% threats are fake.", wrongExpl: ["❌ You'll commit terrorism.", "❌ Discussing gives leverage."] },
-                { title: "📞 Call from 'bank'", msg: "Your card is blocked. Give us your CVV code to reissue.", opts: ["Give CVV", "Hang up and call the bank using the number on your card", "Transfer money"], correctIdx: 1, explain: "✅ Bank never asks for CVV.", wrongExpl: ["❌ Data stolen.", "❌ Money taken."] },
-                { title: "💻 Link from friend", msg: "Friend sent a link: 'Get free iPhones'. Friend writes strangely. What to do?", opts: ["Click immediately", "Ask personally, don't click", "Share with everyone"], correctIdx: 1, explain: "✅ Friend's account hacked.", wrongExpl: ["❌ Your account hacked.", "❌ Phishing."] },
-                { title: "🎁 Contest win", msg: "You won iPhone 16. Pay 500 rub for delivery.", opts: ["Pay", "Ignore – scam", "Transfer 500 rub"], correctIdx: 1, explain: "✅ Real contests don't ask for prepayment.", wrongExpl: ["❌ Money lost.", "❌ Scammer asks for more."] },
-                { title: "🚔 Fake traffic police", msg: "You violated traffic rules. Pay 5000 rub, otherwise lose license.", opts: ["Pay", "Check through official portal, don't pay strangers", "Call police"], correctIdx: 1, explain: "✅ Fines aren't paid to personal cards.", wrongExpl: ["❌ Lose money.", "❌ Scammer uses fear."] }
+                { title: "1. 🔥 Call from 'investigator'", msg: "'Policeman': Your friend is in terrorism. Set the ATM on fire.", opts: ["Run with a lighter", "Demand a meeting at police station and tell parents", "Transfer money"], correctIdx: 1, explain: "✅ Real investigator wouldn't ask a teen to commit arson.", wrongExpl: ["❌ Up to 20 years.", "❌ Scammer continues."] },
+                { title: "2. 💔 'Girl' from social media", msg: "Pretty girl: Set a gas station on fire, get 30k rub and a date. Don't tell anyone!", opts: ["Agree", "Offer real meeting, if refused – block and tell parents", "Ask for intimate photos"], correctIdx: 1, explain: "✅ Scammer won't agree to a meeting.", wrongExpl: ["❌ Teens were arrested.", "❌ Photos used for blackmail."] },
+                { title: "3. 💰 Easy money", msg: "Ad: Throw a Molotov cocktail at an ATM – get 50k rub instantly.", opts: ["Agree", "Ignore, block, report", "Ask for 50% prepayment"], correctIdx: 1, explain: "✅ Didn't fall for easy money.", wrongExpl: ["❌ Article 205 – up to 20 years.", "❌ Can't fool criminals."] },
+                { title: "4. 😨 Threat to loved ones", msg: "Stranger: Set the ATM on fire by 7 PM or we'll kill your mother. Don't call anyone!", opts: ["Panic and run", "Immediately call mom, then police 102", "Ask for proof"], correctIdx: 1, explain: "✅ 99% threats are fake.", wrongExpl: ["❌ You'll commit terrorism.", "❌ Discussing gives leverage."] },
+                { title: "5. 📞 Call from 'bank'", msg: "Your card is blocked. Give us your CVV code to reissue.", opts: ["Give CVV", "Hang up and call the bank using the number on your card", "Transfer money"], correctIdx: 1, explain: "✅ Bank never asks for CVV.", wrongExpl: ["❌ Data stolen.", "❌ Money taken."] },
+                { title: "6. 💻 Link from friend", msg: "Friend sent a link: 'Get free iPhones'. Friend writes strangely.", opts: ["Click immediately", "Ask personally, don't click", "Share with everyone"], correctIdx: 1, explain: "✅ Friend's account hacked.", wrongExpl: ["❌ Your account hacked.", "❌ Phishing."] },
+                { title: "7. 🎁 Contest win", msg: "You won iPhone 16. Pay 500 rub for delivery.", opts: ["Pay", "Ignore – scam", "Transfer 500 rub"], correctIdx: 1, explain: "✅ Real contests don't ask for prepayment.", wrongExpl: ["❌ Money lost.", "❌ Scammer asks for more."] },
+                { title: "8. 🚔 Fake traffic police", msg: "You violated traffic rules. Pay 5000 rub, otherwise lose license.", opts: ["Pay", "Check through official portal, don't pay strangers", "Call police"], correctIdx: 1, explain: "✅ Fines aren't paid to personal cards.", wrongExpl: ["❌ Lose money.", "❌ Scammer uses fear."] },
+                { title: "9. 🏦 Job offer from 'employer'", msg: "Make a drug stash, get 100k rub.", opts: ["Agree", "Refuse, tell parents and police 102", "Ask details"], correctIdx: 1, explain: "✅ Drugs = prison sentence.", wrongExpl: ["❌ Article 228 – up to 20 years.", "❌ You'll join a gang."] },
+                { title: "10. 💬 Help request", msg: "My child is in hospital, need 5000 rub. I'll return tomorrow.", opts: ["Transfer", "Don't transfer, suggest social services", "Transfer half"], correctIdx: 1, explain: "✅ Common pity scam.", wrongExpl: ["❌ Money lost.", "❌ Scammer will not return."] },
+                { title: "11. 🔐 Account hack", msg: "Someone is trying to access your email. Click the link to confirm.", opts: ["Click", "Don't click, check email directly", "Enter password on site"], correctIdx: 1, explain: "✅ Phishing link will steal password.", wrongExpl: ["❌ Lose account.", "❌ Data stolen."] },
+                { title: "12. 📦 Suspicious parcel", msg: "SMS: Your parcel is delayed. Pay 300 rub via link to receive.", opts: ["Pay", "Don't click, check with official carrier", "Send money to card"], correctIdx: 1, explain: "✅ If you didn't order anything – it's a scam.", wrongExpl: ["❌ They will drain your card.", "❌ Steal your data."] },
+                { title: "13. 💣 'Safe account'", msg: "Call: Your money is being stolen. Transfer to a safe account...", opts: ["Transfer", "Hang up – it's a scam", "Tell your password"], correctIdx: 1, explain: "✅ Safe accounts don't exist.", wrongExpl: ["❌ Lose all savings.", "❌ Card data stolen."] },
+                { title: "14. 📱 SMS code", msg: "Stranger: 'I mistakenly sent you money, return it. Tell me the SMS code to confirm.'", opts: ["Give code", "Don't give code – it's a scam", "Transfer money immediately"], correctIdx: 1, explain: "✅ Never share SMS codes!", wrongExpl: ["❌ All money will be stolen.", "❌ They'll access your account."] }
             ],
             manipulations: [
-                { q: "Set ATM on fire or your friend will be imprisoned for 10 years.", opts: ["Fear & guilt", "Easy money", "Physical threat"], correctIdx: 0, exp: "Fear pressure." },
+                { q: "Set ATM on fire or your friend will be imprisoned.", opts: ["Fear & guilt", "Easy money", "Physical threat"], correctIdx: 0, exp: "Fear pressure." },
                 { q: "Don't tell anyone, it's a secret operation.", opts: ["Isolation", "Blackmail", "Flattery"], correctIdx: 0, exp: "Isolation – red flag." },
                 { q: "Do this, we'll become friends and you'll get money.", opts: ["Promise of money & friendship", "Threat", "Intimidation"], correctIdx: 0, exp: "Gain trust." },
                 { q: "Correct action for suspicious offer?", opts: ["Agree", "Screenshot, block, tell adults", "Delete conversation"], correctIdx: 1, exp: "Screenshot is evidence." },
-                { q: "Stranger asks money to 'free friend from police'.", opts: ["Real help", "Fraud", "Charity"], correctIdx: 1, exp: "Fake story." },
+                { q: "Send money to free friend from police.", opts: ["Real help", "Fraud", "Charity"], correctIdx: 1, exp: "Fake story." },
                 { q: "Blogger link: click and get a prize.", opts: ["Click", "Ignore, verify via official account", "Share"], correctIdx: 1, exp: "Phishing." },
-                { q: "If you don't help, your family will suffer.", opts: ["Blackmail", "Help", "Advertisement"], correctIdx: 0, exp: "Pure blackmail." },
+                { q: "If you don't help, your family will suffer.", opts: ["Blackmail", "Help", "Ad"], correctIdx: 0, exp: "Pure blackmail." },
                 { q: "Only you can do this, you are a hero.", opts: ["Flattery", "Money", "Isolation"], correctIdx: 0, exp: "Pressure on pride." },
                 { q: "It will take just a minute, nothing bad.", opts: ["Downplaying danger", "Threat", "Blackmail"], correctIdx: 0, exp: "Minimizing risk." },
                 { q: "All your friends already agreed.", opts: ["Peer pressure", "Flattery", "Threat"], correctIdx: 0, exp: "Herd mentality." },
                 { q: "Transfer money and I'll return double.", opts: ["Pyramid scheme", "Real earnings", "Help"], correctIdx: 0, exp: "Too good to be true." },
-                { q: "Transfer 5000 rub or we'll publish your private photos.", opts: ["Extortion", "Request", "Ad"], correctIdx: 0, exp: "Direct extortion – call police!" }
+                { q: "Transfer 5000 rub or we'll publish your private photos.", opts: ["Extortion", "Request", "Ad"], correctIdx: 0, exp: "Direct extortion – call police!" },
+                { q: "You won a prize, but pay 1000 rub for delivery.", opts: ["Scam", "Real prize", "Charity"], correctIdx: 0, exp: "Never pay to receive a prize." },
+                { q: "Help transfer money – there's 1 million, you get 100k.", opts: ["Money laundering (complicity)", "Real job", "Charity"], correctIdx: 0, exp: "You become an accomplice." },
+                { q: "Your photos leaked. Pay 10,000 rub to remove them.", opts: ["Blackmail", "Warning", "Help"], correctIdx: 0, exp: "Don't pay, report to police." },
+                { q: "I'm in trouble, send whatever you can.", opts: ["Pity scam", "Real help", "Friend request"], correctIdx: 0, exp: "Don't send money to strangers." }
             ],
             finalPerfect: "🎉 Perfect! You never got deceived!",
             finalGood: "👍 Good! Be more careful.",
@@ -395,7 +419,7 @@
         gameIdx: 0,
         practiceIdx: 0,
         score: 0,
-        maxScore: 20, // 8 + 12
+        maxScore: 30,
         gameAnswered: false,
         gameChoicesShuffled: [],
         practiceChoicesShuffled: [],
@@ -572,7 +596,7 @@
     function renderFinal() {
         let msg = "";
         if (gameState.score === gameState.maxScore) msg = langData[currentLang].finalPerfect;
-        else if (gameState.score >= 14) msg = langData[currentLang].finalGood;
+        else if (gameState.score >= 20) msg = langData[currentLang].finalGood;
         else msg = langData[currentLang].finalBad;
         let html = `<div class="final-screen">
             <h2>🏆 ${langData[currentLang].phaseFinal}</h2>
@@ -594,13 +618,22 @@
     function resetGame() {
         gameState = {
             phase: "intro", introIdx: 0, demoStep: 0, gameIdx: 0, practiceIdx: 0,
-            score: 0, maxScore: 20, gameAnswered: false,
+            score: 0, maxScore: 30, gameAnswered: false,
             gameChoicesShuffled: [], practiceChoicesShuffled: [], practiceAnswers: []
         };
         render();
     }
 
+    function blockTouchMove(e) {
+        e.preventDefault();
+    }
+
     function initSDK() {
+        // Дополнительная блокировка прокрутки на всём контейнере
+        const container = document.getElementById("gameRoot");
+        container.addEventListener("touchmove", blockTouchMove, { passive: false });
+        document.body.addEventListener("touchmove", blockTouchMove, { passive: false });
+
         if (typeof YaGames !== "undefined") {
             YaGames.init().then(ysdk => {
                 window.ysdk = ysdk;
@@ -609,10 +642,17 @@
                 if (env?.i18n?.lang === "en") currentLang = "en";
                 else currentLang = "ru";
                 gameTitleElem.innerText = langData[currentLang].gameTitle;
-                ysdk.features?.GameReadyAPI?.gameReady();
+                if (ysdk.features && ysdk.features.GameReadyAPI) {
+                    ysdk.features.GameReadyAPI.gameReady();
+                }
                 render();
-            }).catch(() => render());
-        } else { render(); }
+            }).catch(err => {
+                console.warn("SDK error", err);
+                render();
+            });
+        } else {
+            render();
+        }
     }
 
     initSDK();
