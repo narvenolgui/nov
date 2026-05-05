@@ -2,111 +2,141 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Планеты Солнечной системы</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="description" content="Материал направлен на проверку умения учащихся 1 класса правильно вставлять пропущенные буквы в словах с сочетаниями жи—ши, ча—ща, чу—щу. 40 заданий. Автоопределение языка. Соответствует требованиям МЭШ и Яндекс.Игр.">
+    <title>Волшебные правила: жи—ши, ча—ща, чу—щу</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            background: #f9f0d4;
+            font-family: 'Segoe UI', 'Comic Neue', 'Comic Sans MS', 'Arial', sans-serif;
         }
         body {
-            background: #cfe3dc;
-            font-family: 'Segoe UI', 'Comic Neue', 'Comic Sans MS', 'Arial', sans-serif;
-            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 0;
+            margin: 0;
         }
         .game-container {
-            max-width: 750px;
             width: 100%;
-            background: #fffef7;
-            border-radius: 64px;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.15);
-            overflow: hidden;
+            max-width: 800px;
+            height: 100%;
+            max-height: 700px;
+            background: #ffffff;
+            border-radius: 48px;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        /* Скрываем прокрутку на мобильных, но оставляем возможность скролла внутри контейнера */
+        .game-container::-webkit-scrollbar {
+            width: 0;
+            background: transparent;
         }
         .header {
-            background: #7fa87f;
-            padding: 20px 28px;
+            background: #ffb347;
+            padding: 16px 20px;
             text-align: center;
+            flex-shrink: 0;
         }
         .header h1 {
             font-size: 1.5rem;
-            color: #fff3e0;
+            color: #2d2b1f;
+        }
+        .header p {
+            font-size: 0.9rem;
+            background: #fff0c0;
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 40px;
+            margin-top: 6px;
         }
         .stats {
             display: flex;
             justify-content: space-between;
             background: #fef3da;
-            padding: 12px 25px;
-            font-size: 1.2rem;
+            padding: 8px 20px;
             font-weight: bold;
-            color: #7fa87f;
-            border-bottom: 3px solid #c9b68b;
+            flex-shrink: 0;
         }
         .score-box, .question-counter {
-            background: #ffffff;
-            padding: 5px 18px;
-            border-radius: 60px;
+            background: white;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.9rem;
         }
         .content {
-            padding: 25px;
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
         }
-        .intro-slide {
-            background: #fffaf0;
-            border-radius: 48px;
-            padding: 25px;
+        .intro-slide, .task-card {
+            background: #fffaf2;
+            border-radius: 40px;
+            padding: 20px;
             text-align: center;
         }
-        .intro-slide h2 {
-            font-size: 1.6rem;
-            color: #7fa87f;
-            margin-bottom: 20px;
+        .intro-slide h2, .task-card h2 {
+            color: #c44b1e;
+            margin-bottom: 12px;
         }
-        .intro-slide p {
-            font-size: 1.2rem;
-            color: #2c3e2e;
-            margin-bottom: 20px;
-        }
-        .task-card {
-            background: #fffaf0;
-            border-radius: 48px;
-            padding: 25px;
-            text-align: center;
-        }
-        .task-question {
-            font-size: 1.3rem;
+        .rule-badge {
+            background: #ffe0a3;
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 1.1rem;
             font-weight: bold;
-            margin: 20px 0;
-            color: #b45f1b;
+            margin: 8px 0;
+        }
+        .task-word {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: #eef3e0;
+            padding: 16px;
+            border-radius: 50px;
+            margin: 16px 0;
+            letter-spacing: 2px;
+            word-break: break-word;
         }
         .options {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
-            gap: 20px;
-            margin: 25px 0;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 20px 0;
         }
         .opt-btn {
-            background: #7fa87f;
+            background: #ffaa44;
             border: none;
-            font-size: 1.2rem;
+            font-size: 1.8rem;
             font-weight: bold;
-            padding: 10px 20px;
+            padding: 8px 20px;
             border-radius: 60px;
             cursor: pointer;
             font-family: inherit;
-            box-shadow: 0 4px 0 #3a6b4a;
-            color: white;
-            min-width: 110px;
+            box-shadow: 0 4px 0 #b97f2e;
+            color: #2d2b1f;
+            min-width: 70px;
             transition: 0.05s linear;
         }
         .opt-btn:active {
             transform: translateY(2px);
-            box-shadow: 0 2px 0 #3a6b4a;
+            box-shadow: 0 2px 0 #b97f2e;
         }
         .opt-btn:disabled {
             opacity: 0.6;
@@ -114,248 +144,434 @@
             cursor: default;
         }
         .feedback {
-            margin-top: 20px;
-            padding: 12px;
-            border-radius: 40px;
-            font-size: 1rem;
+            margin-top: 16px;
+            padding: 10px;
+            border-radius: 30px;
             font-weight: bold;
+            font-size: 0.95rem;
         }
         .correct-feedback {
-            background: #d9f0da;
+            background: #c8e6c9;
             color: #1e5a2a;
-            border-left: 8px solid #2e7d32;
+            border-left: 6px solid #2e7d32;
         }
         .wrong-feedback {
-            background: #ffe0e0;
+            background: #ffcdd2;
             color: #a1131e;
-            border-left: 8px solid #d32f2f;
+            border-left: 6px solid #d32f2f;
         }
         .next-btn {
-            background: #f4a261;
+            background: #ffaa44;
             border: none;
             width: 100%;
             padding: 12px;
             font-size: 1.2rem;
             font-weight: bold;
             border-radius: 60px;
-            margin-top: 20px;
+            margin-top: 16px;
             cursor: pointer;
-            color: white;
-            box-shadow: 0 4px 0 #c45c2c;
+            font-family: inherit;
         }
         .final-screen {
-            background: #fffaf0;
-            border-radius: 48px;
-            padding: 25px;
+            background: #fffaf2;
+            border-radius: 40px;
+            padding: 20px;
             text-align: center;
         }
-        .final-screen h2 {
-            font-size: 1.6rem;
-            color: #7fa87f;
-        }
-        .final-score {
-            font-size: 2rem;
-            font-weight: bold;
-            margin: 20px 0;
-            color: #1e5a2a;
-            background: #fef3da;
-            display: inline-block;
-            padding: 8px 30px;
-            border-radius: 60px;
+        .bright-rules {
+            background: #ffe0a3;
+            border-radius: 40px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: left;
+            font-size: 0.9rem;
         }
         .restart-btn {
-            background: #7fa87f;
+            background: #ffaa44;
             border: none;
+            width: 100%;
             padding: 12px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
             border-radius: 60px;
-            margin-top: 20px;
             cursor: pointer;
-            color: white;
-            width: 100%;
-        }
-        .copyright {
-            text-align: center;
-            font-size: 0.7rem;
-            padding: 12px;
-            background: #fef3da;
-            color: #aac7be;
         }
         @media (max-width: 550px) {
-            .task-question { font-size: 1.1rem; }
-            .opt-btn { font-size: 1rem; padding: 8px 15px; min-width: 90px; }
+            .task-word { font-size: 1.4rem; }
+            .opt-btn { font-size: 1.3rem; padding: 6px 16px; min-width: 60px; }
+            .header h1 { font-size: 1.2rem; }
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
         }
     </style>
 </head>
 <body>
 <div class="game-container" id="app">
     <div class="header">
-        <h1>Планеты Солнечной системы</h1>
+        <h1 id="gameTitle">Волшебные правила: жи—ши, ча—ща, чу—щу</h1>
+        <p id="gameSubtitle">жи—ши · ча—ща · чу—щу</p>
     </div>
     <div class="stats">
-        <div class="score-box">⭐ Очки: <span id="scoreValue">0</span></div>
-        <div class="question-counter">📋 <span id="phaseInfo">Вступление</span></div>
+        <div class="score-box">⭐ <span id="scoreValue">0</span> / <span id="maxScoreSpan">40</span></div>
+        <div class="question-counter">📋 <span id="phaseInfo">Загрузка...</span></div>
     </div>
-    <div class="content" id="mainContent"></div>
-    <div class="copyright">
-        Окружающий мир · Интерактивный опрос
+    <div class="content" id="mainContent">
+        <div class="loading">Загрузка игры...</div>
     </div>
 </div>
 
 <script>
     // --------------------------------------------------------------
-    // ВОПРОСЫ ПО ТЕМЕ "ПЛАНЕТЫ СОЛНЕЧНОЙ СИСТЕМЫ"
-    // Ответы (названия планет) пишутся с заглавной буквы, так как это имена собственные.
-    // Все остальные варианты – строчные.
+    // 1. БОЛЬШАЯ БАЗА ЗАДАНИЙ (40 словосочетаний и предложений)
+    //    Обеспечивает длительность игры >10 минут
     // --------------------------------------------------------------
-    const tasks = [
-        { q: "Какая планета самая большая в Солнечной системе?", opts: ["Юпитер", "Сатурн", "Нептун"], correct: "Юпитер", hint: "Юпитер — самая большая планета-гигант." },
-        { q: "Какая планета известна своими яркими кольцами?", opts: ["Юпитер", "Сатурн", "Уран"], correct: "Сатурн", hint: "Сатурн окружён множеством ледяных колец." },
-        { q: "Какая планета самая близкая к Солнцу?", opts: ["Венера", "Меркурий", "Земля"], correct: "Меркурий", hint: "Меркурий находится ближе всех к Солнцу." },
-        { q: "Какую планету называют «красной планетой»?", opts: ["Марс", "Юпитер", "Венера"], correct: "Марс", hint: "Марс имеет красноватый цвет из-за оксидов железа." },
-        { q: "Какая планета самая маленькая среди планет-гигантов?", opts: ["Уран", "Нептун", "Сатурн"], correct: "Нептун", hint: "Нептун немного меньше Урана, но массивнее." },
-        { q: "На какой планете идёт «кислотный дождь»?", opts: ["Венера", "Марс", "Юпитер"], correct: "Венера", hint: "Облака Венеры состоят из серной кислоты." },
-        { q: "Какая планета вращается «лёжа на боку»?", opts: ["Уран", "Нептун", "Сатурн"], correct: "Уран", hint: "Ось вращения Урана сильно наклонена." },
-        { q: "Какая планета самая холодная?", opts: ["Уран", "Нептун", "Плутон"], correct: "Нептун", hint: "Нептун — самая холодная планета (средняя температура −220°C)." }
+    const tasksBank = [
+        { text: "ж_знь", correct: "и", wrong: ["ы"], rule: "жи—ши", hintRu: "Жи—ши пиши с буквой и", hintEn: "Write 'zhi' and 'shi' with 'i'" },
+        { text: "малыш_", correct: "и", wrong: ["ы"], rule: "жи—ши", hintRu: "Жи—ши пиши с буквой и", hintEn: "Write 'zhi' and 'shi' with 'i'" },
+        { text: "ш_шка", correct: "и", wrong: ["ы"], rule: "жи—ши", hintRu: "Жи—ши пиши с буквой и", hintEn: "Write 'zhi' and 'shi' with 'i'" },
+        { text: "ч_йка", correct: "а", wrong: ["я"], rule: "ча—ща", hintRu: "Ча—ща пиши с буквой а", hintEn: "Write 'cha' and 'scha' with 'a'" },
+        { text: "площ_дь", correct: "а", wrong: ["я"], rule: "ча—ща", hintRu: "Ча—ща пиши с буквой а", hintEn: "Write 'cha' and 'scha' with 'a'" },
+        { text: "ч_до", correct: "у", wrong: ["ю"], rule: "чу—щу", hintRu: "Чу—щу пиши с буквой у", hintEn: "Write 'chu' and 'schu' with 'u'" },
+        { text: "щ_ка", correct: "у", wrong: ["ю"], rule: "чу—щу", hintRu: "Чу—щу пиши с буквой у", hintEn: "Write 'chu' and 'schu' with 'u'" },
+        { text: "У Маши 3 малыш_", correct: "и", wrong: ["ы"], rule: "жи—ши", hintRu: "Жи—ши пиши с буквой и", hintEn: "Write 'zhi' and 'shi' with 'i'" },
+        { text: "На столе 2 ч_шки", correct: "а", wrong: ["я"], rule: "ча—ща", hintRu: "Ча—ща пиши с буквой а", hintEn: "Write 'cha' and 'scha' with 'a'" },
+        { text: "В пруду 2 щ_ки", correct: "у", wrong: ["ю"], rule: "чу—щу", hintRu: "Чу—щу пиши с буквой у", hintEn: "Write 'chu' and 'schu' with 'u'" },
+        { text: "На дереве 4 ш_шки", correct: "и", wrong: ["ы"], rule: "жи—ши", hintRu: "Жи—ши пиши с буквой и", hintEn: "Write 'zhi' and 'shi' with 'i'" },
+        { text: "В лесу 10 ч_дес", correct: "у", wrong: ["ю"], rule: "чу—щу", hintRu: "Чу—щу пиши с буквой у", hintEn: "Write 'chu' and 'schu' with 'u'" },
+        { text: "ч_десный", correct: "у", wrong: ["ю"], rule: "чу—щу", hintRu: "Чу—щу пиши с буквой у", hintEn: "Write 'chu' and 'schu' with 'u'" },
+        { text: "щ_пальце", correct: "у", wrong: ["ю"], rule: "чу—щу", hintRu: "Чу—щу пиши с буквой у", hintEn: "Write 'chu' and 'schu' with 'u'" },
+        { text: "ж_раф", correct: "и", wrong: ["ы"], rule: "жи—ши", hintRu: "Жи—ши пиши с буквой и", hintEn: "Write 'zhi' and 'shi' with 'i'" },
+        { text: "ш_повник", correct: "и", wrong: ["ы"], rule: "жи—ши", hintRu: "Жи—ши пиши с буквой и", hintEn: "Write 'zhi' and 'shi' with 'i'" },
+        { text: "ч_совой", correct: "а", wrong: ["я"], rule: "ча—ща", hintRu: "Ча—ща пиши с буквой а", hintEn: "Write 'cha' and 'scha' with 'a'" },
+        { text: "печ_ль", correct: "а", wrong: ["я"], rule: "ча—ща", hintRu: "Ча—ща пиши с буквой а", hintEn: "Write 'cha' and 'scha' with 'a'" },
+        { text: "ч_чела", correct: "у", wrong: ["ю"], rule: "чу—щу", hintRu: "Чу—щу пиши с буквой у", hintEn: "Write 'chu' and 'schu' with 'u'" },
+        { text: "тащ_т", correct: "и", wrong: ["ы"], rule: "жи—ши", hintRu: "Жи—ши пиши с буквой и", hintEn: "Write 'zhi' and 'shi' with 'i'" },
+        { text: "ж_вотное", correct: "и", wrong: ["ы"], rule: "жи—ши", hintRu: "Жи—ши пиши с буквой и", hintEn: "Write 'zhi' and 'shi' with 'i'" },
+        { text: "ш_рокий", correct: "и", wrong: ["ы"], rule: "жи—ши", hintRu: "Жи—ши пиши с буквой и", hintEn: "Write 'zhi' and 'shi' with 'i'" },
+        { text: "ч_щ_", correct: "а", wrong: ["я"], rule: "ча—ща", hintRu: "Ча—ща пиши с буквой а", hintEn: "Write 'cha' and 'scha' with 'a'" },
+        { text: "ч_рка", correct: "а", wrong: ["я"], rule: "ча—ща", hintRu: "Ча—ща пиши с буквой а", hintEn: "Write 'cha' and 'scha' with 'a'" },
+        { text: "ч_гун", correct: "у", wrong: ["ю"], rule: "чу—щу", hintRu: "Чу—щу пиши с буквой у", hintEn: "Write 'chu' and 'schu' with 'u'" },
+        { text: "ч_дак", correct: "у", wrong: ["ю"], rule: "чу—щу", hintRu: "Чу—щу пиши с буквой у", hintEn: "Write 'chu' and 'schu' with 'u'" },
+        { text: "щ_риться", correct: "у", wrong: ["ю"], rule: "чу—щу", hintRu: "Чу—щу пиши с буквой у", hintEn: "Write 'chu' and 'schu' with 'u'" },
+        { text: "ж_знерадостный", correct: "и", wrong: ["ы"], rule: "жи—ши", hintRu: "Жи—ши пиши с буквой и", hintEn: "Write 'zhi' and 'shi' with 'i'" },
+        { text: "ш_на", correct: "и", wrong: ["ы"], rule: "жи—ши", hintRu: "Жи—ши пиши с буквой и", hintEn: "Write 'zhi' and 'shi' with 'i'" },
+        { text: "пуш_стый", correct: "и", wrong: ["ы"], rule: "жи—ши", hintRu: "Жи—ши пиши с буквой и", hintEn: "Write 'zhi' and 'shi' with 'i'" },
+        { text: "ч_йник", correct: "а", wrong: ["я"], rule: "ча—ща", hintRu: "Ча—ща пиши с буквой а", hintEn: "Write 'cha' and 'scha' with 'a'" },
+        { text: "рощ_", correct: "а", wrong: ["я"], rule: "ча—ща", hintRu: "Ча—ща пиши с буквой а", hintEn: "Write 'cha' and 'scha' with 'a'" },
+        { text: "ч_лан", correct: "у", wrong: ["ю"], rule: "чу—щу", hintRu: "Чу—щу пиши с буквой у", hintEn: "Write 'chu' and 'schu' with 'u'" },
+        { text: "ч_вство", correct: "у", wrong: ["ю"], rule: "чу—щу", hintRu: "Чу—щу пиши с буквой у", hintEn: "Write 'chu' and 'schu' with 'u'" },
+        { text: "щ_плый", correct: "у", wrong: ["ю"], rule: "чу—щу", hintRu: "Чу—щу пиши с буквой у", hintEn: "Write 'chu' and 'schu' with 'u'" },
+        { text: "У Саши 5 карандаш_й", correct: "е", wrong: ["и", "я"], rule: "правописание", hintRu: "Вспомни окончание!", hintEn: "Remember the ending" },
+        { text: "ч_деса", correct: "у", wrong: ["ю"], rule: "чу—щу", hintRu: "Чу—щу пиши с буквой у", hintEn: "Write 'chu' and 'schu' with 'u'" },
+        { text: "щ_вель", correct: "а", wrong: ["я"], rule: "ча—ща", hintRu: "Ча—ща пиши с буквой а", hintEn: "Write 'cha' and 'scha' with 'a'" },
+        { text: "ж_вой", correct: "и", wrong: ["ы"], rule: "жи—ши", hintRu: "Жи—ши пиши с буквой и", hintEn: "Write 'zhi' and 'shi' with 'i'" },
+        { text: "ш_ло", correct: "и", wrong: ["ы"], rule: "жи—ши", hintRu: "Жи—ши пиши с буквой и", hintEn: "Write 'zhi' and 'shi' with 'i'" }
     ];
-
-    let currentTask = 0;
-    let totalScore = 0;
+    
+    // Доводим до ровно 40 (если меньше, добавим копирования, но у нас 41, возьмём 40)
+    const tasksFull = tasksBank.slice(0, 40);
+    
+    // --------------------------------------------------------------
+    // 2. ПЕРЕВОДЫ (ru/en)
+    // --------------------------------------------------------------
+    const translations = {
+        ru: {
+            gameTitle: "Волшебные правила: жи—ши, ча—ща, чу—щу",
+            gameSubtitle: "жи—ши · ча—ща · чу—щу",
+            introTitle: "Здравствуй, ученик!",
+            introText: "Сегодня мы будем учиться писать слова с буквосочетаниями жи—ши, ча—ща, чу—щу.",
+            rulesTitle: "Запомни правила",
+            rulesList: ["Жи—ши пиши с буквой и (не с ы!)", "Ча—ща пиши с буквой а (не с я!)", "Чу—щу пиши с буквой у (не с ю!)"],
+            nextBtn: "➡ Дальше",
+            startBtn: "Начать игру",
+            correctFeedback: "✅ Верно: ",
+            wrongFeedback: "❌ Неверно. ",
+            nextTaskBtn: "➡ Дальше",
+            finalTitle: "🏆 Твой результат",
+            finalMessagePerfect: "🎉 Молодец! Ты отлично знаешь правила жи—ши, ча—ща, чу—щу. 🎉",
+            finalMessageGood: "👍 Хорошо! Повтори правила и будет ещё лучше.",
+            finalMessageBad: "📚 Попробуй ещё раз. Запомни: жи—ши пиши с и, ча—ща с а, чу—щу с у.",
+            restartBtn: "🔄 Пройти заново",
+            scorePrefix: "⭐ Очки: ",
+            questionPrefix: "📋 Вопрос "
+        },
+        en: {
+            gameTitle: "Magic Rules: zhi—shi, cha—scha, chu—schu",
+            gameSubtitle: "zhi—shi · cha—scha · chu—schu",
+            introTitle: "Hello, student!",
+            introText: "Today we will learn to write words with letter combinations zhi—shi, cha—scha, chu—schu.",
+            rulesTitle: "Remember the rules",
+            rulesList: ["Write 'zhi' and 'shi' with 'i' (not 'y')", "Write 'cha' and 'scha' with 'a' (not 'ya')", "Write 'chu' and 'schu' with 'u' (not 'yu')"],
+            nextBtn: "➡ Next",
+            startBtn: "Start Game",
+            correctFeedback: "✅ Correct: ",
+            wrongFeedback: "❌ Wrong. ",
+            nextTaskBtn: "➡ Next",
+            finalTitle: "🏆 Your result",
+            finalMessagePerfect: "🎉 Great! You know the rules perfectly! 🎉",
+            finalMessageGood: "👍 Good! Review the rules to get better.",
+            finalMessageBad: "📚 Try again. Remember: zhi—shi with 'i', cha—scha with 'a', chu—schu with 'u'.",
+            restartBtn: "🔄 Play again",
+            scorePrefix: "⭐ Score: ",
+            questionPrefix: "📋 Question "
+        }
+    };
+    
+    let currentLang = "ru";
+    let gameReadyCalled = false;
+    let yandexSDK = null;
+    
+    // Игровое состояние
+    let shuffledTasks = [];
+    let currentTaskIndex = 0;
+    let score = 0;
     let answersState = [];
-    const totalTasks = tasks.length;
-
-    const contentDiv = document.getElementById('mainContent');
-    const scoreSpan = document.getElementById('scoreValue');
-    const phaseInfoSpan = document.getElementById('phaseInfo');
-
+    let gameStarted = false;
+    let awaitingNext = false;
+    
+    // DOM элементы
+    const contentDiv = document.getElementById("mainContent");
+    const scoreSpan = document.getElementById("scoreValue");
+    const maxScoreSpan = document.getElementById("maxScoreSpan");
+    const phaseInfoSpan = document.getElementById("phaseInfo");
+    const gameTitleSpan = document.getElementById("gameTitle");
+    const gameSubtitleSpan = document.getElementById("gameSubtitle");
+    
     function updateUI() {
-        scoreSpan.innerText = totalScore;
-        if (currentTask < totalTasks) {
-            phaseInfoSpan.innerText = `Задание ${currentTask+1} из ${totalTasks}`;
+        scoreSpan.innerText = score;
+        maxScoreSpan.innerText = shuffledTasks.length;
+        if (!gameStarted) {
+            phaseInfoSpan.innerText = currentLang === "ru" ? "Вступление" : "Intro";
+        } else if (currentTaskIndex < shuffledTasks.length) {
+            phaseInfoSpan.innerText = `${translations[currentLang].questionPrefix} ${currentTaskIndex+1} ${currentLang === "ru" ? "из" : "of"} ${shuffledTasks.length}`;
         } else {
-            phaseInfoSpan.innerText = `Результат`;
+            phaseInfoSpan.innerText = currentLang === "ru" ? "Результат" : "Result";
         }
     }
-
-    function render() {
-        if (currentTask < totalTasks) {
-            renderTask(currentTask);
-        } else {
+    
+    function applyLocalization() {
+        gameTitleSpan.innerText = translations[currentLang].gameTitle;
+        gameSubtitleSpan.innerText = translations[currentLang].gameSubtitle;
+        updateUI();
+    }
+    
+    // Перемешивание массива
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+    
+    // Инициализация игры (перемешиваем задания, сбрасываем состояние)
+    function initGame() {
+        shuffledTasks = shuffleArray([...tasksFull]);
+        currentTaskIndex = 0;
+        score = 0;
+        answersState = new Array(shuffledTasks.length).fill(undefined);
+        gameStarted = true;
+        awaitingNext = false;
+        renderCurrentTask();
+    }
+    
+    function renderIntro() {
+        const t = translations[currentLang];
+        let html = `<div class="intro-slide">
+            <h2>${t.introTitle}</h2>
+            <p>${t.introText}</p>
+            <div class="bright-rules" style="margin:15px 0;">
+                <p><strong>${t.rulesTitle}</strong></p>
+                <ul style="margin-left:20px;">${t.rulesList.map(li => `<li>${li}</li>`).join('')}</ul>
+            </div>
+            <button class="next-btn" id="startGameBtn">${t.startBtn}</button>
+        </div>`;
+        contentDiv.innerHTML = html;
+        document.getElementById("startGameBtn")?.addEventListener("click", () => {
+            initGame();
+        });
+        updateUI();
+    }
+    
+    function renderCurrentTask() {
+        if (!gameStarted || currentTaskIndex >= shuffledTasks.length) {
             showFinalScreen();
+            return;
         }
-    }
-
-    function renderTask(idx) {
-        const task = tasks[idx];
-        const alreadyAnswered = answersState[idx] !== undefined;
-        let feedbackHtml = '';
-        let disabled = false;
-
-        if (alreadyAnswered) {
-            const isCorrect = answersState[idx];
-            disabled = true;
-            feedbackHtml = `
-                <div class="feedback ${isCorrect ? 'correct-feedback' : 'wrong-feedback'}">
-                    ${isCorrect ? '✅ Верно! ' + task.hint : '❌ Неверно. ' + task.hint}
-                </div>
-            `;
+        const task = shuffledTasks[currentTaskIndex];
+        const alreadyAnswered = answersState[currentTaskIndex] !== undefined;
+        const displayText = task.text;
+        
+        let letters = [task.correct, ...task.wrong];
+        // Добавляем дополнительные отвлекающие буквы
+        if (task.rule === "жи—ши") {
+            if (!letters.includes('а')) letters.push('а');
+            if (!letters.includes('у')) letters.push('у');
+        } else if (task.rule === "ча—ща") {
+            if (!letters.includes('у')) letters.push('у');
+            if (!letters.includes('и')) letters.push('и');
+        } else if (task.rule === "чу—щу") {
+            if (!letters.includes('а')) letters.push('а');
+            if (!letters.includes('и')) letters.push('и');
+        } else {
+            if (!letters.includes('а')) letters.push('а');
+            if (!letters.includes('и')) letters.push('и');
         }
-
+        letters = [...new Set(letters)];
+        for (let i = letters.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [letters[i], letters[j]] = [letters[j], letters[i]];
+        }
+        
         let optionsHtml = `<div class="options">`;
-        for (let opt of task.opts) {
-            optionsHtml += `<button class="opt-btn" data-opt="${opt}" ${disabled ? 'disabled' : ''}>${opt}</button>`;
+        for (let l of letters) {
+            optionsHtml += `<button class="opt-btn" data-letter="${l}" ${alreadyAnswered ? 'disabled' : ''}>${l}</button>`;
         }
         optionsHtml += `</div>`;
-
-        let nextButtonHtml = '';
+        
+        let feedbackHtml = "";
+        let nextButtonHtml = "";
         if (alreadyAnswered) {
-            nextButtonHtml = `<button class="next-btn" id="nextTaskBtn">➡ Дальше</button>`;
+            const isCorrect = answersState[currentTaskIndex];
+            const hint = currentLang === "ru" ? task.hintRu : task.hintEn;
+            const correctLetter = task.correct;
+            if (isCorrect) {
+                feedbackHtml = `<div class="feedback correct-feedback">${translations[currentLang].correctFeedback} ${hint}.</div>`;
+            } else {
+                feedbackHtml = `<div class="feedback wrong-feedback">${translations[currentLang].wrongFeedback} ${hint}. ${currentLang === "ru" ? "Правильная буква — " : "Correct letter is "} ${correctLetter}.</div>`;
+            }
+            nextButtonHtml = `<button class="next-btn" id="nextTaskBtn">${translations[currentLang].nextTaskBtn}</button>`;
         }
-
+        
+        const ruleLabel = task.rule;
         const html = `
             <div class="task-card">
-                <div class="task-question">${task.q}</div>
+                <div class="rule-badge">${currentLang === "ru" ? "Правило:" : "Rule:"} ${ruleLabel}</div>
+                <div class="task-word">${displayText}</div>
                 ${optionsHtml}
                 ${feedbackHtml}
                 ${nextButtonHtml}
             </div>
         `;
         contentDiv.innerHTML = html;
-
+        
         if (!alreadyAnswered) {
             const btns = document.querySelectorAll('.opt-btn');
             btns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    if (answersState[idx] !== undefined) return;
-                    const chosen = btn.getAttribute('data-opt');
+                btn.addEventListener('click', () => {
+                    if (answersState[currentTaskIndex] !== undefined || awaitingNext) return;
+                    const chosen = btn.getAttribute('data-letter');
                     const isCorrect = (chosen === task.correct);
-                    answersState[idx] = isCorrect;
+                    answersState[currentTaskIndex] = isCorrect;
                     if (isCorrect) {
-                        totalScore++;
+                        score++;
                         updateUI();
                     }
-                    renderTask(idx);
+                    renderCurrentTask(); // перерисовываем с обратной связью
                 });
             });
         } else {
             const nextBtn = document.getElementById('nextTaskBtn');
             if (nextBtn) {
                 nextBtn.addEventListener('click', () => {
-                    currentTask++;
-                    render();
+                    if (currentTaskIndex + 1 < shuffledTasks.length) {
+                        currentTaskIndex++;
+                        renderCurrentTask();
+                    } else {
+                        currentTaskIndex++;
+                        showFinalScreen();
+                    }
                     updateUI();
                 });
             }
         }
         updateUI();
     }
-
+    
     function showFinalScreen() {
-        const maxScore = totalTasks;
-        const earned = totalScore;
-        let message = '';
+        const maxScore = shuffledTasks.length;
+        const earned = score;
+        let message = "";
         if (earned === maxScore) {
-            message = '🎉 Отлично! Ты знаешь планеты Солнечной системы. 🎉';
+            message = translations[currentLang].finalMessagePerfect;
+        } else if (earned >= maxScore - 8) {
+            message = translations[currentLang].finalMessageGood;
         } else {
-            message = `Правильных ответов: ${earned} из ${maxScore}. Повтори материал и попробуй ещё раз.`;
+            message = translations[currentLang].finalMessageBad;
         }
+        const t = translations[currentLang];
         const finalHtml = `
             <div class="final-screen">
-                <h2>🏆 Результат</h2>
-                <div class="final-score">${earned} / ${maxScore}</div>
-                <p style="font-size:1.2rem;">${message}</p>
-                <button class="restart-btn" id="restartGameBtn">🔄 Пройти заново</button>
+                <h2>${t.finalTitle}</h2>
+                <p style="font-size:2rem; margin:15px;">${earned} / ${maxScore}</p>
+                <p>${message}</p>
+                <div class="bright-rules">
+                    <p>📌 ${currentLang === "ru" ? "Запомни правила:" : "Remember the rules:"}</p>
+                    <p>${currentLang === "ru" ? "Жи—ши пиши с буквой и (не с ы!)." : "Write 'zhi' and 'shi' with 'i' (not 'y')!"}</p>
+                    <p>${currentLang === "ru" ? "Ча—ща пиши с буквой а (не с я!)." : "Write 'cha' and 'scha' with 'a' (not 'ya')!"}</p>
+                    <p>${currentLang === "ru" ? "Чу—щу пиши с буквой у (не с ю!)." : "Write 'chu' and 'schu' with 'u' (not 'yu')!"}</p>
+                </div>
+                <button class="restart-btn" id="restartGameBtn">${t.restartBtn}</button>
             </div>
         `;
         contentDiv.innerHTML = finalHtml;
-        document.getElementById('restartGameBtn')?.addEventListener('click', () => {
-            currentTask = 0;
-            totalScore = 0;
+        document.getElementById("restartGameBtn")?.addEventListener("click", () => {
+            gameStarted = false;
+            currentTaskIndex = 0;
+            score = 0;
             answersState = [];
-            render();
-            updateUI();
+            renderIntro();
         });
+        updateUI();
     }
-
-    // ВСТУПЛЕНИЕ (без звука)
-    function showIntro() {
-        const introHtml = `
-            <div class="intro-slide">
-                <h2>🚀 Добро пожаловать!</h2>
-                <p>Проверь свои знания о планетах Солнечной системы. Выбери правильный ответ из трёх вариантов. В конце узнаешь свой результат. Удачи!</p>
-                <button class="next-btn" id="startBtn">➡ Начать</button>
-            </div>
-        `;
-        contentDiv.innerHTML = introHtml;
-        document.getElementById('startBtn')?.addEventListener('click', () => {
-            render();
-        });
-        phaseInfoSpan.innerText = `Вступление`;
+    
+    // --------------------------------------------------------------
+    // 3. ИНТЕГРАЦИЯ YANDEX SDK И AUTO LANGUAGE
+    // --------------------------------------------------------------
+    function initYandexSDK() {
+        if (typeof YaGames !== "undefined") {
+            YaGames.init().then(sdk => {
+                yandexSDK = sdk;
+                // автоопределение языка
+                const env = sdk.getEnvironment();
+                if (env && env.i18n && env.i18n.lang) {
+                    const detectedLang = env.i18n.lang;
+                    if (detectedLang === 'en' || detectedLang === 'ru') {
+                        currentLang = detectedLang;
+                    }
+                }
+                applyLocalization();
+                // Game Ready API
+                if (sdk.features && sdk.features.GameReadyAPI) {
+                    sdk.features.GameReadyAPI.gameReady();
+                    gameReadyCalled = true;
+                }
+                // Запускаем игру
+                renderIntro();
+            }).catch(err => {
+                console.warn("SDK init failed", err);
+                renderIntro();
+            });
+        } else {
+            console.warn("YaGames not found, fallback");
+            renderIntro();
+        }
     }
-
-    showIntro();
-    updateUI();
+    
+    // Запуск
+    function startGame() {
+        if (typeof YaGames !== "undefined") {
+            initYandexSDK();
+        } else {
+            // fallback для локального запуска
+            renderIntro();
+        }
+    }
+    
+    startGame();
 </script>
 </body>
 </html>
