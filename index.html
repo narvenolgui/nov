@@ -1,9 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Части суток | выбери и прикрепи слово</title>
+    <title>Части суток | подбери слово к картинке</title>
     <style>
         * {
             box-sizing: border-box;
@@ -60,17 +61,7 @@
         }
         .card-img {
             font-size: 4.8rem;
-            margin-bottom: 10px;
-        }
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #b45f1b;
-            background: #fef3da;
-            display: inline-block;
-            padding: 5px 18px;
-            border-radius: 40px;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
         .drop-zone {
             background: #eef3e0;
@@ -187,28 +178,20 @@
     <div class="sub">Нажми на слово, затем на пустое место под картинкой</div>
 
     <div class="grid" id="cardsGrid">
-        <!-- утро -->
         <div class="card" data-part="утро">
             <div class="card-img">🌅</div>
-            <div class="card-title">УТРО</div>
             <div class="drop-zone" data-part="утро" id="drop-утро"></div>
         </div>
-        <!-- день -->
         <div class="card" data-part="день">
             <div class="card-img">☀️</div>
-            <div class="card-title">ДЕНЬ</div>
             <div class="drop-zone" data-part="день" id="drop-день"></div>
         </div>
-        <!-- вечер -->
         <div class="card" data-part="вечер">
             <div class="card-img">🌇</div>
-            <div class="card-title">ВЕЧЕР</div>
             <div class="drop-zone" data-part="вечер" id="drop-вечер"></div>
         </div>
-        <!-- ночь -->
         <div class="card" data-part="ночь">
             <div class="card-img">🌙✨</div>
-            <div class="card-title">НОЧЬ</div>
             <div class="drop-zone" data-part="ночь" id="drop-ночь"></div>
         </div>
     </div>
@@ -226,14 +209,13 @@
 </div>
 
 <script>
-    // Состояние: какая зона какое слово получила
+    // Состояние игры
     let assignments = {
         утро: null,
         день: null,
         вечер: null,
         ночь: null
     };
-    // Выбранное в данный момент слово (чтобы перенести)
     let selectedWord = null;
 
     const dropZones = {
@@ -246,7 +228,6 @@
     const resetBtn = document.getElementById('resetBtn');
     const messageDiv = document.getElementById('messageArea');
 
-    // Обновить внешний вид зон (отобразить слово, если назначено)
     function updateZones() {
         for (let part in dropZones) {
             const zoneDiv = dropZones[part];
@@ -260,12 +241,10 @@
                 zoneDiv.appendChild(span);
             } else {
                 zoneDiv.classList.remove('filled');
-                // можно оставить пустым
             }
         }
     }
 
-    // Обновить кнопки слов: блокировать уже использованные
     function updateButtons() {
         const usedWords = Object.values(assignments).filter(v => v !== null);
         wordBtns.forEach(btn => {
@@ -278,7 +257,6 @@
                 btn.classList.remove('disabled-word');
             }
         });
-        // снять выделение с любого слова, если оно было
         clearSelected();
     }
 
@@ -289,7 +267,6 @@
         }
     }
 
-    // Проверка правильности и вывод сообщения
     function checkCompletion() {
         const allFilled = assignments.утро !== null && assignments.день !== null && assignments.вечер !== null && assignments.ночь !== null;
         if (!allFilled) {
@@ -312,61 +289,46 @@
         }
     }
 
-    // Действие при клике на зону
     function onZoneClick(part) {
-        if (assignments[part] !== null) {
-            // Если в зоне уже есть слово, ничего не делаем (нужно сначала сбросить)
-            return;
-        }
+        if (assignments[part] !== null) return;
         if (!selectedWord) {
-            // нет выбранного слова – показываем подсказку
             messageDiv.innerHTML = 'Сначала нажми на слово внизу, затем на пустое место.';
             messageDiv.className = 'message error';
             setTimeout(() => {
-                if (!messageDiv.innerHTML.includes('Нажми')) messageDiv.innerHTML = '';
-                else messageDiv.innerHTML = '';
+                if (messageDiv.innerHTML === 'Сначала нажми на слово внизу, затем на пустое место.') messageDiv.innerHTML = '';
             }, 1500);
             return;
         }
-        // Переносим выбранное слово в эту зону
         assignments[part] = selectedWord;
         updateZones();
         updateButtons();
-        clearSelected();
         checkCompletion();
-        // очистить сообщение
         messageDiv.innerHTML = '';
         messageDiv.className = 'message';
     }
 
-    // Сброс игры
     function resetGame() {
         assignments = { утро: null, день: null, вечер: null, ночь: null };
         selectedWord = null;
         updateZones();
         updateButtons();
-        clearSelected();
         messageDiv.innerHTML = '';
         messageDiv.className = 'message';
     }
 
-    // Обработчики для слов
     function initWordButtons() {
         wordBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (btn.disabled) return;
-                // Убираем выделение у всех
                 document.querySelectorAll('.word-btn').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
                 selectedWord = btn.getAttribute('data-word');
-                // убираем сообщение об ошибке
                 if (messageDiv.classList.contains('error')) messageDiv.innerHTML = '';
             });
         });
     }
 
-    // Обработчики для зон
     function initZones() {
         for (let part in dropZones) {
             const zone = dropZones[part];
@@ -377,9 +339,7 @@
         }
     }
 
-    // Чтобы клик на уже размещённом слове (внутри зоны) не срабатывал на зону
     function preventBubbling() {
-        // При клике на .placed-word не вызывать родительский клик
         document.querySelectorAll('.drop-zone').forEach(zone => {
             zone.addEventListener('click', (e) => {
                 if (e.target.closest('.placed-word')) {
@@ -399,3 +359,4 @@
 </script>
 </body>
 </html>
+```
