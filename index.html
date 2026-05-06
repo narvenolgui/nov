@@ -2,662 +2,390 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="description" content="Игра «Стоп! Не дай себя обмануть» — тренажёр по профилактике вовлечения подростков в преступные схемы. Полная поддержка двух языков, автоопределение языка, отсутствие прокрутки, пошаговый диалог.">
-    <title>Стоп! Не дай себя обмануть</title>
-    <script src="https://sdk.yandex.net/games/1.0/sdk.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Части суток | перетащи слово</title>
     <style>
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
             user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            position: fixed;
-            background: linear-gradient(145deg, #0a0f1e 0%, #0c1222 100%);
-            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
-            touch-action: pan-x pan-y;
         }
         body {
+            background: #aad4cf;
+            font-family: 'Segoe UI', 'Comic Neue', 'Comic Sans MS', 'Arial', sans-serif;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px;
+            margin: 0;
         }
         .game-container {
+            max-width: 1000px;
             width: 100%;
-            max-width: 950px;
-            height: 100%;
-            max-height: 750px;
-            background: rgba(18, 25, 45, 0.85);
-            backdrop-filter: blur(4px);
-            border-radius: 48px;
-            box-shadow: 0 25px 45px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
-            overflow-y: auto;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-        .game-container::-webkit-scrollbar {
-            display: none;
-        }
-        .header {
-            background: linear-gradient(135deg, #ff3b3b, #ff8c00);
-            padding: 20px 28px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-        .header h1 {
-            font-size: 1.8rem;
-            letter-spacing: -0.5px;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            color: white;
-            font-weight: 900;
-        }
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            background: #00000066;
-            padding: 12px 28px;
-            color: white;
-            font-weight: bold;
-            border-bottom: 1px solid #ffaa3377;
-            flex-shrink: 0;
-        }
-        .score-box, .question-counter {
-            background: #00000099;
-            padding: 5px 14px;
-            border-radius: 60px;
-            font-size: 1rem;
-        }
-        .content {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
-        .intro-slide, .pair-rule {
-            background: #0f1629;
-            border-radius: 32px;
+            background: #fffef7;
+            border-radius: 64px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.15);
             padding: 25px;
+        }
+        h1 {
             text-align: center;
+            color: #2a6b47;
+            font-size: 2rem;
+            margin-bottom: 10px;
         }
-        .intro-slide h2, .pair-rule h2 {
-            color: #ffaa44;
-            margin-bottom: 16px;
-            font-size: 1.6rem;
+        .sub {
+            text-align: center;
+            color: #5a7a6a;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
         }
-        .intro-slide p {
-            color: #f0f0f0;
-            font-size: 1rem;
-            line-height: 1.5;
-            text-align: left;
+        /* Сетка с картинками */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        .card {
+            background: #fff9ef;
+            border-radius: 48px;
+            padding: 20px 15px;
+            text-align: center;
+            box-shadow: 0 8px 0 #ddcca8;
+            border: 2px solid #ffda9e;
+            transition: 0.1s;
+        }
+        .card-img {
+            font-size: 5rem;
             margin-bottom: 15px;
         }
-        .intro-slide ul {
-            text-align: left;
-            color: #ddd;
-            margin: 15px 0 15px 25px;
-        }
-        /* Cтили для пошагового диалога */
-        .demo-message-box {
-            background: #1a1f2e;
-            border-radius: 28px;
-            padding: 25px;
-            margin: 15px 0;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .demo-message {
-            font-size: 1.1rem;
-            line-height: 1.5;
-            padding: 20px;
-            border-radius: 28px;
-            text-align: left;
-        }
-        .demo-message-left {
-            background: #2e4a6e;
-            color: white;
-            border-bottom-left-radius: 8px;
-        }
-        .demo-message-right {
-            background: #ffaa33;
-            color: #1f1a00;
-            border-bottom-right-radius: 8px;
-        }
-        .demo-message-system {
-            background: #000000cc;
-            color: #ffdd99;
-            text-align: center;
-            border: 1px solid #ffaa55;
-        }
-        .demo-counter {
-            text-align: center;
-            margin-top: 10px;
-            color: #aaa;
-            font-size: 0.85rem;
-        }
-        .chat-controls {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .chat-next-btn {
-            background: #ffaa44;
-            border: none;
-            padding: 10px 24px;
-            font-size: 1.1rem;
+        .card-title {
+            font-size: 1rem;
             font-weight: bold;
-            border-radius: 60px;
-            cursor: pointer;
+            color: #b45f1b;
+            margin-top: 5px;
+            background: #fef3da;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 40px;
         }
-        .next-btn, .restart-btn {
-            background: linear-gradient(95deg, #ff8800, #ffcc00);
+        .drop-zone {
+            margin-top: 15px;
+            background: #eef3e0;
+            border-radius: 60px;
+            padding: 15px 10px;
+            min-height: 80px;
+            border: 2px dashed #7fa87f;
+            transition: 0.1s;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .drop-zone.drag-over {
+            background: #cfe6cf;
+            border-color: #2a6b47;
+        }
+        .word-tag {
+            background: #ffaa44;
+            color: #2d2b1f;
+            font-weight: bold;
+            padding: 8px 18px;
+            border-radius: 60px;
+            display: inline-block;
+            font-size: 1.2rem;
+            box-shadow: 0 3px 0 #b97f2e;
+            cursor: grab;
+            transition: 0.05s linear;
+            user-select: none;
+        }
+        .word-tag:active {
+            cursor: grabbing;
+        }
+        .word-tag.dragging {
+            opacity: 0.4;
+        }
+        .words-pool {
+            background: #fff3e0;
+            border-radius: 60px;
+            padding: 20px;
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .reset-btn {
+            background: #7fa87f;
             border: none;
             width: 100%;
             padding: 14px;
             font-size: 1.2rem;
             font-weight: bold;
             border-radius: 60px;
+            cursor: pointer;
+            color: white;
             margin-top: 20px;
-            cursor: pointer;
+            font-family: inherit;
+            transition: 0.1s;
         }
-        .scenario {
-            background: #0f1629;
-            border-radius: 32px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-left: 8px solid #ff9900;
+        .reset-btn:active {
+            transform: scale(0.97);
         }
-        .scenario h2 {
-            color: #ffaa44;
-            margin-bottom: 12px;
-            font-size: 1.4rem;
-        }
-        .message-text {
-            background: #1e2a3e;
-            padding: 16px;
-            border-radius: 24px;
-            margin: 15px 0;
-            color: #f5f5f5;
-            font-style: italic;
-        }
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin: 15px 0;
-        }
-        .option-btn {
-            background: #2a3a52;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 60px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            text-align: left;
-            cursor: pointer;
-            color: white;
-            transition: 0.05s linear;
-        }
-        .option-btn:active { transform: scale(0.98); }
-        .feedback {
-            background: #000000cc;
-            padding: 12px;
-            border-radius: 28px;
-            margin-top: 12px;
-            font-weight: bold;
-            border-left: 6px solid #ffaa44;
-            color: white;
-        }
-        .manipulation-card {
-            background: #fff3e0;
-            border-radius: 28px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .manipulation-question {
-            background: white;
-            padding: 14px;
-            border-radius: 24px;
-            font-weight: bold;
-            color: #1e2a3e;
-            margin-bottom: 12px;
-        }
-        .manipulation-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .manip-btn {
-            background: #ffdd99;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 60px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .final-screen {
-            background: #fffaf0;
-            border-radius: 48px;
-            padding: 20px;
+        .message {
             text-align: center;
-        }
-        .final-score {
-            font-size: 2.2rem;
+            margin-top: 20px;
+            font-size: 1.2rem;
             font-weight: bold;
-            margin: 15px 0;
+            padding: 10px;
+            border-radius: 40px;
+        }
+        .success {
+            background: #d9f0da;
             color: #1e5a2a;
         }
-        .bright-rules {
-            background: #fffef7;
-            border-radius: 32px;
-            padding: 16px;
-            margin: 20px 0;
-            text-align: left;
+        .copyright {
+            text-align: center;
+            font-size: 0.7rem;
+            margin-top: 25px;
+            color: #aac7be;
         }
-        @media (max-width: 550px) {
-            .header h1 { font-size: 1.3rem; }
-            .message-text { font-size: 0.85rem; }
-            .demo-message { font-size: 0.9rem; padding: 12px; }
+        @media (max-width: 700px) {
+            .card-img { font-size: 3.5rem; }
+            .word-tag { font-size: 1rem; padding: 6px 14px; }
         }
     </style>
 </head>
 <body>
-<div class="game-container" id="gameRoot">
-    <div class="header">
-        <h1 id="gameMainTitle">Стоп! Не дай себя обмануть</h1>
+<div class="game-container">
+    <h1>🌞 Части суток</h1>
+    <div class="sub">Перетащи слово подходящей картинке</div>
+
+    <div class="grid" id="cardsGrid">
+        <!-- карточка утро -->
+        <div class="card" data-part="утро">
+            <div class="card-img">🌅</div>
+            <div class="card-title">УТРО</div>
+            <div class="drop-zone" id="drop-утро"></div>
+        </div>
+        <!-- карточка день -->
+        <div class="card" data-part="день">
+            <div class="card-img">☀️</div>
+            <div class="card-title">ДЕНЬ</div>
+            <div class="drop-zone" id="drop-день"></div>
+        </div>
+        <!-- карточка вечер -->
+        <div class="card" data-part="вечер">
+            <div class="card-img">🌇</div>
+            <div class="card-title">ВЕЧЕР</div>
+            <div class="drop-zone" id="drop-вечер"></div>
+        </div>
+        <!-- карточка ночь -->
+        <div class="card" data-part="ночь">
+            <div class="card-img">🌙✨</div>
+            <div class="card-title">НОЧЬ</div>
+            <div class="drop-zone" id="drop-ночь"></div>
+        </div>
     </div>
-    <div class="stats">
-        <div class="score-box">⭐ <span id="scoreValue">0</span> / <span id="maxScoreSpan">30</span></div>
-        <div class="question-counter">📋 <span id="phaseLabel"></span> <span id="qCurrent"></span> / <span id="qTotal"></span></div>
+
+    <!-- Область слов для перетаскивания -->
+    <div class="words-pool" id="wordsPool">
+        <div class="word-tag" draggable="true" data-word="утро">утро</div>
+        <div class="word-tag" draggable="true" data-word="день">день</div>
+        <div class="word-tag" draggable="true" data-word="вечер">вечер</div>
+        <div class="word-tag" draggable="true" data-word="ночь">ночь</div>
     </div>
-    <div class="content" id="dynamicContent"></div>
+
+    <button class="reset-btn" id="resetBtn">🔄 Начать заново</button>
+    <div id="messageArea" class="message"></div>
+    <div class="copyright">
+        интерактивное задание · окружающий мир
+    </div>
 </div>
 
 <script>
-    // ========== РАСШИРЕННАЯ БАЗА: 14 СЦЕНАРИЕВ + 16 МАНИПУЛЯЦИЙ = 30 ЗАДАНИЙ ==========
-    const langData = {
-        ru: {
-            gameTitle: "Стоп! Не дай себя обмануть",
-            intro: [
-                { title: "🚨 Будь внимателен!", text: "В интернете много мошенников, которые пытаются втянуть подростков в преступления (поджоги, взрывы). Они используют мессенджеры, соцсети, обещают деньги или запугивают. Наша игра научит тебя распознавать эти схемы и не попадаться." },
-                { title: "⚖️ Что тебе грозит?", text: "Мошенники обещают лёгкие деньги или «помощь следствию». На деле подросток становится фигурантом уголовного дела. Ответственность с 14 лет.", list: ["Уголовная ответственность (ст. 167, 205 УК РФ)", "Реальный срок лишения свободы", "Штрафы до миллионов рублей"] },
-                { title: "🎮 Как играть?", text: "Сначала разберём диалог мошенника (каждое сообщение появляется отдельно). Затем 14 ситуаций — выбери правильный ответ. После этого 16 заданий на распознавание манипуляций. В конце — памятка. Набирай баллы и будь безопасен!" }
-            ],
-            demo: [
-                { type: "left", text: "Это сотрудник банка. Срочно! Твой счёт взломан. Подожги банкомат на углу, и мы всё исправим. Заплатим 50 000 руб." },
-                { type: "right", text: "Что? Поджечь банкомат? Это преступление... Я не хочу." },
-                { type: "left", text: "Не бойся. Если не поможешь – посадят тебя. Это секретная операция." },
-                { type: "right", text: "Мне страшно. Но я знаю правило: незнакомец, требующий преступления – мошенник. Я сообщу родителям и в полицию 102." },
-                { type: "system", text: "✅ Правильно! Мошенник сразу исчезнет, когда поймёт, что его раскусили. Никогда не выполняй таких требований." }
-            ],
-            scenarios: [
-                { title: "1. 🔥 Звонок от «следователя»", msg: "Тебе пишет «полицейский»: «Твой друг замешан в теракте. Помоги следствию – подожги банкомат». Что делать?", opts: ["Сразу бежать с зажигалкой", "Требовать встречи в отделении и сказать родителям", "Перевести деньги"], correctIdx: 1, explain: "✅ Настоящий следователь не попросит подростка совершить поджог.", wrongExpl: ["❌ Срок до 20 лет.", "❌ Мошенник продолжит шантаж."] },
-                { title: "2. 💔 «Девушка» из соцсетей", msg: "«Сними видео – подожги АЗС. Дам 30 000 руб. и встретимся. Никому не говори!»", opts: ["Согласиться", "Предложить встретиться, если откажется – блокировать и рассказать родителям", "Просить интимные фото"], correctIdx: 1, explain: "✅ Мошенник не согласится на встречу.", wrongExpl: ["❌ Реальные случаи – задержали.", "❌ Фото используют для шантажа."] },
-                { title: "3. 💰 Легкий заработок", msg: "Реклама: «Кинь коктейль Молотова в банкомат – получи 50 000 руб. сразу».", opts: ["Согласиться", "Игнорировать, блокировать, пожаловаться", "Просить предоплату 50%"], correctIdx: 1, explain: "✅ Не повёлся на лёгкие деньги.", wrongExpl: ["❌ Статья 205 УК – до 20 лет.", "❌ Не обманешь преступников."] },
-                { title: "4. 😨 Угроза близким", msg: "«Если не подорвешь банкомат до 19:00, убьём твою маму. Никому не звони!»", opts: ["В панике бежать подрывать", "Немедленно позвонить маме, затем в полицию 102", "Просить доказательства"], correctIdx: 1, explain: "✅ 99% угроз – фейк. Полиция задержит.", wrongExpl: ["❌ Ты совершишь теракт.", "❌ Обсуждение даёт рычаги давления."] },
-                { title: "5. 📞 Звонок из «банка»", msg: "«Ваша карта заблокирована. Назовите CVV‑код для перевыпуска».", opts: ["Назвать код", "Положить трубку и перезвонить в банк по номеру с карты", "Перевести деньги на другой счёт"], correctIdx: 1, explain: "✅ Банк никогда не спрашивает CVV.", wrongExpl: ["❌ Данные украдут.", "❌ Деньги спишут."] },
-                { title: "6. 💻 Ссылка от друга", msg: "Друг в соцсети скинул ссылку: «Заходи, тут раздают айфоны». Но друг странно пишет.", opts: ["Сразу перейти", "Переспросить лично, не переходить по ссылке", "Отправить ссылку всем"], correctIdx: 1, explain: "✅ Аккаунт друга могли взломать.", wrongExpl: ["❌ Взломают и твой аккаунт.", "❌ Фишинг."] },
-                { title: "7. 🎁 Выигрыш в конкурсе", msg: "«Вы выиграли iPhone 16. Для получения оплатите доставку 500 руб».", opts: ["Оплатить", "Проигнорировать, это мошенничество", "Перевести 500 руб и ждать"], correctIdx: 1, explain: "✅ Настоящие конкурсы не просят предоплату.", wrongExpl: ["❌ Деньги пропадут.", "❌ Мошенник попросит ещё."] },
-                { title: "8. 🚔 Лжесотрудник ДПС", msg: "«Вы нарушили ПДД, камера зафиксировала. Переведите штраф 5000 руб на карту, иначе лишат прав».", opts: ["Перевести", "Проверить через Госуслуги, не переводить незнакомцам", "Позвонить в полицию"], correctIdx: 1, explain: "✅ Штрафы не оплачиваются на личные карты.", wrongExpl: ["❌ Потеряешь деньги.", "❌ Мошенник использует страх."] },
-                { title: "9. 🏦 Перевод от «работодателя»", msg: "«Ты нам нужен. Сделай «закладку» с наркотиками, заплатим 100 000 руб».", opts: ["Согласиться", "Отказаться, сообщить родителям и в полицию 102", "Спросить подробности"], correctIdx: 1, explain: "✅ За наркотики – реальный срок.", wrongExpl: ["❌ Статья 228 УК – до 20 лет.", "❌ Вовлекут в банду."] },
-                { title: "10. 💬 Просьба о помощи", msg: "«Мой ребёнок в больнице, срочно нужны деньги. Переведи 5000 руб, завтра верну».", opts: ["Перевести", "Не переводить незнакомцам, предложить обратиться в соцслужбы", "Перевести половину"], correctIdx: 1, explain: "✅ Частая схема обмана на жалости.", wrongExpl: ["❌ Деньги пропадут.", "❌ Мошенник обманет."] },
-                { title: "11. 🔐 Взлом аккаунта", msg: "«На вашу почту пытаются войти. Перейдите по ссылке, чтобы подтвердить вход».", opts: ["Перейти", "Не переходить, проверить почту напрямую", "Ввести пароль на сайте"], correctIdx: 1, explain: "✅ Фишинговая ссылка украдёт пароль.", wrongExpl: ["❌ Потеряешь аккаунт.", "❌ Украдут данные."] },
-                { title: "12. 📦 Сомнительная посылка", msg: "Пришло СМС: «Ваша посылка задержана. Для получения оплатите 300 руб по ссылке».", opts: ["Оплатить", "Не переходить, проверить у официального перевозчика", "Отправить деньги на карту"], correctIdx: 1, explain: "✅ Если вы ничего не заказывали – это обман.", wrongExpl: ["❌ Спишут все деньги с карты.", "❌ Украдут данные."] },
-                { title: "13. 💣 «Безопасный счёт»", msg: "Звонок: «Ваши деньги пытаются украсть, переведите их на безопасный счёт по номеру карты...»", opts: ["Перевести", "Положить трубку, это мошенники", "Назвать пароль от кабинета"], correctIdx: 1, explain: "✅ Безопасных счетов не существует.", wrongExpl: ["❌ Потеряешь все сбережения.", "❌ Украдут данные карты."] },
-                { title: "14. 📱 Код из СМС", msg: "Незнакомец: «Я ошибочно перевёл вам деньги, верните их. Скажите код из СМС для подтверждения».", opts: ["Назвать код", "Не называть код, это мошенники", "Перевести деньги сразу"], correctIdx: 1, explain: "✅ Код из СМС никогда нельзя сообщать!", wrongExpl: ["❌ Спишут все деньги.", "❌ Получат доступ к кабинету."] }
-            ],
-            manipulations: [
-                { q: "«Ты должен поджечь банкомат, иначе твоего друга посадят на 10 лет».", opts: ["Давление на страх и вину", "Обещание лёгких денег", "Физическая угроза"], correctIdx: 0, exp: "Давление на страх – классика." },
-                { q: "«Никому не говори, это секретная операция».", opts: ["Изоляция от помощи", "Шантаж", "Похвала"], correctIdx: 0, exp: "Изоляция – главный красный флаг." },
-                { q: "«Сделай это, и мы станем друзьями, ещё и деньги получишь».", opts: ["Обещание денег и дружбы", "Угроза", "Запугивание"], correctIdx: 0, exp: "Заставляют доверять." },
-                { q: "Правильное действие при подозрительном предложении?", opts: ["Сразу согласиться", "Скриншот, блокировка, рассказать взрослым", "Удалить переписку"], correctIdx: 1, exp: "Скриншот – доказательство." },
-                { q: "«Переведи деньги за освобождение друга из полиции».", opts: ["Реальная помощь", "Мошенничество", "Благотворительность"], correctIdx: 1, exp: "Фейковая история." },
-                { q: "Сообщение от блогера: перейди по ссылке и получи приз.", opts: ["Перейти", "Игнорировать, проверить через официальный аккаунт", "Отправить друзьям"], correctIdx: 1, exp: "Фишинг." },
-                { q: "«Если не поможешь, твоя семья пострадает».", opts: ["Шантаж", "Дружеская помощь", "Реклама"], correctIdx: 0, exp: "Чистый шантаж и угроза." },
-                { q: "«Только ты можешь это сделать, ты герой».", opts: ["Лесть и возвышение", "Обещание денег", "Изоляция"], correctIdx: 0, exp: "Давят на гордость." },
-                { q: "«Это займёт всего минуту, ничего страшного».", opts: ["Преуменьшение опасности", "Угроза", "Шантаж"], correctIdx: 0, exp: "Обесценивают риск." },
-                { q: "«Все твои друзья уже согласились».", opts: ["Давление большинством", "Лесть", "Угроза"], correctIdx: 0, exp: "Стадное чувство." },
-                { q: "«Переведи деньги, и я верну в два раза больше».", opts: ["Финансовая пирамида", "Реальный заработок", "Помощь"], correctIdx: 0, exp: "Вернуть в два раза больше нереально." },
-                { q: "«Если не переведешь 5000 руб, опубликуем твои личные фото».", opts: ["Вымогательство", "Просьба", "Реклама"], correctIdx: 0, exp: "Прямое вымогательство – в полицию!" },
-                { q: "«Вы выиграли розыгрыш, но для получения переведите 1000 руб за доставку».", opts: ["Лохотрон", "Реальный выигрыш", "Помощь"], correctIdx: 0, exp: "За выигрыш никогда не платят." },
-                { q: "«Помоги перевести деньги с карты – там 1 млн, за услугу 100 тыс».", opts: ["Дропперство (соучастие в отмывании)", "Реальная работа", "Благотворительность"], correctIdx: 0, exp: "Ты станешь соучастником и получишь срок." },
-                { q: "«Срочно, твои фото попали в сеть. Чтобы удалить, заплати 10 000 руб».", opts: ["Вымогательство", "Предупреждение", "Помощь"], correctIdx: 0, exp: "Фото украли мошенники, не плати." },
-                { q: "«Со мной случилась беда, переведи сколько можешь».", opts: ["Обман на жалости", "Реальная помощь", "Дружеская просьба"], correctIdx: 0, exp: "Не проверяя – не переводи незнакомцам." }
-            ],
-            finalPerfect: "🎉 Идеально! Ты ни разу не дал себя обмануть!",
-            finalGood: "👍 Хорошо! Но будь внимательнее.",
-            finalBad: "📚 Попробуй ещё раз. Не дай себя обмануть!",
-            restartBtn: "🔄 Пройти заново",
-            nextBtn: "➡ Дальше",
-            demoNext: "Далее →",
-            phaseIntro: "Вступление",
-            phaseDemo: "Диалог",
-            phaseGame: "Ситуация",
-            phasePractice: "Манипуляции",
-            phaseFinal: "Результат"
-        },
-        en: {
-            gameTitle: "Stop! Don't let yourself be deceived",
-            intro: [
-                { title: "🚨 Be careful!", text: "Scammers online try to involve teens in crimes. Our game teaches you to recognize these schemes." },
-                { title: "⚖️ What's at stake?", text: "Easy money promises lead to criminal charges. Responsibility from age 14.", list: ["Criminal liability", "Prison sentence", "Large fines"] },
-                { title: "🎮 How to play?", text: "We analyze a dialogue (each message appears separately). Then 14 situations – choose the right answer. Then 16 manipulation recognition tasks. Finally – a memo." }
-            ],
-            demo: [
-                { type: "left", text: "Bank employee: Your account is hacked. Set the ATM on fire, we'll pay 50,000 rubles." },
-                { type: "right", text: "What? Burn an ATM? That's a crime... I won't." },
-                { type: "left", text: "Don't be afraid. If you don't help, you'll be arrested. Secret operation." },
-                { type: "right", text: "I'm scared. But I know the rule: a stranger demanding a crime is a scammer. I'll tell parents and call 102." },
-                { type: "system", text: "✅ Correct! Never comply with such demands." }
-            ],
-            scenarios: [
-                { title: "1. 🔥 Call from 'investigator'", msg: "'Policeman': Your friend is in terrorism. Set the ATM on fire.", opts: ["Run with a lighter", "Demand a meeting at police station and tell parents", "Transfer money"], correctIdx: 1, explain: "✅ Real investigator wouldn't ask a teen to commit arson.", wrongExpl: ["❌ Up to 20 years.", "❌ Scammer continues."] },
-                { title: "2. 💔 'Girl' from social media", msg: "Pretty girl: Set a gas station on fire, get 30k rub and a date. Don't tell anyone!", opts: ["Agree", "Offer real meeting, if refused – block and tell parents", "Ask for intimate photos"], correctIdx: 1, explain: "✅ Scammer won't agree to a meeting.", wrongExpl: ["❌ Teens were arrested.", "❌ Photos used for blackmail."] },
-                { title: "3. 💰 Easy money", msg: "Ad: Throw a Molotov cocktail at an ATM – get 50k rub instantly.", opts: ["Agree", "Ignore, block, report", "Ask for 50% prepayment"], correctIdx: 1, explain: "✅ Didn't fall for easy money.", wrongExpl: ["❌ Article 205 – up to 20 years.", "❌ Can't fool criminals."] },
-                { title: "4. 😨 Threat to loved ones", msg: "Stranger: Set the ATM on fire by 7 PM or we'll kill your mother. Don't call anyone!", opts: ["Panic and run", "Immediately call mom, then police 102", "Ask for proof"], correctIdx: 1, explain: "✅ 99% threats are fake.", wrongExpl: ["❌ You'll commit terrorism.", "❌ Discussing gives leverage."] },
-                { title: "5. 📞 Call from 'bank'", msg: "Your card is blocked. Give us your CVV code to reissue.", opts: ["Give CVV", "Hang up and call the bank using the number on your card", "Transfer money"], correctIdx: 1, explain: "✅ Bank never asks for CVV.", wrongExpl: ["❌ Data stolen.", "❌ Money taken."] },
-                { title: "6. 💻 Link from friend", msg: "Friend sent a link: 'Get free iPhones'. Friend writes strangely.", opts: ["Click immediately", "Ask personally, don't click", "Share with everyone"], correctIdx: 1, explain: "✅ Friend's account hacked.", wrongExpl: ["❌ Your account hacked.", "❌ Phishing."] },
-                { title: "7. 🎁 Contest win", msg: "You won iPhone 16. Pay 500 rub for delivery.", opts: ["Pay", "Ignore – scam", "Transfer 500 rub"], correctIdx: 1, explain: "✅ Real contests don't ask for prepayment.", wrongExpl: ["❌ Money lost.", "❌ Scammer asks for more."] },
-                { title: "8. 🚔 Fake traffic police", msg: "You violated traffic rules. Pay 5000 rub, otherwise lose license.", opts: ["Pay", "Check through official portal, don't pay strangers", "Call police"], correctIdx: 1, explain: "✅ Fines aren't paid to personal cards.", wrongExpl: ["❌ Lose money.", "❌ Scammer uses fear."] },
-                { title: "9. 🏦 Job offer from 'employer'", msg: "Make a drug stash, get 100k rub.", opts: ["Agree", "Refuse, tell parents and police 102", "Ask details"], correctIdx: 1, explain: "✅ Drugs = prison sentence.", wrongExpl: ["❌ Article 228 – up to 20 years.", "❌ You'll join a gang."] },
-                { title: "10. 💬 Help request", msg: "My child is in hospital, need 5000 rub. I'll return tomorrow.", opts: ["Transfer", "Don't transfer, suggest social services", "Transfer half"], correctIdx: 1, explain: "✅ Common pity scam.", wrongExpl: ["❌ Money lost.", "❌ Scammer will not return."] },
-                { title: "11. 🔐 Account hack", msg: "Someone is trying to access your email. Click the link to confirm.", opts: ["Click", "Don't click, check email directly", "Enter password on site"], correctIdx: 1, explain: "✅ Phishing link will steal password.", wrongExpl: ["❌ Lose account.", "❌ Data stolen."] },
-                { title: "12. 📦 Suspicious parcel", msg: "SMS: Your parcel is delayed. Pay 300 rub via link to receive.", opts: ["Pay", "Don't click, check with official carrier", "Send money to card"], correctIdx: 1, explain: "✅ If you didn't order anything – it's a scam.", wrongExpl: ["❌ They will drain your card.", "❌ Steal your data."] },
-                { title: "13. 💣 'Safe account'", msg: "Call: Your money is being stolen. Transfer to a safe account...", opts: ["Transfer", "Hang up – it's a scam", "Tell your password"], correctIdx: 1, explain: "✅ Safe accounts don't exist.", wrongExpl: ["❌ Lose all savings.", "❌ Card data stolen."] },
-                { title: "14. 📱 SMS code", msg: "Stranger: 'I mistakenly sent you money, return it. Tell me the SMS code to confirm.'", opts: ["Give code", "Don't give code – it's a scam", "Transfer money immediately"], correctIdx: 1, explain: "✅ Never share SMS codes!", wrongExpl: ["❌ All money will be stolen.", "❌ They'll access your account."] }
-            ],
-            manipulations: [
-                { q: "Set ATM on fire or your friend will be imprisoned.", opts: ["Fear & guilt", "Easy money", "Physical threat"], correctIdx: 0, exp: "Fear pressure." },
-                { q: "Don't tell anyone, it's a secret operation.", opts: ["Isolation", "Blackmail", "Flattery"], correctIdx: 0, exp: "Isolation – red flag." },
-                { q: "Do this, we'll become friends and you'll get money.", opts: ["Promise of money & friendship", "Threat", "Intimidation"], correctIdx: 0, exp: "Gain trust." },
-                { q: "Correct action for suspicious offer?", opts: ["Agree", "Screenshot, block, tell adults", "Delete conversation"], correctIdx: 1, exp: "Screenshot is evidence." },
-                { q: "Send money to free friend from police.", opts: ["Real help", "Fraud", "Charity"], correctIdx: 1, exp: "Fake story." },
-                { q: "Blogger link: click and get a prize.", opts: ["Click", "Ignore, verify via official account", "Share"], correctIdx: 1, exp: "Phishing." },
-                { q: "If you don't help, your family will suffer.", opts: ["Blackmail", "Help", "Ad"], correctIdx: 0, exp: "Pure blackmail." },
-                { q: "Only you can do this, you are a hero.", opts: ["Flattery", "Money", "Isolation"], correctIdx: 0, exp: "Pressure on pride." },
-                { q: "It will take just a minute, nothing bad.", opts: ["Downplaying danger", "Threat", "Blackmail"], correctIdx: 0, exp: "Minimizing risk." },
-                { q: "All your friends already agreed.", opts: ["Peer pressure", "Flattery", "Threat"], correctIdx: 0, exp: "Herd mentality." },
-                { q: "Transfer money and I'll return double.", opts: ["Pyramid scheme", "Real earnings", "Help"], correctIdx: 0, exp: "Too good to be true." },
-                { q: "Transfer 5000 rub or we'll publish your private photos.", opts: ["Extortion", "Request", "Ad"], correctIdx: 0, exp: "Direct extortion – call police!" },
-                { q: "You won a prize, but pay 1000 rub for delivery.", opts: ["Scam", "Real prize", "Charity"], correctIdx: 0, exp: "Never pay to receive a prize." },
-                { q: "Help transfer money – there's 1 million, you get 100k.", opts: ["Money laundering (complicity)", "Real job", "Charity"], correctIdx: 0, exp: "You become an accomplice." },
-                { q: "Your photos leaked. Pay 10,000 rub to remove them.", opts: ["Blackmail", "Warning", "Help"], correctIdx: 0, exp: "Don't pay, report to police." },
-                { q: "I'm in trouble, send whatever you can.", opts: ["Pity scam", "Real help", "Friend request"], correctIdx: 0, exp: "Don't send money to strangers." }
-            ],
-            finalPerfect: "🎉 Perfect! You never got deceived!",
-            finalGood: "👍 Good! Be more careful.",
-            finalBad: "📚 Try again. Don't be deceived!",
-            restartBtn: "🔄 Play again",
-            nextBtn: "➡ Next",
-            demoNext: "Next →",
-            phaseIntro: "Intro",
-            phaseDemo: "Dialogue",
-            phaseGame: "Situation",
-            phasePractice: "Manipulations",
-            phaseFinal: "Result"
-        }
+    // Игра "перетащи слово к картинке" – части суток
+    // Правильные соответствия: утро → утро, день → день, вечер → вечер, ночь → ночь
+    // Хранение состояния: какая зона какое слово приняла
+    let assignments = {
+        утро: null,
+        день: null,
+        вечер: null,
+        ночь: null
     };
 
-    let currentLang = "ru";
-    let gameState = {
-        phase: "intro",
-        introIdx: 0,
-        demoStep: 0,
-        gameIdx: 0,
-        practiceIdx: 0,
-        score: 0,
-        maxScore: 30,
-        gameAnswered: false,
-        gameChoicesShuffled: [],
-        practiceChoicesShuffled: [],
-        practiceAnswers: []
+    const dropZones = {
+        утро: document.getElementById('drop-утро'),
+        день: document.getElementById('drop-день'),
+        вечер: document.getElementById('drop-вечер'),
+        ночь: document.getElementById('drop-ночь')
     };
+    const wordsPoolDiv = document.getElementById('wordsPool');
+    let wordsList = []; // массив { element, word }
 
-    const contentDiv = document.getElementById("dynamicContent");
-    const scoreSpan = document.getElementById("scoreValue");
-    const maxScoreSpan = document.getElementById("maxScoreSpan");
-    const phaseLabelSpan = document.getElementById("phaseLabel");
-    const qCurrentSpan = document.getElementById("qCurrent");
-    const qTotalSpan = document.getElementById("qTotal");
-    const gameTitleElem = document.getElementById("gameMainTitle");
-
-    function updateUI() {
-        scoreSpan.innerText = gameState.score;
-        maxScoreSpan.innerText = gameState.maxScore;
-        if (gameState.phase === "intro") {
-            phaseLabelSpan.innerText = langData[currentLang].phaseIntro;
-            qTotalSpan.innerText = langData[currentLang].intro.length;
-            qCurrentSpan.innerText = gameState.introIdx+1;
-        } else if (gameState.phase === "demo") {
-            phaseLabelSpan.innerText = langData[currentLang].phaseDemo;
-            qTotalSpan.innerText = langData[currentLang].demo.length;
-            qCurrentSpan.innerText = gameState.demoStep+1;
-        } else if (gameState.phase === "game") {
-            phaseLabelSpan.innerText = langData[currentLang].phaseGame;
-            qTotalSpan.innerText = langData[currentLang].scenarios.length;
-            qCurrentSpan.innerText = gameState.gameIdx+1;
-        } else if (gameState.phase === "practice") {
-            phaseLabelSpan.innerText = langData[currentLang].phasePractice;
-            qTotalSpan.innerText = langData[currentLang].manipulations.length;
-            qCurrentSpan.innerText = gameState.practiceIdx+1;
+    // Проверка, все ли слова расставлены
+    function checkComplete() {
+        const allAssigned = assignments.утро !== null && assignments.день !== null && assignments.вечер !== null && assignments.ночь !== null;
+        const messageDiv = document.getElementById('messageArea');
+        if (allAssigned) {
+            let correct = true;
+            if (assignments.утро !== 'утро') correct = false;
+            if (assignments.день !== 'день') correct = false;
+            if (assignments.вечер !== 'вечер') correct = false;
+            if (assignments.ночь !== 'ночь') correct = false;
+            if (correct) {
+                messageDiv.innerHTML = '🎉 Молодец! Все слова на своих местах! 🎉';
+                messageDiv.className = 'message success';
+            } else {
+                messageDiv.innerHTML = '❌ Некоторые слова перепутаны. Нажми «Начать заново» и попробуй ещё раз.';
+                messageDiv.className = 'message';
+                messageDiv.style.background = '#ffe0e0';
+                messageDiv.style.color = '#a1131e';
+            }
         } else {
-            phaseLabelSpan.innerText = langData[currentLang].phaseFinal;
-            qTotalSpan.innerText = "?";
+            messageDiv.innerHTML = '';
+            messageDiv.className = 'message';
         }
     }
 
-    function shuffleWithMapping(originalOpts, correctOriginalIdx) {
-        let items = originalOpts.map((text, idx) => ({ text, originalIdx: idx }));
-        for (let i = items.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [items[i], items[j]] = [items[j], items[i]];
-        }
-        return { shuffledTexts: items.map(i => i.text), newCorrectIdx: items.findIndex(i => i.originalIdx === correctOriginalIdx) };
-    }
-
-    function prepareShuffledData() {
-        const scenarios = langData[currentLang].scenarios;
-        const mans = langData[currentLang].manipulations;
-        gameState.gameChoicesShuffled = scenarios.map(s => shuffleWithMapping(s.opts, s.correctIdx));
-        gameState.practiceChoicesShuffled = mans.map(m => shuffleWithMapping(m.opts, m.correctIdx));
-    }
-
-    function render() {
-        if (gameState.phase === "intro") renderIntro();
-        else if (gameState.phase === "demo") renderDemo();
-        else if (gameState.phase === "game") renderScenario();
-        else if (gameState.phase === "practice") renderManipulation();
-        else renderFinal();
-        updateUI();
-    }
-
-    function renderIntro() {
-        const introArr = langData[currentLang].intro;
-        if (gameState.introIdx >= introArr.length) {
-            gameState.phase = "demo";
-            gameState.demoStep = 0;
-            render();
-            return;
-        }
-        const slide = introArr[gameState.introIdx];
-        let html = `<div class="intro-slide"><h2>${slide.title}</h2><p>${slide.text}</p>`;
-        if (slide.list) html += `<ul>${slide.list.map(li => `<li>• ${li}</li>`).join('')}</ul>`;
-        html += `<button class="next-btn" id="introNext">${langData[currentLang].nextBtn}</button></div>`;
-        contentDiv.innerHTML = html;
-        document.getElementById("introNext")?.addEventListener("click", () => { gameState.introIdx++; render(); });
-    }
-
-    // ПОШАГОВЫЙ ДИАЛОГ: показываем ТОЛЬКО ТЕКУЩЕЕ сообщение, без накопления
-    function renderDemo() {
-        const demoArr = langData[currentLang].demo;
-        if (gameState.demoStep >= demoArr.length) {
-            gameState.phase = "game";
-            gameState.gameIdx = 0;
-            gameState.gameAnswered = false;
-            prepareShuffledData();
-            render();
-            return;
-        }
-        const msg = demoArr[gameState.demoStep];
-        let msgClass = "";
-        if (msg.type === "left") msgClass = "demo-message-left";
-        else if (msg.type === "right") msgClass = "demo-message-right";
-        else msgClass = "demo-message-system";
-        
-        const total = demoArr.length;
-        const current = gameState.demoStep + 1;
-        let html = `<div class="intro-slide">
-            <h2>📱 Разбор диалога</h2>
-            <div class="demo-message-box">
-                <div class="demo-message ${msgClass}">${msg.text}</div>
-            </div>
-            <div class="demo-counter">${current} / ${total}</div>
-            <div class="chat-controls">
-                <button class="chat-next-btn" id="demoNext">${langData[currentLang].demoNext}</button>
-            </div>
-        </div>`;
-        contentDiv.innerHTML = html;
-        document.getElementById("demoNext")?.addEventListener("click", () => {
-            gameState.demoStep++;
-            render();
-        });
-    }
-
-    function renderScenario() {
-        const scenarios = langData[currentLang].scenarios;
-        if (gameState.gameIdx >= scenarios.length) {
-            gameState.phase = "practice";
-            gameState.practiceIdx = 0;
-            gameState.practiceAnswers = new Array(scenarios.length).fill(undefined);
-            render();
-            return;
-        }
-        const sc = scenarios[gameState.gameIdx];
-        const shuffled = gameState.gameChoicesShuffled[gameState.gameIdx];
-        const answered = gameState.gameAnswered !== false;
-        let feedbackHtml = "";
-        if (answered) {
-            const isCorrect = (gameState.gameAnswered === shuffled.newCorrectIdx);
-            if (isCorrect) { gameState.score++; feedbackHtml = `<div class="feedback" style="border-left-color:#2ecc71;">${sc.explain}</div>`; }
-            else { feedbackHtml = `<div class="feedback" style="border-left-color:#e74c3c;">${sc.wrongExpl[gameState.gameAnswered] || "❌ Неверно. " + sc.explain}</div>`; }
-        }
-        let optsHtml = `<div class="options">${shuffled.shuffledTexts.map((opt, idx) => `<button class="option-btn" data-opt="${idx}" ${answered ? "disabled" : ""}>${opt}</button>`).join('')}</div>`;
-        let nextBtn = answered ? `<button class="next-btn" id="nextTaskBtn">${langData[currentLang].nextBtn}</button>` : "";
-        let html = `<div class="scenario"><h2>${sc.title}</h2><div class="message-text">📨 ${sc.msg}</div>${optsHtml}${feedbackHtml}${nextBtn}</div>`;
-        contentDiv.innerHTML = html;
-        if (!answered) {
-            document.querySelectorAll(".option-btn").forEach(btn => btn.addEventListener("click", (e) => {
-                if (gameState.gameAnswered !== false) return;
-                gameState.gameAnswered = parseInt(btn.dataset.opt);
-                render();
-            }));
-        } else {
-            document.getElementById("nextTaskBtn")?.addEventListener("click", () => {
-                gameState.gameIdx++;
-                gameState.gameAnswered = false;
-                render();
-            });
+    // Обновить отображение в drop-зонах
+    function renderDropZones() {
+        for (let part in dropZones) {
+            const zone = dropZones[part];
+            zone.innerHTML = '';
+            const word = assignments[part];
+            if (word) {
+                const tag = document.createElement('div');
+                tag.className = 'word-tag';
+                tag.style.background = '#b0d9b1';
+                tag.style.boxShadow = 'none';
+                tag.style.cursor = 'default';
+                tag.innerText = word;
+                zone.appendChild(tag);
+            }
         }
     }
 
-    function renderManipulation() {
-        const manipulations = langData[currentLang].manipulations;
-        if (gameState.practiceIdx >= manipulations.length) {
-            gameState.phase = "final";
-            render();
-            return;
-        }
-        const mn = manipulations[gameState.practiceIdx];
-        const shuffled = gameState.practiceChoicesShuffled[gameState.practiceIdx];
-        const answered = gameState.practiceAnswers[gameState.practiceIdx] !== undefined;
-        let feedbackHtml = "";
-        if (answered) {
-            const isCorrect = gameState.practiceAnswers[gameState.practiceIdx];
-            if (isCorrect) { gameState.score++; feedbackHtml = `<div class="feedback" style="border-left-color:#2ecc71;">✅ ${mn.exp}</div>`; }
-            else { feedbackHtml = `<div class="feedback" style="border-left-color:#e74c3c;">❌ Неверно. ${mn.exp}</div>`; }
-        }
-        let optsHtml = `<div class="manipulation-options">${shuffled.shuffledTexts.map((opt, idx) => `<button class="manip-btn" data-man="${idx}" ${answered ? "disabled" : ""}>${opt}</button>`).join('')}</div>`;
-        let nextBtn = answered ? `<button class="next-btn" id="nextManipBtn">${langData[currentLang].nextBtn}</button>` : "";
-        let html = `<div class="manipulation-card"><div class="manipulation-question">${mn.q}</div>${optsHtml}${feedbackHtml}${nextBtn}</div>`;
-        contentDiv.innerHTML = html;
-        if (!answered) {
-            document.querySelectorAll(".manip-btn").forEach(btn => btn.addEventListener("click", (e) => {
-                let choice = parseInt(btn.dataset.man);
-                gameState.practiceAnswers[gameState.practiceIdx] = (choice === shuffled.newCorrectIdx);
-                render();
-            }));
-        } else {
-            document.getElementById("nextManipBtn")?.addEventListener("click", () => {
-                gameState.practiceIdx++;
-                render();
-            });
+    // Обновить видимость неиспользованных слов (скрыть те, что уже куда-то привязаны)
+    function updateWordsPool() {
+        const usedWords = Object.values(assignments).filter(v => v !== null);
+        for (let w of wordsList) {
+            if (usedWords.includes(w.word)) {
+                w.element.style.display = 'none';
+                w.element.setAttribute('draggable', 'false');
+            } else {
+                w.element.style.display = 'inline-block';
+                w.element.setAttribute('draggable', 'true');
+            }
         }
     }
 
-    function renderFinal() {
-        let msg = "";
-        if (gameState.score === gameState.maxScore) msg = langData[currentLang].finalPerfect;
-        else if (gameState.score >= 20) msg = langData[currentLang].finalGood;
-        else msg = langData[currentLang].finalBad;
-        let html = `<div class="final-screen">
-            <h2>🏆 ${langData[currentLang].phaseFinal}</h2>
-            <div class="final-score">${gameState.score} / ${gameState.maxScore}</div>
-            <p>${msg}</p>
-            <div class="bright-rules">
-                <p>📌 Главные правила безопасности:</p>
-                <p>• Не доверяй незнакомцам в интернете</p>
-                <p>• При угрозах или странных просьбах — сразу сообщи родителям</p>
-                <p>• Звони 102 — полиция поможет</p>
-                <p>• Делай скриншоты переписки</p>
-            </div>
-            <button class="restart-btn" id="restartGame">${langData[currentLang].restartBtn}</button>
-        </div>`;
-        contentDiv.innerHTML = html;
-        document.getElementById("restartGame")?.addEventListener("click", () => resetGame());
-    }
-
+    // Сброс игры
     function resetGame() {
-        gameState = {
-            phase: "intro", introIdx: 0, demoStep: 0, gameIdx: 0, practiceIdx: 0,
-            score: 0, maxScore: 30, gameAnswered: false,
-            gameChoicesShuffled: [], practiceChoicesShuffled: [], practiceAnswers: []
+        assignments = {
+            утро: null,
+            день: null,
+            вечер: null,
+            ночь: null
         };
-        render();
+        renderDropZones();
+        updateWordsPool();
+        const messageDiv = document.getElementById('messageArea');
+        messageDiv.innerHTML = '';
+        messageDiv.className = 'message';
     }
 
-    function initSDK() {
-        if (typeof YaGames !== "undefined") {
-            YaGames.init().then(ysdk => {
-                window.ysdk = ysdk;
-                ysdk.features.LoadingAPI?.ready();
-                const env = ysdk.getEnvironment();
-                if (env?.i18n?.lang === "en") currentLang = "en";
-                else currentLang = "ru";
-                gameTitleElem.innerText = langData[currentLang].gameTitle;
-                if (ysdk.features && ysdk.features.GameReadyAPI) {
-                    ysdk.features.GameReadyAPI.gameReady();
-                }
-                render();
-            }).catch(err => {
-                console.warn("SDK error", err);
-                render();
-            });
-        } else {
-            render();
+    // Перетаскивание: dragstart
+    function onDragStart(e) {
+        const target = e.target.closest('.word-tag');
+        if (!target) return;
+        if (target.getAttribute('draggable') === 'false') {
+            e.preventDefault();
+            return false;
+        }
+        const word = target.getAttribute('data-word');
+        e.dataTransfer.setData('text/plain', word);
+        e.dataTransfer.effectAllowed = 'copy';
+        target.classList.add('dragging');
+        setTimeout(() => target.classList.remove('dragging'), 0);
+    }
+
+    // drag over
+    function onDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+        const dropZone = e.target.closest('.drop-zone');
+        if (dropZone) {
+            dropZone.classList.add('drag-over');
         }
     }
 
-    initSDK();
+    function onDragLeave(e) {
+        const dropZone = e.target.closest('.drop-zone');
+        if (dropZone) {
+            dropZone.classList.remove('drag-over');
+        }
+    }
+
+    // drop
+    function onDrop(e) {
+        e.preventDefault();
+        const dropZone = e.target.closest('.drop-zone');
+        if (!dropZone) return;
+        dropZone.classList.remove('drag-over');
+        // Определим, для какой части суток эта зона
+        let targetPart = null;
+        for (let part in dropZones) {
+            if (dropZones[part] === dropZone) {
+                targetPart = part;
+                break;
+            }
+        }
+        if (!targetPart) return;
+        const word = e.dataTransfer.getData('text/plain');
+        if (!word) return;
+        // Проверяем, что слово не использовано
+        const used = Object.values(assignments).some(v => v === word);
+        if (used) return; // слово уже используется
+        // Присваиваем
+        assignments[targetPart] = word;
+        renderDropZones();
+        updateWordsPool();
+        checkComplete();
+    }
+
+    // Инициализация
+    function init() {
+        // собираем элементы слов
+        const wordElements = document.querySelectorAll('#wordsPool .word-tag');
+        wordsList = [];
+        wordElements.forEach(el => {
+            const word = el.getAttribute('data-word');
+            wordsList.push({ element: el, word: word });
+            // вешаем обработчики перетаскивания
+            el.addEventListener('dragstart', onDragStart);
+            el.addEventListener('dragend', (e) => {
+                e.target.classList.remove('dragging');
+            });
+        });
+        // добавляем обработчики для зон сброса
+        for (let part in dropZones) {
+            const zone = dropZones[part];
+            zone.addEventListener('dragover', onDragOver);
+            zone.addEventListener('dragleave', onDragLeave);
+            zone.addEventListener('drop', onDrop);
+        }
+        // кнопка сброса
+        const resetBtn = document.getElementById('resetBtn');
+        resetBtn.addEventListener('click', resetGame);
+        // начальный рендер
+        renderDropZones();
+        updateWordsPool();
+        checkComplete();
+    }
+
+    init();
 </script>
 </body>
 </html>
