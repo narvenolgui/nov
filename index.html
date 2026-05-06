@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Части суток | перетащи слово</title>
+    <title>Части суток | выбери и прикрепи слово</title>
     <style>
         * {
             box-sizing: border-box;
@@ -36,75 +36,66 @@
         .sub {
             text-align: center;
             color: #5a7a6a;
-            margin-bottom: 25px;
-            font-size: 1.1rem;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            background: #fef3da;
+            display: inline-block;
+            width: 100%;
+            padding: 6px;
+            border-radius: 60px;
         }
-        /* Сетка с картинками */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 25px;
-            margin: 30px 0;
+            gap: 20px;
+            margin: 25px 0;
         }
         .card {
             background: #fff9ef;
             border-radius: 48px;
-            padding: 20px 15px;
+            padding: 18px 12px;
             text-align: center;
             box-shadow: 0 8px 0 #ddcca8;
             border: 2px solid #ffda9e;
-            transition: 0.1s;
         }
         .card-img {
-            font-size: 5rem;
-            margin-bottom: 15px;
+            font-size: 4.8rem;
+            margin-bottom: 10px;
         }
         .card-title {
-            font-size: 1rem;
+            font-size: 1.2rem;
             font-weight: bold;
             color: #b45f1b;
-            margin-top: 5px;
             background: #fef3da;
             display: inline-block;
-            padding: 5px 15px;
+            padding: 5px 18px;
             border-radius: 40px;
+            margin-bottom: 12px;
         }
         .drop-zone {
-            margin-top: 15px;
             background: #eef3e0;
             border-radius: 60px;
-            padding: 15px 10px;
-            min-height: 80px;
+            padding: 12px;
+            min-height: 70px;
             border: 2px dashed #7fa87f;
             transition: 0.1s;
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 10px;
         }
-        .drop-zone.drag-over {
+        .drop-zone.filled {
             background: #cfe6cf;
             border-color: #2a6b47;
         }
-        .word-tag {
-            background: #ffaa44;
-            color: #2d2b1f;
+        .placed-word {
+            background: #b0d9b1;
+            color: #1e5a2a;
             font-weight: bold;
             padding: 8px 18px;
             border-radius: 60px;
-            display: inline-block;
             font-size: 1.2rem;
-            box-shadow: 0 3px 0 #b97f2e;
-            cursor: grab;
-            transition: 0.05s linear;
-            user-select: none;
-        }
-        .word-tag:active {
-            cursor: grabbing;
-        }
-        .word-tag.dragging {
-            opacity: 0.4;
+            box-shadow: none;
+            display: inline-block;
         }
         .words-pool {
             background: #fff3e0;
@@ -114,7 +105,36 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
+        }
+        .word-btn {
+            background: #ffaa44;
+            color: #2d2b1f;
+            border: none;
+            font-weight: bold;
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 4px 0 #b97f2e;
+            transition: 0.05s linear;
+        }
+        .word-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #b97f2e;
+        }
+        .word-btn.selected {
+            background: #f4a261;
+            box-shadow: 0 0 0 2px #2a6b47;
+            outline: none;
+        }
+        .word-btn.disabled-word {
+            background: #c0c0a0;
+            box-shadow: none;
+            cursor: default;
+            opacity: 0.6;
+            transform: none;
         }
         .reset-btn {
             background: #7fa87f;
@@ -138,12 +158,16 @@
             margin-top: 20px;
             font-size: 1.2rem;
             font-weight: bold;
-            padding: 10px;
+            padding: 12px;
             border-radius: 40px;
         }
         .success {
             background: #d9f0da;
             color: #1e5a2a;
+        }
+        .error {
+            background: #ffe0e0;
+            color: #a1131e;
         }
         .copyright {
             text-align: center;
@@ -153,67 +177,64 @@
         }
         @media (max-width: 700px) {
             .card-img { font-size: 3.5rem; }
-            .word-tag { font-size: 1rem; padding: 6px 14px; }
+            .word-btn { font-size: 1rem; padding: 8px 20px; }
         }
     </style>
 </head>
 <body>
 <div class="game-container">
     <h1>🌞 Части суток</h1>
-    <div class="sub">Перетащи слово подходящей картинке</div>
+    <div class="sub">Нажми на слово, затем на пустое место под картинкой</div>
 
     <div class="grid" id="cardsGrid">
-        <!-- карточка утро -->
+        <!-- утро -->
         <div class="card" data-part="утро">
             <div class="card-img">🌅</div>
             <div class="card-title">УТРО</div>
-            <div class="drop-zone" id="drop-утро"></div>
+            <div class="drop-zone" data-part="утро" id="drop-утро"></div>
         </div>
-        <!-- карточка день -->
+        <!-- день -->
         <div class="card" data-part="день">
             <div class="card-img">☀️</div>
             <div class="card-title">ДЕНЬ</div>
-            <div class="drop-zone" id="drop-день"></div>
+            <div class="drop-zone" data-part="день" id="drop-день"></div>
         </div>
-        <!-- карточка вечер -->
+        <!-- вечер -->
         <div class="card" data-part="вечер">
             <div class="card-img">🌇</div>
             <div class="card-title">ВЕЧЕР</div>
-            <div class="drop-zone" id="drop-вечер"></div>
+            <div class="drop-zone" data-part="вечер" id="drop-вечер"></div>
         </div>
-        <!-- карточка ночь -->
+        <!-- ночь -->
         <div class="card" data-part="ночь">
             <div class="card-img">🌙✨</div>
             <div class="card-title">НОЧЬ</div>
-            <div class="drop-zone" id="drop-ночь"></div>
+            <div class="drop-zone" data-part="ночь" id="drop-ночь"></div>
         </div>
     </div>
 
-    <!-- Область слов для перетаскивания -->
     <div class="words-pool" id="wordsPool">
-        <div class="word-tag" draggable="true" data-word="утро">утро</div>
-        <div class="word-tag" draggable="true" data-word="день">день</div>
-        <div class="word-tag" draggable="true" data-word="вечер">вечер</div>
-        <div class="word-tag" draggable="true" data-word="ночь">ночь</div>
+        <button class="word-btn" data-word="утро">утро</button>
+        <button class="word-btn" data-word="день">день</button>
+        <button class="word-btn" data-word="вечер">вечер</button>
+        <button class="word-btn" data-word="ночь">ночь</button>
     </div>
 
     <button class="reset-btn" id="resetBtn">🔄 Начать заново</button>
     <div id="messageArea" class="message"></div>
-    <div class="copyright">
-        интерактивное задание · окружающий мир
-    </div>
+    <div class="copyright">окружающий мир · 1 класс</div>
 </div>
 
 <script>
-    // Игра "перетащи слово к картинке" – части суток
-    // Правильные соответствия: утро → утро, день → день, вечер → вечер, ночь → ночь
-    // Хранение состояния: какая зона какое слово приняла
+    // Состояние: какая зона какое слово получила
     let assignments = {
         утро: null,
         день: null,
         вечер: null,
         ночь: null
     };
+    // Выбранное в данный момент слово (чтобы перенести)
+    let selectedWord = null;
 
     const dropZones = {
         утро: document.getElementById('drop-утро'),
@@ -221,171 +242,160 @@
         вечер: document.getElementById('drop-вечер'),
         ночь: document.getElementById('drop-ночь')
     };
-    const wordsPoolDiv = document.getElementById('wordsPool');
-    let wordsList = []; // массив { element, word }
+    const wordBtns = document.querySelectorAll('.word-btn');
+    const resetBtn = document.getElementById('resetBtn');
+    const messageDiv = document.getElementById('messageArea');
 
-    // Проверка, все ли слова расставлены
-    function checkComplete() {
-        const allAssigned = assignments.утро !== null && assignments.день !== null && assignments.вечер !== null && assignments.ночь !== null;
-        const messageDiv = document.getElementById('messageArea');
-        if (allAssigned) {
-            let correct = true;
-            if (assignments.утро !== 'утро') correct = false;
-            if (assignments.день !== 'день') correct = false;
-            if (assignments.вечер !== 'вечер') correct = false;
-            if (assignments.ночь !== 'ночь') correct = false;
-            if (correct) {
-                messageDiv.innerHTML = '🎉 Молодец! Все слова на своих местах! 🎉';
-                messageDiv.className = 'message success';
-            } else {
-                messageDiv.innerHTML = '❌ Некоторые слова перепутаны. Нажми «Начать заново» и попробуй ещё раз.';
-                messageDiv.className = 'message';
-                messageDiv.style.background = '#ffe0e0';
-                messageDiv.style.color = '#a1131e';
-            }
-        } else {
-            messageDiv.innerHTML = '';
-            messageDiv.className = 'message';
-        }
-    }
-
-    // Обновить отображение в drop-зонах
-    function renderDropZones() {
+    // Обновить внешний вид зон (отобразить слово, если назначено)
+    function updateZones() {
         for (let part in dropZones) {
-            const zone = dropZones[part];
-            zone.innerHTML = '';
+            const zoneDiv = dropZones[part];
+            zoneDiv.innerHTML = '';
             const word = assignments[part];
             if (word) {
-                const tag = document.createElement('div');
-                tag.className = 'word-tag';
-                tag.style.background = '#b0d9b1';
-                tag.style.boxShadow = 'none';
-                tag.style.cursor = 'default';
-                tag.innerText = word;
-                zone.appendChild(tag);
-            }
-        }
-    }
-
-    // Обновить видимость неиспользованных слов (скрыть те, что уже куда-то привязаны)
-    function updateWordsPool() {
-        const usedWords = Object.values(assignments).filter(v => v !== null);
-        for (let w of wordsList) {
-            if (usedWords.includes(w.word)) {
-                w.element.style.display = 'none';
-                w.element.setAttribute('draggable', 'false');
+                zoneDiv.classList.add('filled');
+                const span = document.createElement('span');
+                span.className = 'placed-word';
+                span.innerText = word;
+                zoneDiv.appendChild(span);
             } else {
-                w.element.style.display = 'inline-block';
-                w.element.setAttribute('draggable', 'true');
+                zoneDiv.classList.remove('filled');
+                // можно оставить пустым
             }
         }
     }
 
-    // Сброс игры
-    function resetGame() {
-        assignments = {
-            утро: null,
-            день: null,
-            вечер: null,
-            ночь: null
-        };
-        renderDropZones();
-        updateWordsPool();
-        const messageDiv = document.getElementById('messageArea');
+    // Обновить кнопки слов: блокировать уже использованные
+    function updateButtons() {
+        const usedWords = Object.values(assignments).filter(v => v !== null);
+        wordBtns.forEach(btn => {
+            const word = btn.getAttribute('data-word');
+            if (usedWords.includes(word)) {
+                btn.disabled = true;
+                btn.classList.add('disabled-word');
+            } else {
+                btn.disabled = false;
+                btn.classList.remove('disabled-word');
+            }
+        });
+        // снять выделение с любого слова, если оно было
+        clearSelected();
+    }
+
+    function clearSelected() {
+        if (selectedWord) {
+            document.querySelectorAll('.word-btn').forEach(btn => btn.classList.remove('selected'));
+            selectedWord = null;
+        }
+    }
+
+    // Проверка правильности и вывод сообщения
+    function checkCompletion() {
+        const allFilled = assignments.утро !== null && assignments.день !== null && assignments.вечер !== null && assignments.ночь !== null;
+        if (!allFilled) {
+            messageDiv.innerHTML = '';
+            messageDiv.className = 'message';
+            return;
+        }
+        let correct = true;
+        if (assignments.утро !== 'утро') correct = false;
+        if (assignments.день !== 'день') correct = false;
+        if (assignments.вечер !== 'вечер') correct = false;
+        if (assignments.ночь !== 'ночь') correct = false;
+
+        if (correct) {
+            messageDiv.innerHTML = '🎉 Отлично! Все слова на своих местах. 🎉';
+            messageDiv.className = 'message success';
+        } else {
+            messageDiv.innerHTML = '❌ Некоторые слова перепутаны. Нажми «Начать заново» и попробуй ещё раз.';
+            messageDiv.className = 'message error';
+        }
+    }
+
+    // Действие при клике на зону
+    function onZoneClick(part) {
+        if (assignments[part] !== null) {
+            // Если в зоне уже есть слово, ничего не делаем (нужно сначала сбросить)
+            return;
+        }
+        if (!selectedWord) {
+            // нет выбранного слова – показываем подсказку
+            messageDiv.innerHTML = 'Сначала нажми на слово внизу, затем на пустое место.';
+            messageDiv.className = 'message error';
+            setTimeout(() => {
+                if (!messageDiv.innerHTML.includes('Нажми')) messageDiv.innerHTML = '';
+                else messageDiv.innerHTML = '';
+            }, 1500);
+            return;
+        }
+        // Переносим выбранное слово в эту зону
+        assignments[part] = selectedWord;
+        updateZones();
+        updateButtons();
+        clearSelected();
+        checkCompletion();
+        // очистить сообщение
         messageDiv.innerHTML = '';
         messageDiv.className = 'message';
     }
 
-    // Перетаскивание: dragstart
-    function onDragStart(e) {
-        const target = e.target.closest('.word-tag');
-        if (!target) return;
-        if (target.getAttribute('draggable') === 'false') {
-            e.preventDefault();
-            return false;
-        }
-        const word = target.getAttribute('data-word');
-        e.dataTransfer.setData('text/plain', word);
-        e.dataTransfer.effectAllowed = 'copy';
-        target.classList.add('dragging');
-        setTimeout(() => target.classList.remove('dragging'), 0);
+    // Сброс игры
+    function resetGame() {
+        assignments = { утро: null, день: null, вечер: null, ночь: null };
+        selectedWord = null;
+        updateZones();
+        updateButtons();
+        clearSelected();
+        messageDiv.innerHTML = '';
+        messageDiv.className = 'message';
     }
 
-    // drag over
-    function onDragOver(e) {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'copy';
-        const dropZone = e.target.closest('.drop-zone');
-        if (dropZone) {
-            dropZone.classList.add('drag-over');
-        }
-    }
-
-    function onDragLeave(e) {
-        const dropZone = e.target.closest('.drop-zone');
-        if (dropZone) {
-            dropZone.classList.remove('drag-over');
-        }
-    }
-
-    // drop
-    function onDrop(e) {
-        e.preventDefault();
-        const dropZone = e.target.closest('.drop-zone');
-        if (!dropZone) return;
-        dropZone.classList.remove('drag-over');
-        // Определим, для какой части суток эта зона
-        let targetPart = null;
-        for (let part in dropZones) {
-            if (dropZones[part] === dropZone) {
-                targetPart = part;
-                break;
-            }
-        }
-        if (!targetPart) return;
-        const word = e.dataTransfer.getData('text/plain');
-        if (!word) return;
-        // Проверяем, что слово не использовано
-        const used = Object.values(assignments).some(v => v === word);
-        if (used) return; // слово уже используется
-        // Присваиваем
-        assignments[targetPart] = word;
-        renderDropZones();
-        updateWordsPool();
-        checkComplete();
-    }
-
-    // Инициализация
-    function init() {
-        // собираем элементы слов
-        const wordElements = document.querySelectorAll('#wordsPool .word-tag');
-        wordsList = [];
-        wordElements.forEach(el => {
-            const word = el.getAttribute('data-word');
-            wordsList.push({ element: el, word: word });
-            // вешаем обработчики перетаскивания
-            el.addEventListener('dragstart', onDragStart);
-            el.addEventListener('dragend', (e) => {
-                e.target.classList.remove('dragging');
+    // Обработчики для слов
+    function initWordButtons() {
+        wordBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (btn.disabled) return;
+                // Убираем выделение у всех
+                document.querySelectorAll('.word-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedWord = btn.getAttribute('data-word');
+                // убираем сообщение об ошибке
+                if (messageDiv.classList.contains('error')) messageDiv.innerHTML = '';
             });
         });
-        // добавляем обработчики для зон сброса
-        for (let part in dropZones) {
-            const zone = dropZones[part];
-            zone.addEventListener('dragover', onDragOver);
-            zone.addEventListener('dragleave', onDragLeave);
-            zone.addEventListener('drop', onDrop);
-        }
-        // кнопка сброса
-        const resetBtn = document.getElementById('resetBtn');
-        resetBtn.addEventListener('click', resetGame);
-        // начальный рендер
-        renderDropZones();
-        updateWordsPool();
-        checkComplete();
     }
 
-    init();
+    // Обработчики для зон
+    function initZones() {
+        for (let part in dropZones) {
+            const zone = dropZones[part];
+            zone.addEventListener('click', (e) => {
+                e.stopPropagation();
+                onZoneClick(part);
+            });
+        }
+    }
+
+    // Чтобы клик на уже размещённом слове (внутри зоны) не срабатывал на зону
+    function preventBubbling() {
+        // При клике на .placed-word не вызывать родительский клик
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('click', (e) => {
+                if (e.target.closest('.placed-word')) {
+                    e.stopPropagation();
+                }
+            });
+        });
+    }
+
+    resetBtn.addEventListener('click', resetGame);
+
+    initWordButtons();
+    initZones();
+    updateZones();
+    updateButtons();
+    preventBubbling();
 </script>
 </body>
 </html>
