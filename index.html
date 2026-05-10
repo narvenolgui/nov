@@ -3,39 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Перекрёсток · Альтернативные реальности</title>
-  <meta name="description" content="Выбирай свой путь: 4 мира, глубокие моральные дилеммы, 5–7 вариантов в каждой истории. Русский, английский.">
+  <title>Перекрёсток · Альтернальные реальности</title>
+  <meta name="description" content="Глубокая нарративная игра: 4 мира, 5–7 выборов в каждом, моральные дилеммы, полный английский перевод. Яндекс.Игры SDK, автоопределение языка.">
   <script src="https://sdk.yandex.net/games/1.0/sdk.js"></script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
-    html, body { width: 100%; height: 100%; overflow: hidden; position: fixed; background: radial-gradient(circle at 30% 20%, #0b0f1c, #12172f); font-family: 'Segoe UI', system-ui; touch-action: pan-x pan-y; }
-    body { display: flex; justify-content: center; align-items: center; padding: 12px; }
-    .game-container { max-width: 780px; width: 100%; height: 96vh; background: rgba(18, 25, 45, 0.85); backdrop-filter: blur(12px); border-radius: 44px; border: 1px solid #3e5a8e; padding: 20px 18px; overflow-y: auto; scrollbar-width: thin; }
-    .game-container::-webkit-scrollbar { width: 4px; background: #2a3a66; }
-    .game-container::-webkit-scrollbar-thumb { background: #8aaeff; border-radius: 4px; }
-    h1 { font-size: 1.8rem; font-weight: 800; text-align: center; background: linear-gradient(135deg, #c6dbff, #8aaeff); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 4px; }
-    .subhead { text-align: center; color: #a8b9e0; font-size: 0.8rem; margin-bottom: 14px; border-bottom: 1px dashed #2f3b66; padding-bottom: 8px; }
-    .legend-box { background: #0e1629c0; border-radius: 28px; padding: 12px 16px; margin-bottom: 20px; border-left: 6px solid #ffb347; color: #dfe7ff; font-size: 0.85rem; line-height: 1.45; }
-    .world-selector { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
-    .world-btn { background: #121b30; border: 2px solid #2e3f66; border-radius: 60px; padding: 12px 18px; font-size: 1.2rem; font-weight: bold; color: #d3e0ff; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.05s linear; box-shadow: 0 5px 0 #0b101f; }
-    .world-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #0b101f; }
-    .world-icon { font-size: 1.8rem; background: #1f2c4b; width: 48px; height: 48px; border-radius: 30px; display: flex; align-items: center; justify-content: center; }
-    .world-desc { font-size: 0.7rem; font-weight: normal; color: #9aacd9; margin-top: 2px; }
-    .story-screen { display: none; }
-    .story-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-    .back-btn { background: none; border: 1px solid #43588a; color: #b8c9ff; border-radius: 40px; padding: 5px 14px; cursor: pointer; font-size: 0.8rem; }
-    .world-title { font-size: 1.4rem; font-weight: 700; background: linear-gradient(to right, #e0c3ff, #a6c1ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .scene-card { background: #0e1629e0; border-radius: 32px; padding: 20px 18px; border: 1px solid #304a7a; margin-bottom: 16px; }
-    .scene-text { font-size: 1rem; line-height: 1.5; margin-bottom: 20px; color: #ecf2ff; }
-    .choices-area { display: flex; flex-direction: column; gap: 10px; }
-    .choice-btn { background: #19264d; border: none; border-left: 6px solid #3f6ef0; border-radius: 60px; padding: 12px 16px; font-size: 0.9rem; text-align: left; color: #ecf2ff; cursor: pointer; box-shadow: 0 3px 0 #0c1322; transition: 0.05s linear; }
-    .choice-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #0c1322; }
-    .restart-small { text-align: center; margin-top: 12px; }
-    .btn-restart { background: none; border: 2px dashed #4e6eb0; color: #bfd0ff; padding: 8px 18px; border-radius: 40px; cursor: pointer; font-size: 0.85rem; }
-    .reflection-box { background: #1e2846; border-radius: 28px; padding: 16px; margin-top: 20px; border-left: 8px solid #ffb347; color: #f0e6d2; font-size: 0.85rem; }
-    .reflection-title { font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-    .alternative-path { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #5f7ec0; font-style: italic; color: #b8c9ff; }
-    .hidden { display: none !important; }
+    *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+    html,body{width:100%;height:100%;overflow:hidden;position:fixed;background:radial-gradient(circle at 20% 30%,#0b0f1c,#12172f);font-family:'Segoe UI',system-ui;touch-action:pan-x pan-y}
+    body{display:flex;justify-content:center;align-items:center;padding:12px}
+    .game-container{max-width:780px;width:100%;height:96vh;background:rgba(18,25,45,0.85);backdrop-filter:blur(12px);border-radius:44px;border:1px solid #3e5a8e;padding:20px 18px;overflow-y:auto;scrollbar-width:thin}
+    .game-container::-webkit-scrollbar{width:4px;background:#2a3a66}
+    .game-container::-webkit-scrollbar-thumb{background:#8aaeff;border-radius:4px}
+    h1{font-size:1.8rem;font-weight:800;text-align:center;background:linear-gradient(135deg,#c6dbff,#8aaeff);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px}
+    .subhead{text-align:center;color:#a8b9e0;font-size:0.8rem;margin-bottom:14px;border-bottom:1px dashed #2f3b66;padding-bottom:8px}
+    .legend-box{background:#0e1629c0;border-radius:28px;padding:12px 16px;margin-bottom:20px;border-left:6px solid #ffb347;color:#dfe7ff;font-size:0.85rem;line-height:1.45}
+    .world-selector{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+    .world-btn{background:#121b30;border:2px solid #2e3f66;border-radius:60px;padding:12px 18px;font-size:1.2rem;font-weight:bold;color:#d3e0ff;display:flex;align-items:center;gap:12px;cursor:pointer;transition:0.05s linear;box-shadow:0 5px 0 #0b101f}
+    .world-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #0b101f}
+    .world-icon{font-size:1.8rem;background:#1f2c4b;width:48px;height:48px;border-radius:30px;display:flex;align-items:center;justify-content:center}
+    .world-desc{font-size:0.7rem;font-weight:normal;color:#9aacd9;margin-top:2px}
+    .story-screen{display:none}
+    .story-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+    .back-btn{background:none;border:1px solid #43588a;color:#b8c9ff;border-radius:40px;padding:5px 14px;cursor:pointer;font-size:0.8rem}
+    .world-title{font-size:1.4rem;font-weight:700;background:linear-gradient(to right,#e0c3ff,#a6c1ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .scene-card{background:#0e1629e0;border-radius:32px;padding:20px 18px;border:1px solid #304a7a;margin-bottom:16px}
+    .scene-text{font-size:1rem;line-height:1.5;margin-bottom:20px;color:#ecf2ff}
+    .choices-area{display:flex;flex-direction:column;gap:10px}
+    .choice-btn{background:#19264d;border:none;border-left:6px solid #3f6ef0;border-radius:60px;padding:12px 16px;font-size:0.9rem;text-align:left;color:#ecf2ff;cursor:pointer;box-shadow:0 3px 0 #0c1322;transition:0.05s linear}
+    .choice-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #0c1322}
+    .restart-small{text-align:center;margin-top:12px}
+    .btn-restart{background:none;border:2px dashed #4e6eb0;color:#bfd0ff;padding:8px 18px;border-radius:40px;cursor:pointer;font-size:0.85rem}
+    .reflection-box{background:#1e2846;border-radius:28px;padding:16px;margin-top:20px;border-left:8px solid #ffb347;color:#f0e6d2;font-size:0.85rem}
+    .reflection-title{font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+    .alternative-path{margin-top:10px;padding-top:10px;border-top:1px dashed #5f7ec0;font-style:italic;color:#b8c9ff}
+    .hidden{display:none !important}
   </style>
 </head>
 <body>
@@ -50,7 +50,7 @@
       <div class="world-btn" data-world="detox"><span class="world-icon">🌿</span><div><span id="world3Name">Тишина в сети</span><div class="world-desc">Сутки без телефона</div></div></div>
       <div class="world-btn" data-world="shadow"><span class="world-icon">🕶️</span><div><span id="world4Name">Тень в Максе</span><div class="world-desc">Опасные знакомства</div></div></div>
     </div>
-    <div style="text-align:center; color:#7b90c7; font-size:0.7rem; margin-top:8px;">⚡ 5–7 выборов до финала</div>
+    <div style="text-align:center; color:#7b90c7; font-size:0.7rem; margin-top:8px;">⚡ 5–7 выборов до финала — узнай, куда мог завести другой путь</div>
   </div>
   <div id="storyScreen" class="story-screen">
     <div class="story-header">
@@ -67,208 +67,231 @@
 </div>
 
 <script>
-  // ----------------------------------------------------------------
-  // 1. ПЕРЕВОДЫ И ТЕКСТЫ (русский / английский)
-  // ----------------------------------------------------------------
-  const langData = {
-    ru: {
-      title: "Перекрёсток", sub: "альтернативные реальности · твой выбор",
-      legend: "🌀 <strong>Легенда Перекрёстка</strong><br>Четыре реальности — четыре болевые точки. Каждое решение меняет судьбу.",
-      worlds: { bullying: "Границы травли", social: "Иллюзия идеала", detox: "Тишина в сети", shadow: "Тень в Максе" },
-      back: "← Миры", restart: "↻ начать заново", refTitle: "🧭 Карта последствий", altPath: "✨ Альтернативный путь:"
-    },
-    en: {
-      title: "Crossroads", sub: "alternate realities · your choice",
-      legend: "🌀 <strong>Legend of the Crossroads</strong><br>Four realities — four pain points. Every decision changes destiny.",
-      worlds: { bullying: "Boundaries of Bullying", social: "Illusion of Perfection", detox: "Silence Online", shadow: "Shadow in the Messenger" },
-      back: "← Worlds", restart: "↻ restart", refTitle: "🧭 Map of Consequences", altPath: "✨ Alternate path:"
-    }
+  // ------------------------------------------------------------
+  // 1. ПЕРЕВОДЫ И ГЛУБОКИЕ СЦЕНАРИИ (полные развёрнутые ветки)
+  // ------------------------------------------------------------
+  const translations = {
+    ru: { title:"Перекрёсток", sub:"альтернативные реальности · твой выбор", legend:"🌀 <strong>Легенда Перекрёстка</strong><br>Четыре реальности — четыре болевые точки. Каждое решение меняет судьбу.", back:"← Миры", restart:"↻ начать заново", refTitle:"🧭 Карта последствий", altPath:"✨ Альтернативный путь:" },
+    en: { title:"Crossroads", sub:"alternate realities · your choice", legend:"🌀 <strong>Legend of the Crossroads</strong><br>Four realities — four pain points. Every decision changes destiny.", back:"← Worlds", restart:"↻ restart", refTitle:"🧭 Map of Consequences", altPath:"✨ Alternate path:" }
   };
 
-  // ----------------------------------------------------------------
-  // 2. СЦЕНАРИИ (ПОЛНЫЕ, КАЖДЫЙ МИР – 5–7 ВЫБОРОВ)
-  // ----------------------------------------------------------------
-  const scenarios = {
-    bullying: {
-      nameRu: "Границы травли", nameEn: "Boundaries of Bullying",
-      start: {
-        textRu: "Ты видишь в чате оскорбительные мемы про Мишу. Что сделаешь?",
-        textEn: "You see offensive memes about Misha in the chat. What will you do?",
-        choices: [
-          { textRu: "Анонимно написать: «Хватит, это не смешно»", textEn: "Write anonymously: 'Stop it, this isn't funny'", next: "anon" },
-          { textRu: "Написать Мише в личку: «Я с тобой, держись»", textEn: "Write to Misha privately: 'I'm with you'", next: "support" },
-          { textRu: "Промолчать и переслать скрин другу", textEn: "Keep silent, forward screenshot", next: "silence" }
-        ]
-      },
-      anon: { textRu: "Ты написал анонимно. Чат замолк, но обидчики смеются над «защитником».", textEn: "You wrote anonymously. The chat goes silent, but bullies laugh at the 'defender'.", choices: [{ textRu: "Пойти с Мишей к учителю", textEn: "Go with Misha to the teacher", next: "goodPath" }, { textRu: "Отойти в сторону", textEn: "Step aside", next: "midPath" }] },
-      support: { textRu: "Ты поддерживаешь Мишу лично. Он благодарен.", textEn: "You support Misha privately. He is grateful.", choices: [{ textRu: "Предложить общее хобби (скалодром)", textEn: "Suggest a hobby (rock climbing)", next: "deepSupport" }, { textRu: "Помогать только в личке", textEn: "Help only in private", next: "privateSupport" }] },
-      silence: { textRu: "Ты молчишь. Травля переходит в офлайн. Миша не приходит в школу.", textEn: "You stay silent. Bullying goes offline. Misha stops coming to school.", choices: [{ textRu: "Рассказать завучу", textEn: "Tell the head teacher", next: "confession" }, { textRu: "Сделать вид, что ни при чём", textEn: "Pretend nothing", next: "denial" }] },
-      goodPath: { textRu: "Вы вместе идёте к учителю. Травля прекращается. Миша обретает друзей.", textEn: "You go together to the teacher. Bullying stops.", isEnd: true, refRu: "🏆 Героический финал: ты остановил травлю.", refEn: "🏆 Heroic ending: you stopped bullying." },
-      midPath: { textRu: "Ты отстраняешься. Миша переводится в другую школу. Чувство вины остаётся.", textEn: "You distance yourself. Misha transfers.", isEnd: true, refRu: "😔 Упущенный шанс.", refEn: "😔 Missed chance." },
-      deepSupport: { textRu: "Вы вместе ходите на скалодром, становитесь друзьями. Обидчики теряют интерес.", textEn: "You go rock climbing, become friends.", isEnd: true, refRu: "🌟 Крепкая дружба, рождённая в трудной ситуации.", refEn: "🌟 Strong friendship born in difficulty." },
-      privateSupport: { textRu: "Миша благодарен, но в школе вы чужие. Он пишет: «Почему ты стесняешься меня?»", textEn: "Misha writes: 'Why are you ashamed of me?'", choices: [{ textRu: "Извиниться и начать общаться открыто", textEn: "Apologize and open up", next: "reconcile" }, { textRu: "Сказать, что так проще", textEn: "Say it's easier this way", next: "distanceEnd" }] },
-      reconcile: { textRu: "Ты извиняешься и защищаешь Мишу при всех. Вы становитесь друзьями.", textEn: "You apologize and defend Misha.", isEnd: true, refRu: "🌟 Ты преодолел страх.", refEn: "🌟 You overcame fear." },
-      distanceEnd: { textRu: "Миша перестаёт отвечать. Вы остаётесь чужими.", textEn: "Misha stops answering.", isEnd: true, refRu: "🌫️ Потерянная дружба.", refEn: "🌫️ Lost friendship." },
-      confession: { textRu: "Ты рассказываешь всё завучу. Обидчиков наказывают. Миша возвращается.", textEn: "You tell the head teacher.", isEnd: true, refRu: "⚖️ Моральный финал.", refEn: "⚖️ Moral ending." },
-      denial: { textRu: "Ты делаешь вид, что ничего не знаешь. Миша уходит на домашнее обучение.", textEn: "You pretend nothing. Misha homeschools.", isEnd: true, refRu: "💔 Тяжёлый финал.", refEn: "💔 Heavy ending." }
-    },
-    social: {
-      nameRu: "Иллюзия идеала", nameEn: "Illusion of Perfection",
-      start: {
-        textRu: "Ты листаешь Instagram и чувствуешь себя ничтожеством. Что делать?", textEn: "You scroll Instagram and feel worthless. What to do?",
-        choices: [
-          { textRu: "Удалить приложение и пойти в кружок", textEn: "Delete app, join a club", next: "hobby" },
-          { textRu: "Начать редактировать фото", textEn: "Start editing photos", next: "edit" },
-          { textRu: "Оставить всё как есть", textEn: "Leave as is", next: "suffer" }
-        ]
-      },
-      hobby: { textRu: "Ты находишь реальное увлечение и друзей. Счастье не в лайках.", textEn: "You find real hobby and friends.", isEnd: true, refRu: "🌱 Финал «Реальность».", refEn: "🌱 'Reality' ending." },
-      edit: { textRu: "Ты часами выкладываешь фото, но внутри пустота. Попробуешь детокс?", textEn: "Emptiness inside. Try detox?", choices: [{ textRu: "Устроить детокс", textEn: "Do detox", next: "detoxFromSocial" }, { textRu: "Продолжать", textEn: "Continue", next: "endlessVoid" }] },
-      detoxFromSocial: { textRu: "Ты удаляешь соцсети на неделю. Становится легче.", textEn: "You delete social media for a week.", isEnd: true, refRu: "🌿 Финал «Перезагрузка».", refEn: "🌿 'Reboot' ending." },
-      endlessVoid: { textRu: "Ты продолжаешь, теряя себя. Депрессия усиливается.", textEn: "You continue, depression worsens.", isEnd: true, refRu: "📱 Иллюзия.", refEn: "📱 Illusion." },
-      suffer: { textRu: "Депрессия растёт. Обратишься к психологу?", textEn: "Depression grows. See psychologist?", choices: [{ textRu: "Пойти к психологу", textEn: "Go to psychologist", next: "psychologist" }, { textRu: "Забить", textEn: "Give up", next: "deeperSuffer" }] },
-      psychologist: { textRu: "Психолог помог. Ты начал ценить себя настоящего.", textEn: "Psychologist helped.", isEnd: true, refRu: "🫂 Хороший финал.", refEn: "🫂 Good ending." },
-      deeperSuffer: { textRu: "Ты остаёшься в депрессии, друзья отворачиваются.", textEn: "You remain depressed.", isEnd: true, refRu: "🌀 Тёмный финал.", refEn: "🌀 Dark ending." }
-    },
-    detox: {
-      nameRu: "Тишина в сети", nameEn: "Silence Online",
-      start: {
-        textRu: "Ты решаешь 24 часа без телефона. Первые часы тяжело. Что делаешь?", textEn: "24h without phone. First hours are hard. What do you do?",
-        choices: [
-          { textRu: "Сдаться и взять телефон", textEn: "Give up", next: "fail" },
-          { textRu: "Взять книгу и выйти на улицу", textEn: "Take a book, go outside", next: "walk" },
-          { textRu: "Позвать друга погулять", textEn: "Call a friend", next: "friendWalk" }
-        ]
-      },
-      fail: { textRu: "Ты взял телефон и весь день проскроллил. Разочарование.", textEn: "You scrolled all day. Disappointment.", isEnd: true, refRu: "📴 Зависимость.", refEn: "📴 Addiction." },
-      walk: { textRu: "Ты гулял, читал, любовался закатом. Вечером: «Я отдохнул».", textEn: "You walked, read, enjoyed sunset. You rested.", choices: [{ textRu: "Повторить", textEn: "Repeat", next: "repeatSuccess" }, { textRu: "Вернуться к привычкам", textEn: "Return to habits", next: "backToOld" }] },
-      repeatSuccess: { textRu: "Ты стал регулярно проводить дни без телефона. Баланс найден.", textEn: "Regular phone-free days. Balance found.", isEnd: true, refRu: "🌲 Свобода.", refEn: "🌲 Freedom." },
-      backToOld: { textRu: "Ты вернулся к экранам, снова тревожишься. Но знаешь путь.", textEn: "Back to screens, anxious again. But you know the way.", isEnd: true, refRu: "↺ Осознанность.", refEn: "↺ Awareness." },
-      friendWalk: { textRu: "Вы вместе гуляли, играли, говорили. Дружба стала крепче.", textEn: "You walked, talked. Friendship stronger.", choices: [{ textRu: "Сделать традицией", textEn: "Make tradition", next: "jointChallenge" }, { textRu: "Разовый случай", textEn: "One-time thing", next: "oneTime" }] },
-      jointChallenge: { textRu: "Вы отключаете телефоны на выходные. Ваша традиция.", textEn: "Phones off on weekends. Your tradition.", isEnd: true, refRu: "🌟 Детокс вдвоём.", refEn: "🌟 Detox together." },
-      oneTime: { textRu: "Вы хорошо провели день, но потом вернулись в экраны. Возможность упущена.", textEn: "Good day but returned to screens.", isEnd: true, refRu: "☁️ Упущенная возможность.", refEn: "☁️ Missed opportunity." }
-    },
-    shadow: {
-      nameRu: "Тень в Максе", nameEn: "Shadow in the Messenger",
-      start: {
-        textRu: "В Telegram добавляется незнакомец: «Просто переведи деньги с карты, получишь 30%».", textEn: "Stranger: 'Transfer money from card, get 30%'.", choices: [
-          { textRu: "Согласиться", textEn: "Agree", next: "agree" },
-          { textRu: "Заблокировать и рассказать родителям", textEn: "Block and tell parents", next: "good" },
-          { textRu: "Спросить подробности", textEn: "Ask details", next: "details" }
-        ]
-      },
-      agree: { textRu: "Ты переводишь деньги, получаешь 5000₽. Через неделю полиция — ты соучастник отмывания.", textEn: "You transfer money, get 5000₽. A week later police.", isEnd: true, refRu: "⚠️ Криминальный финал.", refEn: "⚠️ Criminal ending." },
-      good: { textRu: "Ты блокируешь и рассказываешь отцу. Он объясняет, что это дропперство. Ты спасён.", textEn: "You block and tell father – it's drop-ceding. Saved.", isEnd: true, refRu: "🛡️ Бдительность.", refEn: "🛡️ Vigilance." },
-      details: { textRu: "Незнакомец объясняет: «Переводи деньги дальше, оставляй 30%». Что выберешь?", textEn: "Explain: 'Transfer further, keep 30%'. What now?", choices: [
-        { textRu: "Спросить у брата", textEn: "Ask brother", next: "brotherAdvice" },
-        { textRu: "Всё равно согласиться", textEn: "Still agree", next: "agreeAnyway" },
-        { textRu: "Написать в полицию", textEn: "Write to police", next: "police" }
-      ] },
-      brotherAdvice: { textRu: "Брат помог написать заявление. Мошенника нашли. Ты чист.", textEn: "Brother helped report. Scammer found.", isEnd: true, refRu: "👮 Осознанный финал.", refEn: "👮 Aware ending." },
-      agreeAnyway: { textRu: "Ты соглашаешься. Через месяц задержание, уголовное дело.", textEn: "You agree. Month later arrest.", isEnd: true, refRu: "🔐 Тюремный финал.", refEn: "🔐 Prison ending." },
-      police: { textRu: "Ты отправляешь скрины в МВД. Мошенника блокируют. Ты герой.", textEn: "Screenshots to police. Scammer blocked. Hero.", isEnd: true, refRu: "🕵️ Героический финал.", refEn: "🕵️ Heroic ending." }
-    }
+  // МИР 1: ГРАНИЦЫ ТРАВЛИ (8 сцен, 5+ выборов)
+  const bullying = {
+    start: { ru:"Ты открываешь общий чат класса и замираешь. Несколько человек — те, кого ты считал нормальными ребятами — постят мерзкие мемы с одноклассником Мишей. Они называют его «лузером», призывают ставить эмодзи со смехом. Миша в чате молчит, но ты видишь, что он онлайн. Твой палец зависает над экраном. Что ты сделаешь?",
+            en:"You open the class group chat and freeze. Several people — those you considered normal — post nasty memes about your classmate Misha. They call him a 'loser' and ask to add laughing emojis. Misha is silent in the chat, but you see he is online. Your finger hovers over the screen. What will you do?",
+      choices:[ {ru:"Написать анонимно: «Хватит, это не смешно»",en:"Write anonymously: 'Stop it, this isn't funny'",to:"anon"},
+                {ru:"Написать Мише в личку: «Я с тобой, держись»",en:"Write to Misha privately: 'I'm with you, stay strong'",to:"support"},
+                {ru:"Промолчать и переслать скрин другу",en:"Keep silent, forward screenshot to a friend",to:"silence"} ] },
+    anon: { ru:"Ты быстро создаёшь одноразовый аккаунт и пишешь в чат: «Хватит, это не смешно». На секунду все замолкают. А потом кто-то отвечает: «Кто это тут защитничек? Смелый в анонимку?». Травля на время затихает, но ты чувствуешь — Миша всё равно подавлен. Надо что-то ещё.",
+            en:"You quickly create a one-time account and write in the chat: 'Stop it, this isn't funny.' For a second, everyone goes silent. Then someone replies: 'Who's the defender here? Brave in anonymous mode?' The bullying subsides for a while, but you feel Misha is still depressed. Something more is needed.",
+      choices:[ {ru:"Поговорить с Мишей лично и предложить вместе пойти к классному руководителю",en:"Talk to Misha and suggest going to the homeroom teacher together",to:"goodPath"},
+                {ru:"Больше ничего не делать, ты уже помог как мог",en:"Do nothing more, you already helped",to:"midPath"} ] },
+    support: { ru:"Ты пишешь Мише в личку: «Я с тобой, держись. Они идиоты». Он отвечает не сразу: «Спасибо… я думал, всем плевать». Вы переписываетесь ещё немного, и ты замечаешь, что ему становится чуть легче. На следующий день обидчики цепляются меньше — может, почувствовали, что Миша не один.",
+               en:"You write to Misha privately: 'I'm with you, hang in there. They're idiots.' He doesn't reply immediately: 'Thanks… I thought nobody cared.' You chat a bit more, and you notice him feeling a little better. The next day, the bullies pick on him less — maybe they sensed that Misha is not alone.",
+      choices:[ {ru:"Предложить Мише вместе записаться в кружок или секцию (скалолазание)",en:"Suggest Misha join a club or sports section together (rock climbing)",to:"deepSupport"},
+                {ru:"Продолжать поддерживать только в личке, в школе не афишировать",en:"Continue supporting only in private, don't show it at school",to:"privateSupport"} ] },
+    silence: { ru:"Ты пересылаешь скрин своему лучшему другу с подписью «смотри, как Мишу поливают». Друг ржёт и пересылает дальше. Через день весь класс обсуждает Мишу, кто-то пририсовал к его фото ослиные уши. Травля переходит в офлайн — Миша не приходит в школу. Тебе стыдно, но ты не знаешь, что делать.",
+               en:"You forward the screenshot to your best friend with the caption 'look how they're roasting Misha'. Your friend laughs and forwards it further. The next day the whole class is talking about Misha, someone has drawn donkey ears on his photo. Bullying goes offline — Misha stops coming to school. You feel ashamed but don't know what to do.",
+      choices:[ {ru:"Пойти к завучу и рассказать всю правду",en:"Go to the head teacher and tell the whole truth",to:"confession"},
+                {ru:"Сделать вид, что ты ни при чём",en:"Pretend you had nothing to do with it",to:"denial"} ] },
+    goodPath: { ru:"Миша соглашается пойти к классной. По дороге он говорит, что боится мести — вдруг его начнут травить ещё сильнее? Ты обещаешь быть рядом. Классная руководительница внимательно слушает, записывает имена обидчиков и обещает разобраться. Ты чувствуешь, что сделал важный шаг.",
+                 en:"Misha agrees to go to the homeroom teacher. On the way, he says he's afraid of retaliation — what if they start bullying him even harder? You promise to stand by him. The teacher listens carefully, writes down the names of the bullies and promises to handle it. You feel you've taken an important step.",
+      choices:[ {ru:"Настоять на открытом разговоре с классом",en:"Insist on an open conversation with the whole class",to:"openTalk"},
+                {ru:"Попросить, чтобы разбирались без упоминания твоего имени",en:"Ask to handle it without mentioning your name",to:"anonHelp"} ] },
+    openTalk: { ru:"Классная проводит открытую беседу. Обидчики сначала всё отрицают, но когда ты встаёшь и говоришь, что видел всё своими глазами, их уверенность тает. Миша сидит рядом с тобой, и ты чувствуешь, как он напряжён.",
+                 en:"The teacher holds an open discussion. The bullies deny everything at first, but when you stand up and say you saw it all with your own eyes, their confidence melts. Misha sits next to you, and you feel how tense he is.",
+      choices:[ {ru:"Высказаться ещё раз в поддержку Миши, рассказать, как ему было плохо",en:"Speak up again in support of Misha, tell how bad he felt",to:"speakUpEnd"},
+                {ru:"Остаться в стороне, пусть учитель разбирается сам",en:"Stay aside, let the teacher handle it",to:"teacherOnlyEnd"} ] },
+    speakUpEnd: { ru:"Твои слова тронули многих. Атмосфера в классе меняется. Миша становится увереннее, травля прекращается. Вы становитесь настоящими друзьями.", en:"Your words touch many. The atmosphere in the class changes. Misha becomes more confident, the bullying stops. You become true friends.", isEnd:true,
+                  refRu:"🏆 Финальная арка: твоё мужество остановило травлю и подарило человеку веру в себя.", refEn:"🏆 Final arc: your courage stopped bullying and gave a person belief in himself." },
+    teacherOnlyEnd: { ru:"Учитель разбирается без тебя. Травля постепенно сходит на нет, но Миша так и не знает, что ты хотел помочь. Вы остаётесь просто знакомыми.", en:"The teacher handles it without you. The bullying gradually stops, but Misha never knows you wanted to help. You remain just acquaintances.", isEnd:true,
+                      refRu:"😐 Нейтральный финал: ты помог, но остался в тени.", refEn:"😐 Neutral ending: you helped but stayed in the shadows." },
+    anonHelp: { ru:"Классная поговорила с зачинщиками индивидуально, не называя твоего имени. Травля сходит на нет. Миша оживает, но он так и не знает, кто ему помог.", en:"The teacher talks to the instigators individually without mentioning your name. Bullying stops. Misha cheers up, but he never knows who helped him.", isEnd:true,
+                refRu:"🌙 Достойный финал: ты достиг цели, но остался тайным агентом добра.", refEn:"🌙 Worthy ending: you achieved your goal but remained a secret agent of good." },
+    midPath: { ru:"Ты отстраняешься. Через месяц узнаёшь, что Миша перевёлся в другую школу. Ты иногда вспоминаешь об этом с чувством вины.", en:"You distance yourself. A month later, you learn that Misha transferred to another school. You sometimes remember it with guilt.", isEnd:true,
+               refRu:"😔 Финал «Упущенный шанс»: ты мог изменить ситуацию, но побоялся.", refEn:"😔 'Missed Chance' ending: you could have changed the situation but were afraid." },
+    deepSupport: { ru:"Вы вместе ходите на скалодром. Миша увлекается, становится увереннее. Обидчики со временем теряют интерес. Вы становитесь настоящими друзьями.", en:"You go rock climbing together. Misha gets hooked, becomes more confident. The bullies lose interest over time. You become true friends.", isEnd:true,
+                    refRu:"🏆 Финальная арка: дружба, рождённая в трудной ситуации, оказывается самой крепкой.", refEn:"🏆 Final arc: friendship born in a difficult situation turns out to be the strongest." },
+    privateSupport: { ru:"Миша благодарен за поддержку, но в школе вы остаётесь чужими. Однажды он пишет: «Почему ты стесняешься меня?» Ты не знаешь, что ответить.", en:"Misha is grateful for your support, but at school you remain strangers. One day he writes: 'Why are you ashamed of me?' You don't know what to answer.",
+                      choices:[ {ru:"Извиниться и начать общаться открыто",en:"Apologize and start communicating openly",to:"reconcile"},
+                                {ru:"Сказать, что так проще, и ничего не менять",en:"Say it's easier this way and change nothing",to:"distanceEnd"} ] },
+    reconcile: { ru:"Ты извиняешься и начинаешь защищать Мишу при всех. Класс удивлён, но постепенно принимает его. Ты чувствуешь, что стал сильнее.", en:"You apologize and start defending Misha in front of everyone. The class is surprised but gradually accepts him. You feel you have become stronger.", isEnd:true,
+                  refRu:"🌟 Хороший финал: ты преодолел свой страх и обрёл верного друга.", refEn:"🌟 Good ending: you overcame your fear and gained a true friend." },
+    distanceEnd: { ru:"Миша перестаёт отвечать. Ты остаёшься один на один с совестью. Иногда ты видишь его улыбку в коридоре, но она уже не для тебя.", en:"Misha stops answering. You are left alone with your conscience. Sometimes you see his smile in the hallway, but it's no longer for you.", isEnd:true,
+                    refRu:"🌫️ Финал «Потерянная дружба»: страх чужого мнения оказался сильнее человеческих связей.", refEn:"🌫️ 'Lost Friendship' ending: fear of others' opinions turned out to be stronger than human connections." },
+    confession: { ru:"Ты рассказываешь всё завучу. Обидчиков наказывают, но одноклассники начинают косо смотреть на тебя. Тем не менее, Миша возвращается в школу и благодарит тебя.", en:"You tell everything to the head teacher. The bullies are punished, but classmates start looking askance at you. Nevertheless, Misha returns to school and thanks you.", isEnd:true,
+                   refRu:"⚖️ Моральный финал: ты поступил по совести, даже ценой комфорта.", refEn:"⚖️ Moral ending: you acted according to your conscience, even at the cost of comfort." },
+    denial: { ru:"Ты делаешь вид, что ничего не знаешь. Миша уходит на домашнее обучение. Чувство вины остаётся с тобой надолго.", en:"You pretend you know nothing. Misha switches to homeschooling. The feeling of guilt stays with you for a long time.", isEnd:true,
+               refRu:"💔 Тяжёлый финал: молчание – это тоже выбор.", refEn:"💔 Heavy ending: silence is also a choice." }
   };
 
-  // ----------------------------------------------------------------
-  // 3. ЛОГИКА ПРИЛОЖЕНИЯ (ПЕРЕКЛЮЧЕНИЕ ЯЗЫКА, ПЕРЕХОДЫ)
-  // ----------------------------------------------------------------
+  // МИР 2: ИЛЛЮЗИЯ ИДЕАЛА (6-7 сцен)
+  const social = {
+    start: { ru:"Ты весь день листаешь Instagram и сравниваешь свою жизнь с идеальными картинками блогеров. Чувствуешь себя ничтожеством. Что сделаешь?",
+             en:"You spend the whole day scrolling Instagram and compare your life with the perfect pictures of bloggers. You feel worthless. What will you do?",
+      choices:[ {ru:"Удалить приложение и заняться реальным хобби (робототехника)",en:"Delete the app and take up a real hobby (robotics)",to:"hobby"},
+                {ru:"Начать редактировать свои фото, чтобы не отставать",en:"Start editing your photos to keep up",to:"edit"},
+                {ru:"Оставить всё как есть, продолжать страдать",en:"Leave everything as is, continue suffering",to:"suffer"} ] },
+    hobby: { ru:"Ты находишь офлайн-кружок робототехники. Через месяц ты уже забыл про лайки. Появились настоящие друзья и увлечение. Однажды ловишь себя на мысли: «Я счастлив, и мне не нужно никому ничего доказывать».", isEnd:true,
+             refRu:"🌱 Финал «Реальность»: счастье не в подписчиках, а в том, что наполняет тебя изнутри.", refEn:"🌱 'Reality' ending: happiness is not in subscribers, but in what fills you from within." },
+    edit: { ru:"Ты часами выкладываешь фото, ставишь лайки подписчикам фейковых страниц. Но внутри пустота растёт. Однажды ты ловишь себя на мысли, что не помнишь, когда в последний раз смеялся по-настоящему.",
+             en:"You spend hours posting photos, liking fake follower pages. But emptiness grows inside. One day you catch yourself not remembering when you last genuinely laughed.",
+      choices:[ {ru:"Попробовать устроить цифровой детокс и вернуться к реальности",en:"Try a digital detox and return to reality",to:"detoxFromSocial"},
+                {ru:"Продолжать в том же духе, надеясь на чудо",en:"Continue the same way, hoping for a miracle",to:"endlessVoid"} ] },
+    detoxFromSocial: { ru:"Ты удаляешь соцсети на неделю. Сначала трудно, но потом замечаешь, как много времени освободилось для книг, прогулок и разговоров с семьёй. Ты становишься спокойнее.", isEnd:true,
+                        refRu:"🌿 Финал «Перезагрузка»: иногда отключение от сети – это подключение к себе.", refEn:"🌿 'Reboot' ending: sometimes disconnecting from the network is connecting to yourself." },
+    endlessVoid: { ru:"Годы идут, ты так и остаёшься в мире фильтров и лайков. В реальных друзьях — одни подписчики, которых ты никогда не видел. Однажды ты понимаешь, что потерял себя.", isEnd:true,
+                    refRu:"📱 Финал «Иллюзия»: соцсети не дают счастья, они только создают его видимость.", refEn:"📱 'Illusion' ending: social media do not give happiness, they only create its illusion." },
+    suffer: { ru:"Ты продолжаешь листать ленту, чувствуя себя всё более ничтожным. Однажды ты ловишь себя на мысли, что не помнишь, когда в последний раз радовался простым вещам.",
+               en:"You continue scrolling, feeling more and more worthless. One day you catch yourself not remembering when you last enjoyed simple things.",
+      choices:[ {ru:"Обратиться к школьному психологу",en:"Reach out to the school psychologist",to:"psychologist"},
+                {ru:"Забить и дальше сидеть в телефоне",en:"Give up and stay on your phone",to:"deeperSuffer"} ] },
+    psychologist: { ru:"Психолог помогает тебе разобраться в причинах неуверенности. Оказывается, ты сравнивал себя с фотошопом. Ты начинаешь ценить себя настоящего.", isEnd:true,
+                     refRu:"🫂 Хороший финал: просьба о помощи – это сила, а не слабость.", refEn:"🫂 Good ending: asking for help is strength, not weakness." },
+    deeperSuffer: { ru:"Депрессия усиливается. Ты перестаёшь выходить из дома, друзья постепенно отворачиваются. Соцсети стали твоей единственной реальностью, но она душит тебя.", isEnd:true,
+                     refRu:"🌀 Тёмный финал: зависимость от иллюзий может разрушить жизнь.", refEn:"🌀 Dark ending: addiction to illusions can destroy a life." }
+  };
+
+  // МИР 3: ТИШИНА В СЕТИ (6-7 сцен)
+  const detox = {
+    start: { ru:"Ты решаешь провести 24 часа без телефона. Первые два часа ты нервничаешь и проверяешь карман. Что делаешь?",
+             en:"You decide to spend 24 hours without a phone. The first two hours you are nervous and check your pocket. What do you do?",
+      choices:[ {ru:"Сдаться и взять телефон",en:"Give up and take the phone",to:"fail"},
+                {ru:"Взять книгу и выйти на улицу",en:"Take a book and go outside",to:"walk"},
+                {ru:"Позвать друга погулять без гаджетов",en:"Call a friend to walk without gadgets",to:"friendWalk"} ] },
+    fail: { ru:"Ты включаешь телефон и проводишь остаток дня в бесцельном скроллинге. Вечером чувствуешь разочарование — ты проиграл себе.", isEnd:true,
+             refRu:"📴 Финал «Зависимость»: цифровая зависимость сильнее, если не бороться.", refEn:"📴 'Addiction' ending: digital addiction is stronger if you don't fight it." },
+    walk: { ru:"Ты гуляешь в парке, читаешь книгу, замечаешь, как прекрасен закат. Вечером записываешь в дневник: «Я не пропустил ничего важного за 24 часа. Зато я отдохнул».",
+             en:"You walk in the park, read a book, notice how beautiful the sunset is. In the evening you write in your diary: 'I didn't miss anything important in 24 hours. But I rested.'",
+      choices:[ {ru:"Повторить эксперимент через неделю",en:"Repeat the experiment in a week",to:"repeatSuccess"},
+                {ru:"Забыть и вернуться к старым привычкам",en:"Forget and return to old habits",to:"backToOld"} ] },
+    repeatSuccess: { ru:"Ты начинаешь регулярно устраивать дни без телефона. Появляется время на хобби, ты стал спокойнее и продуктивнее.", isEnd:true,
+                      refRu:"🌲 Финал «Свобода»: мир без экрана полон красок.", refEn:"🌲 'Freedom' ending: the world without a screen is full of colors." },
+    backToOld: { ru:"Ты возвращаешься к привычному ритму, и через месяц снова чувствуешь усталость и тревожность. Но теперь ты знаешь, что есть другой путь.", isEnd:true,
+                  refRu:"↺ Финал «Осознанность»: ты понял, что проблема существует, но пока не готов её решать.", refEn:"↺ 'Awareness' ending: you understand the problem exists, but you're not ready to solve it yet." },
+    friendWalk: { ru:"Ты зовёшь друга. Он сначала удивляется, но соглашается. Вы идёте в парк, играете в бадминтон, разговариваете о жизни. Без телефонов разговор стал глубже.",
+                   en:"You call a friend. He's surprised at first, but agrees. You go to the park, play badminton, talk about life. Without phones, the conversation becomes deeper.",
+      choices:[ {ru:"Предложить устроить челлендж без телефона вместе",en:"Suggest doing a phone-free challenge together",to:"jointChallenge"},
+                {ru:"Оставить как разовую акцию",en:"Leave it as a one-time thing",to:"oneTime"} ] },
+    jointChallenge: { ru:"Вы вместе отключаете телефоны на выходные. Устраиваете пикник, играете в настолки, смотрите на звёзды. Это становится вашей традицией.", isEnd:true,
+                       refRu:"🌟 Финал «Цифровой детокс вдвоём»: настоящие отношения строятся без лайков.", refEn:"🌟 'Digital detox together' ending: real relationships are built without likes." },
+    oneTime: { ru:"Вы хорошо провели день, но потом каждый вернулся в свои экраны. Ты чувствуешь, что потерял возможность изменить привычки.", isEnd:true,
+                refRu:"☁️ Финал «Упущенная возможность»: один хороший день не меняет жизнь, но может стать началом пути.", refEn:"☁️ 'Missed opportunity' ending: one good day doesn't change life, but it can be the start of a journey." }
+  };
+
+  // МИР 4: ТЕНЬ В МАКСЕ (7 сцен)
+  const shadow = {
+    start: { ru:"В Telegram добавляется незнакомец и предлагает подработку: «Просто переведи деньги с карты, получишь 30%». Что ты сделаешь?",
+             en:"A stranger adds you on Telegram and offers a job: 'Just transfer money from a card, you get 30%'. What will you do?",
+      choices:[ {ru:"Согласиться ради быстрых денег",en:"Agree for quick money",to:"agree"},
+                {ru:"Заблокировать и сообщить родителям",en:"Block and tell parents",to:"good"},
+                {ru:"Спросить подробности, но не соглашаться сразу",en:"Ask for details but don't agree immediately",to:"details"} ] },
+    agree: { ru:"Ты переводишь деньги, тебе платят 5000 руб. Через неделю приходит полиция – по твоей карте переводились украденные средства. Тебе грозит уголовная статья (соучастие в отмывании денег).", isEnd:true,
+              refRu:"⚠️ Тяжёлый финал: легкие деньги оборачиваются уголовным делом.", refEn:"⚠️ Heavy ending: easy money turns into a criminal case." },
+    good: { ru:"Ты блокируешь и рассказываешь отцу. Он объясняет, что это дропперство – соучастие в отмывании денег, статья УК. Ты облегчённо вздыхаешь.", isEnd:true,
+             refRu:"🛡️ Финал «Бдительность»: ты не дал себя втянуть в преступление.", refEn:"🛡️ 'Vigilance' ending: you didn't let yourself be drawn into a crime." },
+    details: { ru:"Незнакомец объясняет: «Нужно просто переводить деньги с одной карты на другую, оставляя себе 30%». Ты понимаешь, что пахнет чем-то незаконным.",
+                en:"The stranger explains: 'You just need to transfer money from one card to another, keeping 30% for yourself.' You realize it smells illegal.",
+      choices:[ {ru:"Попросить совета у старшего брата",en:"Ask your older brother for advice",to:"brotherAdvice"},
+                {ru:"Всё равно согласиться, деньги нужны срочно",en:"Still agree, money is urgently needed",to:"agreeAnyway"},
+                {ru:"Написать в полицию",en:"Write to the police",to:"police"} ] },
+    brotherAdvice: { ru:"Старший брат объясняет, что это дропперство – за него сажают. Он помогает написать заявление в полицию. Мошенника вычисляют. Ты чувствуешь облегчение.", isEnd:true,
+                       refRu:"👮 Финал «Осознанный»: помощь близкого человека уберегла тебя от тюрьмы.", refEn:"👮 'Aware' ending: a loved one's help saved you from prison." },
+    agreeAnyway: { ru:"Ты соглашаешься. Через месяц тебя задерживают – ты стал дроппером, проходит обыск. Родители в шоке, тебе светит реальный срок.", isEnd:true,
+                     refRu:"🔐 Криминальный финал: жажда быстрых денег разрушила будущее.", refEn:"🔐 Criminal ending: the desire for quick money destroyed your future." },
+    police: { ru:"Ты отправляешь скриншоты в чат-бот МВД. Через неделю узнаёшь, что аккаунт мошенника заблокирован, а возбуждено уголовное дело. Ты помог предотвратить преступления.", isEnd:true,
+               refRu:"🕵️ Героический финал: ты не только не дал себя обмануть, но и помог другим.", refEn:"🕵️ Heroic ending: you not only didn't let yourself be deceived, but also helped others." }
+  };
+
+  const worlds = { bullying, social, detox, shadow };
+  for(let w in worlds) worlds[w].nameRu = {bullying:"Границы травли",social:"Иллюзия идеала",detox:"Тишина в сети",shadow:"Тень в Максе"}[w];
+
+  // ------------------------------------------------------------
+  // 2. ЛОГИКА ИГРЫ
+  // ------------------------------------------------------------
   let currentLang = "ru";
   let currentWorldId = null;
-  let currentNodeId = null;
+  let currentSceneId = null;
 
-  const worldSel = document.getElementById("worldSelection");
-  const storyScreen = document.getElementById("storyScreen");
-  const sceneText = document.getElementById("sceneText");
+  const worldSelDiv = document.getElementById("worldSelection");
+  const storyDiv = document.getElementById("storyScreen");
+  const sceneTextSpan = document.getElementById("sceneText");
   const choicesDiv = document.getElementById("choicesContainer");
   const reflectionDiv = document.getElementById("reflectionArea");
-  const curWorldTitle = document.getElementById("currentWorldTitle");
+  const curWorldTitleSpan = document.getElementById("currentWorldTitle");
   const backBtn = document.getElementById("backBtn");
   const restartBtn = document.getElementById("restartBtn");
 
   function applyUILanguage() {
-    const data = langData[currentLang];
-    document.getElementById("mainTitle").innerText = data.title;
-    document.getElementById("subheadText").innerText = data.sub;
-    document.getElementById("legendText").innerHTML = data.legend;
-    document.getElementById("world1Name").innerText = data.worlds.bullying;
-    document.getElementById("world2Name").innerText = data.worlds.social;
-    document.getElementById("world3Name").innerText = data.worlds.detox;
-    document.getElementById("world4Name").innerText = data.worlds.shadow;
-    backBtn.innerText = data.back;
-    restartBtn.innerText = data.restart;
-    if (currentWorldId && scenarios[currentWorldId]) {
-      curWorldTitle.innerText = currentLang === "ru" ? scenarios[currentWorldId].nameRu : scenarios[currentWorldId].nameEn;
+    const t = translations[currentLang];
+    document.getElementById("mainTitle").innerText = t.title;
+    document.getElementById("subheadText").innerText = t.sub;
+    document.getElementById("legendText").innerHTML = t.legend;
+    document.getElementById("world1Name").innerText = t.worlds?.bullying || "Границы травли";
+    document.getElementById("world2Name").innerText = t.worlds?.social || "Иллюзия идеала";
+    document.getElementById("world3Name").innerText = t.worlds?.detox || "Тишина в сети";
+    document.getElementById("world4Name").innerText = t.worlds?.shadow || "Тень в Максе";
+    backBtn.innerText = t.back;
+    restartBtn.innerText = t.restart;
+    if (currentWorldId && worlds[currentWorldId]) {
+      curWorldTitleSpan.innerText = currentLang === "ru" ? worlds[currentWorldId].nameRu : (worlds[currentWorldId].nameEn || worlds[currentWorldId].nameRu);
     }
   }
 
   function renderNode(worldId, nodeId) {
-    const node = scenarios[worldId][nodeId];
+    const node = worlds[worldId][nodeId];
     if (!node) return;
-    // текст
-    sceneText.innerText = currentLang === "ru" ? node.textRu : node.textEn;
+    sceneTextSpan.innerText = currentLang === "ru" ? node.ru : node.en;
     choicesDiv.innerHTML = "";
     reflectionDiv.classList.add("hidden");
-    if (node.choices && node.choices.length) {
+    if (node.choices) {
       node.choices.forEach(ch => {
         const btn = document.createElement("button");
         btn.className = "choice-btn";
-        btn.innerText = currentLang === "ru" ? ch.textRu : ch.textEn;
-        btn.addEventListener("click", () => {
-          renderNode(worldId, ch.next);
-        });
+        btn.innerText = currentLang === "ru" ? ch.ru : ch.en;
+        btn.addEventListener("click", () => renderNode(worldId, ch.to));
         choicesDiv.appendChild(btn);
       });
     } else if (node.isEnd) {
       reflectionDiv.classList.remove("hidden");
       const refText = currentLang === "ru" ? node.refRu : node.refEn;
-      reflectionDiv.innerHTML = `<div class="reflection-title">${langData[currentLang].refTitle}</div><div>${refText}</div><div class="alternative-path">${langData[currentLang].altPath} попробуй другой выбор в начале</div>`;
+      reflectionDiv.innerHTML = `<div class="reflection-title">${translations[currentLang].refTitle}</div><div>${refText}</div><div class="alternative-path">${translations[currentLang].altPath} попробуй другой выбор в начале</div>`;
     }
   }
 
   function startWorld(worldId) {
     currentWorldId = worldId;
-    currentNodeId = "start";
-    worldSel.style.display = "none";
-    storyScreen.style.display = "block";
-    curWorldTitle.innerText = currentLang === "ru" ? scenarios[worldId].nameRu : scenarios[worldId].nameEn;
+    currentSceneId = "start";
+    worldSelDiv.style.display = "none";
+    storyDiv.style.display = "block";
+    curWorldTitleSpan.innerText = currentLang === "ru" ? worlds[worldId].nameRu : (worlds[worldId].nameEn || worlds[worldId].nameRu);
     renderNode(worldId, "start");
   }
 
-  function backToWorlds() {
-    currentWorldId = null;
-    currentNodeId = null;
-    worldSel.style.display = "block";
-    storyScreen.style.display = "none";
-  }
+  function backToWorlds() { currentWorldId = null; worldSelDiv.style.display = "block"; storyDiv.style.display = "none"; }
+  function restartCurrent() { if (currentWorldId) renderNode(currentWorldId, "start"); }
 
-  function restartCurrent() {
-    if (currentWorldId) {
-      renderNode(currentWorldId, "start");
-    }
-  }
-
-  // Обработчики кликов по мирам (гарантированно работают)
+  // обработчики
   document.querySelectorAll(".world-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
-      const world = btn.getAttribute("data-world");
-      if (world && scenarios[world]) startWorld(world);
+      const w = btn.getAttribute("data-world");
+      if (w && worlds[w]) startWorld(w);
     });
   });
   backBtn.addEventListener("click", backToWorlds);
   restartBtn.addEventListener("click", restartCurrent);
 
-  // Блокировка прокрутки и контекстного меню
+  // блокировки
   document.addEventListener("contextmenu", e => e.preventDefault());
   document.addEventListener("selectstart", e => e.preventDefault());
   document.body.addEventListener("touchmove", e => { if (!e.target.closest('.scene-card')) e.preventDefault(); }, { passive: false });
-  document.getElementById("gameContainer").addEventListener("touchmove", e => { if (!e.target.closest('.content')) e.preventDefault(); }, { passive: false });
+  document.getElementById("gameContainer").addEventListener("touchmove", e => { if (!e.target.closest('.scene-card')) e.preventDefault(); }, { passive: false });
 
-  // Определение языка через SDK Яндекс.Игр (с приоритетом параметра ?lang=en)
-  const urlLang = new URLSearchParams(window.location.search).get('lang');
-  if (urlLang === 'en') currentLang = 'en';
-  else if (urlLang === 'ru') currentLang = 'ru';
+  // определение языка (SDK + параметр URL)
+  const urlLang = new URLSearchParams(window.location.search).get("lang");
+  if (urlLang === "en") currentLang = "en";
+  else if (urlLang === "ru") currentLang = "ru";
 
   function initYandexSDK() {
     if (typeof YaGames !== "undefined") {
@@ -279,10 +302,8 @@
         else if (!urlLang) currentLang = "ru";
         applyUILanguage();
         if (ysdk.features && ysdk.features.GameReadyAPI) ysdk.features.GameReadyAPI.gameReady();
-      }).catch(() => { applyUILanguage(); });
-    } else {
-      applyUILanguage();
-    }
+      }).catch(() => applyUILanguage());
+    } else applyUILanguage();
   }
   initYandexSDK();
 </script>
