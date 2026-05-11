@@ -12,80 +12,84 @@
         }
         body {
             background: #1a1a2e;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
             font-family: 'Arial', sans-serif;
+            height: 100vh;
             touch-action: none;
+            display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow: hidden;
         }
         #gameContainer {
-            position: relative;
+            width: 100%;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
         }
         canvas {
             display: block;
-            max-width: 100%;
-            max-height: 100%;
             border: 3px solid #e94560;
             border-radius: 20px;
             box-shadow: 0 0 30px #e94560;
+            margin-top: 5px;
+            max-width: 95%;
         }
         #ui {
             position: absolute;
             top: 10px;
             left: 10px;
             color: white;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             background: rgba(0,0,0,0.6);
-            padding: 5px 15px;
+            padding: 4px 12px;
             border-radius: 20px;
             z-index: 10;
             pointer-events: none;
         }
+        #bottomUI {
+            width: 95%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 8px;
+        }
         #restartBtn {
-            position: absolute;
-            top: 60%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             background: #e94560;
             color: white;
             border: none;
-            padding: 15px 30px;
-            font-size: 22px;
+            padding: 12px 25px;
+            font-size: 20px;
             font-weight: bold;
             border-radius: 30px;
             box-shadow: 0 0 20px #ff4d6d;
-            display: none;
-            z-index: 20;
             cursor: pointer;
             white-space: nowrap;
+            display: none;
+            margin: 5px 0;
         }
         #hint {
-            position: absolute;
-            bottom: 5px;
-            left: 10px;
-            right: 10px;
-            color: rgba(255,255,255,0.7);
-            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
             text-align: center;
-            z-index: 10;
-            pointer-events: none;
+            background: rgba(0,0,0,0.4);
+            padding: 4px 12px;
+            border-radius: 15px;
         }
     </style>
 </head>
 <body>
     <div id="gameContainer">
         <canvas id="gameCanvas"></canvas>
-        <div id="ui">⭐ Рейтинг: <span id="scoreDisplay">0</span></div>
-        <button id="restartBtn">🔄 Начать заново</button>
-        <div id="hint">Лови 👍 и уворачивайся от тёмных фигур и вирусов!</div>
+        <div id="bottomUI">
+            <div id="hint">Лови 👍 и уворачивайся от тёмных фигур и вирусов!</div>
+            <button id="restartBtn">🔄 Начать заново</button>
+        </div>
     </div>
+    <div id="ui">⭐ Рейтинг: <span id="scoreDisplay">0</span></div>
 
     <script>
         (function() {
@@ -95,20 +99,28 @@
             const restartBtn = document.getElementById('restartBtn');
             const hintDiv = document.getElementById('hint');
 
-            // Адаптивный размер
+            // Адаптивный размер canvas: занимает 70% высоты экрана
             function resizeCanvas() {
                 const maxWidth = Math.min(window.innerWidth - 20, 400);
-                const maxHeight = Math.min(window.innerHeight - 20, 700);
+                const maxHeight = Math.min(window.innerHeight * 0.7, 600); // 70% высоты, но не выше 600px
                 canvas.width = maxWidth;
                 canvas.height = maxHeight;
             }
-            window.addEventListener('resize', resizeCanvas);
+            window.addEventListener('resize', () => {
+                resizeCanvas();
+                // При ресайзе нужно обновить laneHeight и позицию игрока
+                if (typeof laneHeight !== 'undefined') {
+                    laneHeight = canvas.height / LANE_COUNT;
+                    playerY = playerLane * laneHeight + (laneHeight - playerHeight) / 2;
+                }
+            });
             resizeCanvas();
 
             // Переменные игры
             const LANE_COUNT = 3;
-            let laneHeight;
-            let playerX, playerY;
+            let laneHeight = canvas.height / LANE_COUNT;
+            let playerX = 60;
+            let playerY;
             const playerWidth = 40;
             const playerHeight = 60;
             let playerLane = 1;
@@ -124,8 +136,10 @@
             let shieldTimer = 0;
             let frameCount = 0;
 
-            // Кнопки дилеммы (координаты)
             let dilemmaButtons = [];
+
+            // Установка начальной позиции игрока
+            playerY = playerLane * laneHeight + (laneHeight - playerHeight) / 2;
 
             // Дилеммы
             const dilemmas = [
@@ -151,7 +165,6 @@
                 }
             ];
 
-            // Классы объектов
             class Obstacle {
                 constructor(lane) {
                     this.lane = lane;
@@ -201,7 +214,7 @@
             class GoodItem {
                 constructor(lane) {
                     this.lane = lane;
-                    this.size = 40; // увеличим для заметности
+                    this.size = 40;
                     this.x = canvas.width;
                     this.y = lane * laneHeight + (laneHeight - this.size) / 2;
                 }
@@ -228,7 +241,6 @@
                 }
             }
 
-            // Инициализация
             function initGame() {
                 laneHeight = canvas.height / LANE_COUNT;
                 playerX = 60;
@@ -253,4 +265,399 @@
             function spawnObjects() {
                 if (Math.random() < 0.02) {
                     let lane = Math.floor(Math.random() * LANE_COUNT);
-                    obstacles.push(new Obstacle(lane
+                    obstacles.push(new Obstacle(lane));
+                }
+                if (Math.random() < 0.015) {
+                    let lane = Math.floor(Math.random() * LANE_COUNT);
+                    goodItems.push(new GoodItem(lane));
+                }
+            }
+
+            function checkCollisions() {
+                const playerBounds = {
+                    x: playerX,
+                    y: playerY,
+                    w: playerWidth,
+                    h: playerHeight
+                };
+
+                for (let i = obstacles.length-1; i >= 0; i--) {
+                    const obs = obstacles[i];
+                    if (rectCollide(playerBounds, obs.getBounds())) {
+                        if (shieldActive) {
+                            obstacles.splice(i,1);
+                            shieldActive = false;
+                            shieldTimer = 0;
+                            canvas.style.boxShadow = '0 0 50px #00ff00';
+                            setTimeout(()=>{ canvas.style.boxShadow = '0 0 30px #e94560'; }, 200);
+                            continue;
+                        }
+                        gameOver();
+                        return;
+                    }
+                }
+
+                for (let i = goodItems.length-1; i >= 0; i--) {
+                    const item = goodItems[i];
+                    if (rectCollide(playerBounds, item.getBounds())) {
+                        score += 20;
+                        updateScoreDisplay();
+                        goodItems.splice(i,1);
+                    }
+                }
+            }
+
+            function rectCollide(r1, r2) {
+                return r1.x < r2.x + r2.w &&
+                       r1.x + r1.w > r2.x &&
+                       r1.y < r2.y + r2.h &&
+                       r1.y + r1.h > r2.y;
+            }
+
+            function gameOver() {
+                isGameOver = true;
+                dilemmaActive = false;
+                restartBtn.style.display = 'block';
+                hintDiv.style.display = 'none';
+            }
+
+            function activateDilemma() {
+                if (dilemmas.length === 0) return;
+                dilemmaActive = true;
+                const randomIndex = Math.floor(Math.random() * dilemmas.length);
+                dilemmaData = { ...dilemmas[randomIndex] };
+                dilemmaButtons = [];
+            }
+
+            function resolveDilemma(choice) {
+                if (!dilemmaActive || !dilemmaData) return;
+                const result = choice === 'good' ? dilemmaData.good : dilemmaData.bad;
+                score += result.points;
+                if (score < 0) score = 0;
+                updateScoreDisplay();
+
+                if (result.shield) {
+                    shieldActive = true;
+                    shieldTimer = 180;
+                }
+                if (result.shake) {
+                    canvas.style.transform = 'translate(5px, 3px)';
+                    setTimeout(()=>{ canvas.style.transform = 'translate(0,0)'; }, 100);
+                }
+
+                dilemmaActive = false;
+                dilemmaData = null;
+                dilemmaButtons = [];
+            }
+
+            function updateScoreDisplay() {
+                scoreSpan.textContent = score;
+            }
+
+            function drawBackground() {
+                const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                grad.addColorStop(0, '#0f0c29');
+                grad.addColorStop(0.5, '#302b63');
+                grad.addColorStop(1, '#24243e');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.strokeStyle = '#e94560';
+                ctx.lineWidth = 2;
+                for (let i = 1; i < LANE_COUNT; i++) {
+                    const y = i * laneHeight;
+                    ctx.beginPath();
+                    ctx.setLineDash([15, 10]);
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(canvas.width, y);
+                    ctx.stroke();
+                }
+                ctx.setLineDash([]);
+            }
+
+            function drawPlayer() {
+                ctx.save();
+                ctx.shadowColor = '#00ffff';
+                ctx.shadowBlur = 25;
+
+                if (shieldActive) {
+                    ctx.shadowColor = '#00ff00';
+                    ctx.shadowBlur = 40;
+                    ctx.strokeStyle = '#00ff00';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(playerX + playerWidth/2, playerY + playerHeight/2, 40, 0, Math.PI*2);
+                    ctx.stroke();
+                }
+
+                ctx.font = '50px Arial';
+                ctx.fillText('🏃', playerX-5, playerY+45);
+                ctx.restore();
+            }
+
+            function drawGameOverOverlay() {
+                ctx.fillStyle = 'rgba(0,0,0,0.8)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 26px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Группировка затянула...', canvas.width/2, canvas.height/2-30);
+                ctx.font = '18px Arial';
+                ctx.fillText('Рейтинг: '+score, canvas.width/2, canvas.height/2+20);
+                // Кнопка внутри canvas
+                drawRestartButtonInsideCanvas();
+            }
+
+            function drawRestartButtonInsideCanvas() {
+                const btnWidth = 200;
+                const btnHeight = 50;
+                const btnX = canvas.width/2 - btnWidth/2;
+                const btnY = canvas.height/2 + 50;
+                // сохраним координаты для обработки касания
+                if (!window._restartBtnCoords) {
+                    window._restartBtnCoords = {};
+                }
+                window._restartBtnCoords = { x: btnX, y: btnY, w: btnWidth, h: btnHeight };
+
+                ctx.fillStyle = '#e94560';
+                ctx.shadowColor = '#ff4d6d';
+                ctx.shadowBlur = 20;
+                ctx.beginPath();
+                ctx.roundRect(btnX, btnY, btnWidth, btnHeight, 30);
+                ctx.fill();
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 20px Arial';
+                ctx.fillText('🔄 Начать заново', canvas.width/2, btnY + btnHeight/2 + 2);
+            }
+
+            function drawDilemmaPopup() {
+                if (!dilemmaActive || !dilemmaData) return;
+
+                ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                const boxWidth = canvas.width * 0.85;
+                const boxHeight = 220;
+                const boxX = (canvas.width - boxWidth) / 2;
+                const boxY = (canvas.height - boxHeight) / 2;
+
+                ctx.fillStyle = '#2d2d44';
+                ctx.shadowColor = '#e94560';
+                ctx.shadowBlur = 30;
+                ctx.beginPath();
+                ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 20);
+                ctx.fill();
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 15px Arial';
+                ctx.textAlign = 'center';
+                wrapText(ctx, dilemmaData.text, canvas.width/2, boxY + 40, boxWidth - 40, 20);
+
+                const buttonWidth = boxWidth - 60;
+                const buttonHeight = 45;
+                const buttonX = boxX + 30;
+                const goodY = boxY + 80;
+                const badY = boxY + 135;
+
+                dilemmaButtons = [
+                    { x: buttonX, y: goodY, w: buttonWidth, h: buttonHeight, choice: 'good' },
+                    { x: buttonX, y: badY, w: buttonWidth, h: buttonHeight, choice: 'bad' }
+                ];
+
+                drawButton(ctx, buttonX, goodY, buttonWidth, buttonHeight, dilemmaData.good.label, '#4caf50');
+                drawButton(ctx, buttonX, badY, buttonWidth, buttonHeight, dilemmaData.bad.label, '#f44336');
+            }
+
+            function drawButton(ctx, x, y, w, h, text, color) {
+                ctx.fillStyle = color;
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 15;
+                ctx.beginPath();
+                ctx.roundRect(x, y, w, h, 10);
+                ctx.fill();
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 13px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(text, x + w/2, y + h/2);
+            }
+
+            function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+                const words = text.split(' ');
+                let line = '';
+                let testLine;
+                let lineY = y;
+                for (let n = 0; n < words.length; n++) {
+                    testLine = line + words[n] + ' ';
+                    const metrics = ctx.measureText(testLine);
+                    if (metrics.width > maxWidth && n > 0) {
+                        ctx.fillText(line, x, lineY);
+                        line = words[n] + ' ';
+                        lineY += lineHeight;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                ctx.fillText(line, x, lineY);
+            }
+
+            function gameLoop() {
+                if (isGameOver) {
+                    drawBackground();
+                    // рисуем оставшиеся объекты
+                    for (let obs of obstacles) obs.draw(ctx);
+                    for (let item of goodItems) item.draw(ctx);
+                    drawPlayer();
+                    drawGameOverOverlay();
+                    requestAnimationFrame(gameLoop);
+                    return;
+                }
+
+                if (!dilemmaActive) {
+                    frameCount++;
+                    if (frameCount % 60 === 0 && gameSpeed < 10) {
+                        gameSpeed += 0.2;
+                    }
+
+                    spawnObjects();
+
+                    for (let obs of obstacles) obs.update();
+                    for (let item of goodItems) item.update();
+
+                    obstacles = obstacles.filter(obs => obs.x + obs.width > 0);
+                    goodItems = goodItems.filter(item => item.x + item.size > 0);
+
+                    checkCollisions();
+
+                    if (shieldActive) {
+                        shieldTimer--;
+                        if (shieldTimer <= 0) shieldActive = false;
+                    }
+
+                    if (frameCount % 180 === 0 && Math.random() < 0.4) {
+                        activateDilemma();
+                    }
+                }
+
+                drawBackground();
+                for (let obs of obstacles) obs.draw(ctx);
+                for (let item of goodItems) item.draw(ctx);
+                drawPlayer();
+                drawDilemmaPopup();
+
+                requestAnimationFrame(gameLoop);
+            }
+
+            function handleInteraction(clientX, clientY) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+
+                const canvasX = (clientX - rect.left) * scaleX;
+                const canvasY = (clientY - rect.top) * scaleY;
+
+                // Если игра окончена, проверяем кнопку внутри canvas
+                if (isGameOver && window._restartBtnCoords) {
+                    const btn = window._restartBtnCoords;
+                    if (canvasX >= btn.x && canvasX <= btn.x + btn.w &&
+                        canvasY >= btn.y && canvasY <= btn.y + btn.h) {
+                        initGame();
+                        return;
+                    }
+                }
+
+                // Если активна дилемма, обрабатываем кнопки
+                if (dilemmaActive && dilemmaButtons.length === 2) {
+                    for (let btn of dilemmaButtons) {
+                        if (canvasX >= btn.x && canvasX <= btn.x + btn.w &&
+                            canvasY >= btn.y && canvasY <= btn.y + btn.h) {
+                            resolveDilemma(btn.choice);
+                            return;
+                        }
+                    }
+                    return;
+                }
+
+                if (isGameOver) return; // не реагируем на другие нажатия, кроме рестарта
+
+                // Переключение дорожек
+                const laneFromY = Math.floor(canvasY / laneHeight);
+                if (laneFromY >= 0 && laneFromY < LANE_COUNT) {
+                    playerLane = laneFromY;
+                    playerY = playerLane * laneHeight + (laneHeight - playerHeight) / 2;
+                }
+            }
+
+            function handleTouchOrClick(e) {
+                e.preventDefault();
+                let clientX, clientY;
+                if (e.touches && e.touches.length > 0) {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                } else if (e.changedTouches && e.changedTouches.length > 0) {
+                    clientX = e.changedTouches[0].clientX;
+                    clientY = e.changedTouches[0].clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+                handleInteraction(clientX, clientY);
+            }
+
+            canvas.addEventListener('touchstart', handleTouchOrClick, {passive: false});
+            canvas.addEventListener('mousedown', handleTouchOrClick);
+            // кнопка restartBtn снаружи (на случай если пользователь нажмёт её)
+            restartBtn.addEventListener('click', () => {
+                if (isGameOver) initGame();
+            });
+            restartBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                if (isGameOver) initGame();
+            });
+
+            window.addEventListener('keydown', (e) => {
+                if (dilemmaActive) {
+                    if (e.key === '1' || e.key === 'ArrowLeft') resolveDilemma('good');
+                    if (e.key === '2' || e.key === 'ArrowRight') resolveDilemma('bad');
+                    return;
+                }
+                if (isGameOver) {
+                    initGame();
+                    return;
+                }
+                if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'ц') {
+                    playerLane = Math.max(0, playerLane - 1);
+                    playerY = playerLane * laneHeight + (laneHeight - playerHeight) / 2;
+                } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'ы') {
+                    playerLane = Math.min(LANE_COUNT - 1, playerLane + 1);
+                    playerY = playerLane * laneHeight + (laneHeight - playerHeight) / 2;
+                }
+            });
+
+            // roundRect polyfill
+            CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+                if (w < 2 * r) r = w / 2;
+                if (h < 2 * r) r = h / 2;
+                this.beginPath();
+                this.moveTo(x + r, y);
+                this.arcTo(x + w, y, x + w, y + h, r);
+                this.arcTo(x + w, y + h, x, y + h, r);
+                this.arcTo(x, y + h, x, y, r);
+                this.arcTo(x, y, x + w, y, r);
+                this.closePath();
+                return this;
+            };
+
+            initGame();
+            gameLoop();
+        })();
+    </script>
+</body>
+</html>
