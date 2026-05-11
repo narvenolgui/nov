@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, touch-action: manipulation, viewport-fit=cover">
     <title>Разрыв — вырвись из круга</title>
-    <!-- SDK Яндекс Игр -->
     <script src="https://yandex.ru/games/sdk/v2"></script>
     <style>
         * {
@@ -111,7 +110,6 @@
 
     <script>
         (function() {
-            // ---------- ПЕРЕМЕННЫЕ ИГРЫ ----------
             const canvas = document.getElementById('gameCanvas');
             const ctx = canvas.getContext('2d');
             const scoreSpan = document.getElementById('scoreDisplay');
@@ -121,13 +119,14 @@
             const hintDiv = document.getElementById('hint');
 
             let ysdk = null;
-            let playerLang = 'ru'; // по умолчанию русский
-            let allDilemmas = []; // массив дилемм на нужном языке
-            let dilemmaIndex = 0; // индекс текущей дилеммы
+            let playerLang = 'ru';
+            let allDilemmas = [];
+            let shuffledDilemmas = [];
+            let dilemmaIndex = 0;
             const MAX_DILEMMAS = 100;
-            let dilemmaResolvedCount = 0; // сколько дилемм решено всего
+            let dilemmaResolvedCount = 0;
+            const MAX_LIVES = 5;
 
-            // Адаптивный размер canvas
             function resizeCanvas() {
                 const maxWidth = Math.min(window.innerWidth - 20, 400);
                 const maxHeight = Math.min(window.innerHeight * 0.75, 750);
@@ -153,6 +152,7 @@
 
             let obstacles = [];
             let goodItems = [];
+            let heartItems = [];
             let score = 0;
             let lives = 3;
             let gameSpeed = 5;
@@ -162,41 +162,36 @@
             let shieldActive = false;
             let shieldTimer = 0;
             let frameCount = 0;
-
             let dilemmaButtons = [];
 
             playerY = canvas.height - playerHeight - 20;
 
-            // ---------- ЛОКАЛИЗАЦИЯ ----------
+            // Локализация
             const texts = {
                 ru: {
-                    hint: '👈 Нажимай левее/правее, чтобы менять дорожку! Лови 👍 и уворачивайся',
+                    hint: '👈 Нажимай левее/правее, чтобы менять дорожку! Лови 👍 и ❤️',
                     restart: '🔄 Начать заново',
                     gameOver: 'Группировка затянула...',
                     win: 'Ты вырвался! Поздравляем!',
                     score: 'Рейтинг',
                     lives: 'Жизни',
-                    dilemmas: 'Дилеммы',
-                    good: 'Верный шаг',
-                    bad: 'Опасный путь'
+                    dilemmas: 'Дилеммы'
                 },
                 en: {
-                    hint: '👈 Tap left/right to change lane! Catch 👍 and dodge',
+                    hint: '👈 Tap left/right to change lane! Catch 👍 and ❤️',
                     restart: '🔄 Restart',
                     gameOver: 'The group pulled you in...',
                     win: 'You broke free! Congratulations!',
                     score: 'Score',
                     lives: 'Lives',
-                    dilemmas: 'Dilemmas',
-                    good: 'Right choice',
-                    bad: 'Dangerous path'
+                    dilemmas: 'Dilemmas'
                 }
             };
             let t = texts.ru;
 
-            // Генератор 100+ дилемм на русском и английском
+            // Генерация 120 уникальных дилемм
             function generateDilemmas(lang) {
-                const baseRu = [
+                const situationsRu = [
                     "Токсичный друг зовёт на опасный челлендж.",
                     "В соцсетях травят одноклассника.",
                     "Незнакомец предлагает лёгкие деньги за странное задание.",
@@ -206,9 +201,49 @@
                     "В чате пишут гадости про учителя.",
                     "Друг просит списать на экзамене.",
                     "Предлагают украсть мелочь из магазина.",
-                    "Зовут на вечеринку, где будет алкоголь."
+                    "Зовут на вечеринку, где будет алкоголь.",
+                    "Незнакомец в сети просит твои личные данные.",
+                    "Кто-то предлагает взломать чужой аккаунт.",
+                    "Друг уговаривает попробовать наркотики.",
+                    "Предлагают поучаствовать в травле новичка.",
+                    "Тебя склоняют к вандализму в парке.",
+                    "Зовут на опасную крышу сделать селфи.",
+                    "Просят передать подозрительный пакет.",
+                    "Предлагают солгать учителю о болезни.",
+                    "Уговаривают не дружить с «неправильными» людьми.",
+                    "Обещают много лайков за опасный трюк.",
+                    "Говорят, что твой друг предатель, и требуют порвать с ним.",
+                    "Показывают жестокое видео и смеются.",
+                    "Принуждают написать оскорбительный комментарий.",
+                    "Сказали, что все «свои» носят определённый знак.",
+                    "Угрожают распространить слух, если не сделаешь задание.",
+                    "Предлагают отомстить обидчику анонимно.",
+                    "Призывают бойкотировать одноклассника.",
+                    "Зовут проникнуть в заброшенное здание.",
+                    "Обещают секретное членство в крутом клубе.",
+                    "Просят спрятать чужую вещь.",
+                    "Склоняют к игре в карты на деньги.",
+                    "Призывают не слушаться родителей.",
+                    "Говорят, что ты обязан доказать свою крутость.",
+                    "Подначивают украсть ответы к контрольной.",
+                    "Требуют скинуть интимное фото.",
+                    "Предлагают подставить другого ученика.",
+                    "Убеждают, что законы — для слабаков.",
+                    "Зовут устроить драку с параллельным классом.",
+                    "Показывают, как обойти школьный интернет-фильтр.",
+                    "Сулят лёгкий заработок на странных переводах.",
+                    "Говорят, что только так ты станешь своим.",
+                    "Требуют оскорбить учителя в лицо.",
+                    "Настаивают, чтобы ты удалил все соцсети.",
+                    "Предлагают за деньги распространить листовки.",
+                    "Принуждают носить скрытое оружие.",
+                    "Зовут на ночную «операцию».",
+                    "Уверяют, что твои друзья тебя используют.",
+                    "Предлагают попробовать «лёгкий» наркотик.",
+                    "Сказали, что твой парень/девушка тебе изменяет, и надо отомстить.",
+                    "Вынуждают врать ради общего дела."
                 ];
-                const baseEn = [
+                const situationsEn = [
                     "A toxic friend invites you to a dangerous challenge.",
                     "A classmate is being bullied on social media.",
                     "A stranger offers easy money for a strange task.",
@@ -218,28 +253,104 @@
                     "Nasty things about the teacher are written in chat.",
                     "A friend asks to copy on an exam.",
                     "They offer to steal a small item from a store.",
-                    "You are invited to a party where there will be alcohol."
+                    "You are invited to a party where there will be alcohol.",
+                    "A stranger online asks for your personal data.",
+                    "Someone proposes to hack someone else's account.",
+                    "A friend pressures you to try drugs.",
+                    "They suggest joining in bullying a newcomer.",
+                    "You are pushed to vandalize a park.",
+                    "A group calls you to take a dangerous rooftop selfie.",
+                    "Someone asks you to deliver a suspicious package.",
+                    "You are prompted to lie to a teacher about being sick.",
+                    "They urge you not to be friends with 'wrong' people.",
+                    "You are promised many likes for a risky stunt.",
+                    "They say your friend betrayed you and demand you cut ties.",
+                    "They show a violent video and laugh.",
+                    "You are forced to write an insulting comment.",
+                    "They said all 'insiders' wear a certain sign.",
+                    "They threaten to spread a rumor if you don't complete a task.",
+                    "They suggest getting anonymous revenge on an offender.",
+                    "They call for a boycott of a classmate.",
+                    "They invite you to break into an abandoned building.",
+                    "They promise secret membership in a cool club.",
+                    "You are asked to hide someone else's item.",
+                    "They entice you to gamble with cards for money.",
+                    "They encourage you to disobey parents.",
+                    "They say you must prove your toughness.",
+                    "They dare you to steal the test answers.",
+                    "They demand you send an intimate photo.",
+                    "They propose framing another student.",
+                    "They convince you that laws are for the weak.",
+                    "They call you to start a fight with another class.",
+                    "They show how to bypass the school internet filter.",
+                    "They promise easy money from strange transfers.",
+                    "They say it's the only way to become one of them.",
+                    "They demand you insult the teacher to their face.",
+                    "They insist you delete all social media.",
+                    "They offer money to distribute flyers.",
+                    "They pressure you to carry a hidden weapon.",
+                    "They invite you to a nighttime 'operation'.",
+                    "They assure you your friends are using you.",
+                    "They offer to try a 'soft' drug.",
+                    "They said your partner is cheating and you should take revenge.",
+                    "They force you to lie for the common cause."
                 ];
-                // Расширим до 100+ вариаций
+                
+                const questionsRu = ["Что сделаешь?", "Твой выбор?", "Как поступишь?"];
+                const questionsEn = ["What will you do?", "Your choice?", "How will you act?"];
+                
+                const goodLabelsRu = [
+                    "Откажусь и расскажу родителям",
+                    "Поговорю с учителем или психологом",
+                    "Обращусь на линию доверия",
+                    "Просто уйду и заблокирую контакт"
+                ];
+                const badLabelsRu = [
+                    "Соглашусь, чтобы не быть белой вороной",
+                    "Промолчу и сделаю вид, что согласен",
+                    "Выполню, чтобы доказать свою крутость",
+                    "Поддержу, ведь все так делают"
+                ];
+                const goodLabelsEn = [
+                    "Refuse and tell parents",
+                    "Talk to a teacher or counselor",
+                    "Call a helpline",
+                    "Just walk away and block the contact"
+                ];
+                const badLabelsEn = [
+                    "Agree to not stand out",
+                    "Stay silent and pretend to agree",
+                    "Do it to prove my toughness",
+                    "Support it, since everyone does"
+                ];
+
                 const dilemmas = [];
-                const base = lang === 'ru' ? baseRu : baseEn;
-                for (let i = 0; i < 110; i++) {
-                    let template = base[i % base.length];
-                    // Добавим вариативности: разные обстоятельства
-                    if (i % 3 === 0) template += ' ' + (lang === 'ru' ? 'Что сделаешь?' : 'What will you do?');
-                    else if (i % 3 === 1) template += ' ' + (lang === 'ru' ? 'Твой выбор?' : 'Your choice?');
-                    else template += ' ' + (lang === 'ru' ? 'Как поступишь?' : 'How will you act?');
+                const situations = lang === 'ru' ? situationsRu : situationsEn;
+                const questions = lang === 'ru' ? questionsRu : questionsEn;
+                const goodLabels = lang === 'ru' ? goodLabelsRu : goodLabelsEn;
+                const badLabels = lang === 'ru' ? badLabelsRu : badLabelsEn;
+
+                // Создаём 120+ уникальных комбинаций
+                for (let i = 0; i < 120; i++) {
+                    const sitIdx = i % situations.length;
+                    const qIdx = i % questions.length;
+                    const gIdx = Math.floor(i / situations.length) % goodLabels.length;
+                    const bIdx = Math.floor(i / (situations.length * 2)) % badLabels.length;
                     
+                    const text = situations[sitIdx] + ' ' + questions[qIdx];
+                    const goodLabel = goodLabels[gIdx];
+                    const badLabel = badLabels[bIdx];
+
                     dilemmas.push({
-                        text: template,
+                        text: text,
                         good: {
-                            label: lang === 'ru' ? 'Откажусь и расскажу родителям' : 'Refuse and tell parents',
-                            points: 50,
-                            shield: i % 2 === 0
+                            label: goodLabel,
+                            points: 40 + Math.floor(Math.random() * 30),
+                            shield: Math.random() < 0.4
                         },
                         bad: {
-                            label: lang === 'ru' ? 'Соглашусь, чтобы не быть белой вороной' : 'Agree to not stand out',
-                            points: -30,
+                            label: badLabel,
+                            points: -20 - Math.floor(Math.random() * 40),
                             shake: true
                         }
                     });
@@ -247,13 +358,19 @@
                 return dilemmas;
             }
 
-            // Инициализация SDK
+            // Перемешивание массива
+            function shuffleArray(arr) {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+
             async function initSDK() {
                 try {
                     ysdk = await YaGames.init();
-                    // Определение языка
-                    const env = ysdk.environment;
-                    const lang = env.i18n.lang;
+                    const lang = ysdk.environment.i18n.lang;
                     if (lang === 'en' || lang.startsWith('en-')) {
                         playerLang = 'en';
                     } else {
@@ -261,21 +378,26 @@
                     }
                     t = texts[playerLang];
                     allDilemmas = generateDilemmas(playerLang);
-                    // Game Ready API
                     ysdk.features.LoadingAPI?.ready();
                 } catch (e) {
-                    // Если SDK не загрузился, используем русский по умолчанию
                     allDilemmas = generateDilemmas('ru');
                     t = texts.ru;
                 }
-                // Обновим подсказку и кнопку
                 hintDiv.textContent = t.hint;
                 restartBtn.textContent = t.restart;
-                initGame();
+                startNewGame();
                 gameLoop();
             }
 
-            // ---------- КЛАССЫ ОБЪЕКТОВ ----------
+            function startNewGame() {
+                // Перемешиваем копию всех дилемм для этого забега
+                shuffledDilemmas = shuffleArray([...allDilemmas]);
+                dilemmaIndex = 0;
+                dilemmaResolvedCount = 0;
+                initGame();
+            }
+
+            // Классы объектов
             class Obstacle {
                 constructor(col) {
                     this.col = col;
@@ -285,9 +407,7 @@
                     this.y = -this.height;
                     this.type = Math.random() < 0.5 ? 'toxic' : 'virus';
                 }
-                update() {
-                    this.y += gameSpeed;
-                }
+                update() { this.y += gameSpeed; }
                 draw(ctx) {
                     ctx.save();
                     if (this.type === 'toxic') {
@@ -317,9 +437,7 @@
                     }
                     ctx.restore();
                 }
-                getBounds() {
-                    return { x: this.x, y: this.y, w: this.width, h: this.height };
-                }
+                getBounds() { return { x: this.x, y: this.y, w: this.width, h: this.height }; }
             }
 
             class GoodItem {
@@ -329,9 +447,7 @@
                     this.x = col * colWidth + (colWidth - this.size) / 2;
                     this.y = -this.size;
                 }
-                update() {
-                    this.y += gameSpeed;
-                }
+                update() { this.y += gameSpeed; }
                 draw(ctx) {
                     ctx.save();
                     ctx.shadowColor = '#ffdd00';
@@ -347,12 +463,31 @@
                     ctx.fillText('👍', this.x + this.size/2, this.y + this.size/2);
                     ctx.restore();
                 }
-                getBounds() {
-                    return { x: this.x, y: this.y, w: this.size, h: this.size };
-                }
+                getBounds() { return { x: this.x, y: this.y, w: this.size, h: this.size }; }
             }
 
-            // ---------- ФУНКЦИИ ИГРЫ ----------
+            class HeartItem {
+                constructor(col) {
+                    this.col = col;
+                    this.size = 34;
+                    this.x = col * colWidth + (colWidth - this.size) / 2;
+                    this.y = -this.size;
+                }
+                update() { this.y += gameSpeed; }
+                draw(ctx) {
+                    ctx.save();
+                    ctx.shadowColor = '#ff4466';
+                    ctx.shadowBlur = 20;
+                    ctx.fillStyle = '#ff3366';
+                    ctx.font = '28px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('❤️', this.x + this.size/2, this.y + this.size/2);
+                    ctx.restore();
+                }
+                getBounds() { return { x: this.x, y: this.y, w: this.size, h: this.size }; }
+            }
+
             function initGame() {
                 colWidth = canvas.width / COL_COUNT;
                 playerCol = 1;
@@ -360,6 +495,7 @@
                 playerY = canvas.height - playerHeight - 20;
                 obstacles = [];
                 goodItems = [];
+                heartItems = [];
                 score = 0;
                 lives = 3;
                 gameSpeed = 5;
@@ -369,8 +505,6 @@
                 shieldActive = false;
                 shieldTimer = 0;
                 frameCount = 0;
-                dilemmaResolvedCount = 0;
-                dilemmaIndex = 0;
                 dilemmaButtons = [];
                 restartBtn.style.display = 'none';
                 hintDiv.style.display = 'block';
@@ -391,6 +525,11 @@
                 if (Math.random() < 0.015) {
                     let col = Math.floor(Math.random() * COL_COUNT);
                     goodItems.push(new GoodItem(col));
+                }
+                // Редкий спавн сердечка
+                if (Math.random() < 0.004) {
+                    let col = Math.floor(Math.random() * COL_COUNT);
+                    heartItems.push(new HeartItem(col));
                 }
             }
 
@@ -425,12 +564,22 @@
                         updateUI();
                     }
                 }
+
+                for (let i = heartItems.length-1; i >= 0; i--) {
+                    const heart = heartItems[i];
+                    if (rectCollide(playerBounds, heart.getBounds())) {
+                        if (lives < MAX_LIVES) {
+                            lives++;
+                            updateUI();
+                        }
+                        heartItems.splice(i,1);
+                    }
+                }
             }
 
             function loseLife() {
                 lives--;
                 updateUI();
-                // Визуальная обратная связь
                 canvas.style.transform = 'translate(5px, 3px)';
                 setTimeout(()=>{ canvas.style.transform = 'translate(0,0)'; }, 100);
             }
@@ -451,16 +600,14 @@
 
             function activateDilemma() {
                 if (dilemmaResolvedCount >= MAX_DILEMMAS) {
-                    // Игрок прошёл все 100 дилемм
                     isGameOver = true;
-                    dilemmaActive = false;
                     restartBtn.style.display = 'block';
                     hintDiv.style.display = 'none';
                     return;
                 }
-                if (allDilemmas.length === 0) return;
+                if (shuffledDilemmas.length === 0) return;
                 dilemmaActive = true;
-                dilemmaData = allDilemmas[dilemmaIndex % allDilemmas.length];
+                dilemmaData = shuffledDilemmas[dilemmaIndex % shuffledDilemmas.length];
                 dilemmaIndex++;
                 dilemmaButtons = [];
             }
@@ -486,9 +633,7 @@
                 dilemmaData = null;
                 dilemmaButtons = [];
 
-                // Проверка завершения игры после 100 дилемм
                 if (dilemmaResolvedCount >= MAX_DILEMMAS && !isGameOver) {
-                    // Показываем экран победы
                     isGameOver = true;
                     restartBtn.style.display = 'block';
                     hintDiv.style.display = 'none';
@@ -576,13 +721,19 @@
             function drawDilemmaPopup() {
                 if (!dilemmaActive || !dilemmaData) return;
 
-                ctx.fillStyle = 'rgba(0,0,0,0.7)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+                // Измеряем высоту текста, чтобы сделать окно достаточно большим
+                ctx.save();
+                ctx.font = 'bold 14px Arial';
+                const textLines = wrapTextLines(ctx, dilemmaData.text, canvas.width * 0.7);
+                const textHeight = textLines.length * 20;
+                // Высота окна: отступы + текст + две кнопки с отступами
+                const boxHeight = Math.max(180, 80 + textHeight + 90);
                 const boxWidth = canvas.width * 0.85;
-                const boxHeight = 220;
                 const boxX = (canvas.width - boxWidth) / 2;
                 const boxY = (canvas.height - boxHeight) / 2;
+
+                ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                 ctx.fillStyle = '#2d2d44';
                 ctx.shadowColor = '#e94560';
@@ -594,15 +745,19 @@
                 ctx.shadowBlur = 0;
 
                 ctx.fillStyle = 'white';
-                ctx.font = 'bold 15px Arial';
+                ctx.font = 'bold 14px Arial';
                 ctx.textAlign = 'center';
-                wrapText(ctx, dilemmaData.text, canvas.width/2, boxY + 40, boxWidth - 40, 20);
+                // Рисуем текст построчно
+                const startTextY = boxY + 30;
+                textLines.forEach((line, idx) => {
+                    ctx.fillText(line, canvas.width/2, startTextY + idx * 20);
+                });
 
                 const buttonWidth = boxWidth - 60;
-                const buttonHeight = 45;
+                const buttonHeight = 40;
                 const buttonX = boxX + 30;
-                const goodY = boxY + 80;
-                const badY = boxY + 135;
+                const goodY = startTextY + textHeight + 10;
+                const badY = goodY + buttonHeight + 8;
 
                 dilemmaButtons = [
                     { x: buttonX, y: goodY, w: buttonWidth, h: buttonHeight, choice: 'good' },
@@ -611,6 +766,24 @@
 
                 drawButton(ctx, buttonX, goodY, buttonWidth, buttonHeight, dilemmaData.good.label, '#4caf50');
                 drawButton(ctx, buttonX, badY, buttonWidth, buttonHeight, dilemmaData.bad.label, '#f44336');
+                ctx.restore();
+            }
+
+            function wrapTextLines(ctx, text, maxWidth) {
+                const words = text.split(' ');
+                const lines = [];
+                let currentLine = '';
+                for (let word of words) {
+                    const testLine = currentLine ? currentLine + ' ' + word : word;
+                    if (ctx.measureText(testLine).width <= maxWidth) {
+                        currentLine = testLine;
+                    } else {
+                        if (currentLine) lines.push(currentLine);
+                        currentLine = word;
+                    }
+                }
+                if (currentLine) lines.push(currentLine);
+                return lines;
             }
 
             function drawButton(ctx, x, y, w, h, text, color) {
@@ -624,37 +797,24 @@
                 ctx.shadowBlur = 0;
 
                 ctx.fillStyle = 'white';
-                ctx.font = 'bold 13px Arial';
+                // Уменьшаем шрифт, если текст длинный
+                let fontSize = 13;
+                ctx.font = `bold ${fontSize}px Arial`;
+                if (ctx.measureText(text).width > w - 10) {
+                    fontSize = 11;
+                    ctx.font = `bold ${fontSize}px Arial`;
+                }
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(text, x + w/2, y + h/2);
             }
 
-            function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-                const words = text.split(' ');
-                let line = '';
-                let testLine;
-                let lineY = y;
-                for (let n = 0; n < words.length; n++) {
-                    testLine = line + words[n] + ' ';
-                    const metrics = ctx.measureText(testLine);
-                    if (metrics.width > maxWidth && n > 0) {
-                        ctx.fillText(line, x, lineY);
-                        line = words[n] + ' ';
-                        lineY += lineHeight;
-                    } else {
-                        line = testLine;
-                    }
-                }
-                ctx.fillText(line, x, lineY);
-            }
-
-            // ---------- ИГРОВОЙ ЦИКЛ ----------
             function gameLoop() {
                 if (isGameOver) {
                     drawBackground();
                     for (let obs of obstacles) obs.draw(ctx);
                     for (let item of goodItems) item.draw(ctx);
+                    for (let heart of heartItems) heart.draw(ctx);
                     drawPlayer();
                     drawGameOverOverlay();
                     requestAnimationFrame(gameLoop);
@@ -668,12 +828,13 @@
                     }
 
                     spawnObjects();
-
                     for (let obs of obstacles) obs.update();
                     for (let item of goodItems) item.update();
+                    for (let heart of heartItems) heart.update();
 
                     obstacles = obstacles.filter(obs => obs.y < canvas.height + obs.height);
                     goodItems = goodItems.filter(item => item.y < canvas.height + item.size);
+                    heartItems = heartItems.filter(heart => heart.y < canvas.height + heart.size);
 
                     checkCollisions();
 
@@ -682,7 +843,6 @@
                         if (shieldTimer <= 0) shieldActive = false;
                     }
 
-                    // Активация дилеммы раз в 7-10 секунд
                     if (frameCount % 420 === 0 && Math.random() < 0.6) {
                         activateDilemma();
                     }
@@ -691,6 +851,7 @@
                 drawBackground();
                 for (let obs of obstacles) obs.draw(ctx);
                 for (let item of goodItems) item.draw(ctx);
+                for (let heart of heartItems) heart.draw(ctx);
                 drawPlayer();
                 drawDilemmaPopup();
 
@@ -702,21 +863,18 @@
                 const rect = canvas.getBoundingClientRect();
                 const scaleX = canvas.width / rect.width;
                 const scaleY = canvas.height / rect.height;
-
                 const canvasX = (clientX - rect.left) * scaleX;
                 const canvasY = (clientY - rect.top) * scaleY;
 
-                // Кнопка рестарта внутри canvas
                 if (isGameOver && window._restartBtnCoords) {
                     const btn = window._restartBtnCoords;
                     if (canvasX >= btn.x && canvasX <= btn.x + btn.w &&
                         canvasY >= btn.y && canvasY <= btn.y + btn.h) {
-                        initGame();
+                        startNewGame();
                         return;
                     }
                 }
 
-                // Кнопки дилеммы
                 if (dilemmaActive && dilemmaButtons.length === 2) {
                     for (let btn of dilemmaButtons) {
                         if (canvasX >= btn.x && canvasX <= btn.x + btn.w &&
@@ -730,14 +888,9 @@
 
                 if (isGameOver) return;
 
-                // Переключение дорожек по горизонтали
-                if (canvasX < colWidth) {
-                    playerCol = 0;
-                } else if (canvasX < 2 * colWidth) {
-                    playerCol = 1;
-                } else {
-                    playerCol = 2;
-                }
+                if (canvasX < colWidth) playerCol = 0;
+                else if (canvasX < 2 * colWidth) playerCol = 1;
+                else playerCol = 2;
                 playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
             }
 
@@ -757,11 +910,9 @@
                 handleInteraction(clientX, clientY);
             }
 
-            // Блокировка контекстного меню и долгого тапа
             canvas.addEventListener('contextmenu', (e) => e.preventDefault());
             canvas.addEventListener('touchstart', handleTouchOrClick, {passive: false});
             canvas.addEventListener('mousedown', handleTouchOrClick);
-            // Предотвращение swipe-to-refresh и выделения
             document.addEventListener('touchmove', (e) => {
                 if (e.target === canvas || canvas.contains(e.target)) {
                     e.preventDefault();
@@ -769,14 +920,13 @@
             }, {passive: false});
 
             restartBtn.addEventListener('click', () => {
-                if (isGameOver) initGame();
+                if (isGameOver) startNewGame();
             });
             restartBtn.addEventListener('touchend', (e) => {
                 e.preventDefault();
-                if (isGameOver) initGame();
+                if (isGameOver) startNewGame();
             });
 
-            // Управление клавишами (для десктопа)
             window.addEventListener('keydown', (e) => {
                 if (dilemmaActive) {
                     if (e.key === '1' || e.key === 'ArrowLeft') resolveDilemma('good');
@@ -784,7 +934,7 @@
                     return;
                 }
                 if (isGameOver) {
-                    initGame();
+                    startNewGame();
                     return;
                 }
                 if (e.key === 'ArrowLeft' || e.key === 'a') {
@@ -796,7 +946,6 @@
                 }
             });
 
-            // Полифил roundRect
             CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
                 if (w < 2 * r) r = w / 2;
                 if (h < 2 * r) r = h / 2;
@@ -810,7 +959,6 @@
                 return this;
             };
 
-            // Старт после инициализации SDK
             initSDK();
         })();
     </script>
