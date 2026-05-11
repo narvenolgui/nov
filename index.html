@@ -98,7 +98,7 @@
     <div id="gameContainer">
         <canvas id="gameCanvas"></canvas>
         <div id="bottomUI">
-            <div id="hint">👈 Нажимай левее/правее, чтобы менять дорожку! Лови 👍 и уворачивайся</div>
+            <div id="hint">👈 Нажимай левее/правее, чтобы менять дорожку! Лови 👍 и ❤️</div>
             <button id="restartBtn">🔄 Начать заново</button>
         </div>
     </div>
@@ -166,7 +166,6 @@
 
             playerY = canvas.height - playerHeight - 20;
 
-            // Локализация
             const texts = {
                 ru: {
                     hint: '👈 Нажимай левее/правее, чтобы менять дорожку! Лови 👍 и ❤️',
@@ -189,7 +188,6 @@
             };
             let t = texts.ru;
 
-            // Генерация 120 уникальных дилемм
             function generateDilemmas(lang) {
                 const situationsRu = [
                     "Токсичный друг зовёт на опасный челлендж.",
@@ -330,7 +328,6 @@
                 const goodLabels = lang === 'ru' ? goodLabelsRu : goodLabelsEn;
                 const badLabels = lang === 'ru' ? badLabelsRu : badLabelsEn;
 
-                // Создаём 120+ уникальных комбинаций
                 for (let i = 0; i < 120; i++) {
                     const sitIdx = i % situations.length;
                     const qIdx = i % questions.length;
@@ -358,7 +355,6 @@
                 return dilemmas;
             }
 
-            // Перемешивание массива
             function shuffleArray(arr) {
                 for (let i = arr.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
@@ -371,11 +367,7 @@
                 try {
                     ysdk = await YaGames.init();
                     const lang = ysdk.environment.i18n.lang;
-                    if (lang === 'en' || lang.startsWith('en-')) {
-                        playerLang = 'en';
-                    } else {
-                        playerLang = 'ru';
-                    }
+                    playerLang = (lang === 'en' || lang.startsWith('en-')) ? 'en' : 'ru';
                     t = texts[playerLang];
                     allDilemmas = generateDilemmas(playerLang);
                     ysdk.features.LoadingAPI?.ready();
@@ -390,14 +382,12 @@
             }
 
             function startNewGame() {
-                // Перемешиваем копию всех дилемм для этого забега
                 shuffledDilemmas = shuffleArray([...allDilemmas]);
                 dilemmaIndex = 0;
                 dilemmaResolvedCount = 0;
                 initGame();
             }
 
-            // Классы объектов
             class Obstacle {
                 constructor(col) {
                     this.col = col;
@@ -519,17 +509,13 @@
 
             function spawnObjects() {
                 if (Math.random() < 0.02) {
-                    let col = Math.floor(Math.random() * COL_COUNT);
-                    obstacles.push(new Obstacle(col));
+                    obstacles.push(new Obstacle(Math.floor(Math.random() * COL_COUNT)));
                 }
                 if (Math.random() < 0.015) {
-                    let col = Math.floor(Math.random() * COL_COUNT);
-                    goodItems.push(new GoodItem(col));
+                    goodItems.push(new GoodItem(Math.floor(Math.random() * COL_COUNT)));
                 }
-                // Редкий спавн сердечка
                 if (Math.random() < 0.004) {
-                    let col = Math.floor(Math.random() * COL_COUNT);
-                    heartItems.push(new HeartItem(col));
+                    heartItems.push(new HeartItem(Math.floor(Math.random() * COL_COUNT)));
                 }
             }
 
@@ -557,8 +543,7 @@
                 }
 
                 for (let i = goodItems.length-1; i >= 0; i--) {
-                    const item = goodItems[i];
-                    if (rectCollide(playerBounds, item.getBounds())) {
+                    if (rectCollide(playerBounds, goodItems[i].getBounds())) {
                         score += 20;
                         goodItems.splice(i,1);
                         updateUI();
@@ -566,8 +551,7 @@
                 }
 
                 for (let i = heartItems.length-1; i >= 0; i--) {
-                    const heart = heartItems[i];
-                    if (rectCollide(playerBounds, heart.getBounds())) {
+                    if (rectCollide(playerBounds, heartItems[i].getBounds())) {
                         if (lives < MAX_LIVES) {
                             lives++;
                             updateUI();
@@ -640,7 +624,7 @@
                 }
             }
 
-            // ---------- ОТРИСОВКА ----------
+            // Отрисовка
             function drawBackground() {
                 const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
                 grad.addColorStop(0, '#0f0c29');
@@ -721,12 +705,10 @@
             function drawDilemmaPopup() {
                 if (!dilemmaActive || !dilemmaData) return;
 
-                // Измеряем высоту текста, чтобы сделать окно достаточно большим
                 ctx.save();
                 ctx.font = 'bold 14px Arial';
                 const textLines = wrapTextLines(ctx, dilemmaData.text, canvas.width * 0.7);
                 const textHeight = textLines.length * 20;
-                // Высота окна: отступы + текст + две кнопки с отступами
                 const boxHeight = Math.max(180, 80 + textHeight + 90);
                 const boxWidth = canvas.width * 0.85;
                 const boxX = (canvas.width - boxWidth) / 2;
@@ -745,9 +727,7 @@
                 ctx.shadowBlur = 0;
 
                 ctx.fillStyle = 'white';
-                ctx.font = 'bold 14px Arial';
                 ctx.textAlign = 'center';
-                // Рисуем текст построчно
                 const startTextY = boxY + 30;
                 textLines.forEach((line, idx) => {
                     ctx.fillText(line, canvas.width/2, startTextY + idx * 20);
@@ -764,8 +744,10 @@
                     { x: buttonX, y: badY, w: buttonWidth, h: buttonHeight, choice: 'bad' }
                 ];
 
-                drawButton(ctx, buttonX, goodY, buttonWidth, buttonHeight, dilemmaData.good.label, '#4caf50');
-                drawButton(ctx, buttonX, badY, buttonWidth, buttonHeight, dilemmaData.bad.label, '#f44336');
+                // Обе кнопки теперь одного нейтрального цвета
+                const neutralColor = '#4e5b8c';
+                drawButton(ctx, buttonX, goodY, buttonWidth, buttonHeight, dilemmaData.good.label, neutralColor);
+                drawButton(ctx, buttonX, badY, buttonWidth, buttonHeight, dilemmaData.bad.label, neutralColor);
                 ctx.restore();
             }
 
@@ -788,8 +770,8 @@
 
             function drawButton(ctx, x, y, w, h, text, color) {
                 ctx.fillStyle = color;
-                ctx.shadowColor = color;
-                ctx.shadowBlur = 15;
+                ctx.shadowColor = '#aaaaaa';
+                ctx.shadowBlur = 10;
                 ctx.beginPath();
                 ctx.roundRect(x, y, w, h, 10);
                 ctx.fill();
@@ -797,7 +779,6 @@
                 ctx.shadowBlur = 0;
 
                 ctx.fillStyle = 'white';
-                // Уменьшаем шрифт, если текст длинный
                 let fontSize = 13;
                 ctx.font = `bold ${fontSize}px Arial`;
                 if (ctx.measureText(text).width > w - 10) {
@@ -812,9 +793,9 @@
             function gameLoop() {
                 if (isGameOver) {
                     drawBackground();
-                    for (let obs of obstacles) obs.draw(ctx);
-                    for (let item of goodItems) item.draw(ctx);
-                    for (let heart of heartItems) heart.draw(ctx);
+                    obstacles.forEach(o => o.draw(ctx));
+                    goodItems.forEach(g => g.draw(ctx));
+                    heartItems.forEach(h => h.draw(ctx));
                     drawPlayer();
                     drawGameOverOverlay();
                     requestAnimationFrame(gameLoop);
@@ -823,53 +804,42 @@
 
                 if (!dilemmaActive) {
                     frameCount++;
-                    if (frameCount % 60 === 0 && gameSpeed < 12) {
-                        gameSpeed += 0.2;
-                    }
+                    if (frameCount % 60 === 0 && gameSpeed < 12) gameSpeed += 0.2;
 
                     spawnObjects();
-                    for (let obs of obstacles) obs.update();
-                    for (let item of goodItems) item.update();
-                    for (let heart of heartItems) heart.update();
+                    obstacles.forEach(o => o.update());
+                    goodItems.forEach(g => g.update());
+                    heartItems.forEach(h => h.update());
 
-                    obstacles = obstacles.filter(obs => obs.y < canvas.height + obs.height);
-                    goodItems = goodItems.filter(item => item.y < canvas.height + item.size);
-                    heartItems = heartItems.filter(heart => heart.y < canvas.height + heart.size);
+                    obstacles = obstacles.filter(o => o.y < canvas.height + o.height);
+                    goodItems = goodItems.filter(g => g.y < canvas.height + g.size);
+                    heartItems = heartItems.filter(h => h.y < canvas.height + h.size);
 
                     checkCollisions();
 
-                    if (shieldActive) {
-                        shieldTimer--;
-                        if (shieldTimer <= 0) shieldActive = false;
-                    }
+                    if (shieldActive && --shieldTimer <= 0) shieldActive = false;
 
-                    if (frameCount % 420 === 0 && Math.random() < 0.6) {
-                        activateDilemma();
-                    }
+                    if (frameCount % 420 === 0 && Math.random() < 0.6) activateDilemma();
                 }
 
                 drawBackground();
-                for (let obs of obstacles) obs.draw(ctx);
-                for (let item of goodItems) item.draw(ctx);
-                for (let heart of heartItems) heart.draw(ctx);
+                obstacles.forEach(o => o.draw(ctx));
+                goodItems.forEach(g => g.draw(ctx));
+                heartItems.forEach(h => h.draw(ctx));
                 drawPlayer();
                 drawDilemmaPopup();
 
                 requestAnimationFrame(gameLoop);
             }
 
-            // ---------- УПРАВЛЕНИЕ ----------
             function handleInteraction(clientX, clientY) {
                 const rect = canvas.getBoundingClientRect();
-                const scaleX = canvas.width / rect.width;
-                const scaleY = canvas.height / rect.height;
-                const canvasX = (clientX - rect.left) * scaleX;
-                const canvasY = (clientY - rect.top) * scaleY;
+                const canvasX = (clientX - rect.left) * (canvas.width / rect.width);
+                const canvasY = (clientY - rect.top) * (canvas.height / rect.height);
 
                 if (isGameOver && window._restartBtnCoords) {
                     const btn = window._restartBtnCoords;
-                    if (canvasX >= btn.x && canvasX <= btn.x + btn.w &&
-                        canvasY >= btn.y && canvasY <= btn.y + btn.h) {
+                    if (canvasX >= btn.x && canvasX <= btn.x + btn.w && canvasY >= btn.y && canvasY <= btn.y + btn.h) {
                         startNewGame();
                         return;
                     }
@@ -877,8 +847,7 @@
 
                 if (dilemmaActive && dilemmaButtons.length === 2) {
                     for (let btn of dilemmaButtons) {
-                        if (canvasX >= btn.x && canvasX <= btn.x + btn.w &&
-                            canvasY >= btn.y && canvasY <= btn.y + btn.h) {
+                        if (canvasX >= btn.x && canvasX <= btn.x + btn.w && canvasY >= btn.y && canvasY <= btn.y + btn.h) {
                             resolveDilemma(btn.choice);
                             return;
                         }
@@ -888,62 +857,37 @@
 
                 if (isGameOver) return;
 
-                if (canvasX < colWidth) playerCol = 0;
-                else if (canvasX < 2 * colWidth) playerCol = 1;
-                else playerCol = 2;
+                playerCol = canvasX < colWidth ? 0 : canvasX < 2 * colWidth ? 1 : 2;
                 playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
             }
 
             function handleTouchOrClick(e) {
                 e.preventDefault();
-                let clientX, clientY;
-                if (e.touches && e.touches.length > 0) {
-                    clientX = e.touches[0].clientX;
-                    clientY = e.touches[0].clientY;
-                } else if (e.changedTouches && e.changedTouches.length > 0) {
-                    clientX = e.changedTouches[0].clientX;
-                    clientY = e.changedTouches[0].clientY;
-                } else {
-                    clientX = e.clientX;
-                    clientY = e.clientY;
-                }
+                const clientX = e.touches?.[0]?.clientX ?? e.changedTouches?.[0]?.clientX ?? e.clientX;
+                const clientY = e.touches?.[0]?.clientY ?? e.changedTouches?.[0]?.clientY ?? e.clientY;
                 handleInteraction(clientX, clientY);
             }
 
-            canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+            canvas.addEventListener('contextmenu', e => e.preventDefault());
             canvas.addEventListener('touchstart', handleTouchOrClick, {passive: false});
             canvas.addEventListener('mousedown', handleTouchOrClick);
-            document.addEventListener('touchmove', (e) => {
-                if (e.target === canvas || canvas.contains(e.target)) {
-                    e.preventDefault();
-                }
+            document.addEventListener('touchmove', e => {
+                if (e.target === canvas || canvas.contains(e.target)) e.preventDefault();
             }, {passive: false});
 
-            restartBtn.addEventListener('click', () => {
-                if (isGameOver) startNewGame();
-            });
-            restartBtn.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                if (isGameOver) startNewGame();
-            });
+            restartBtn.addEventListener('click', () => { if (isGameOver) startNewGame(); });
+            restartBtn.addEventListener('touchend', e => { e.preventDefault(); if (isGameOver) startNewGame(); });
 
-            window.addEventListener('keydown', (e) => {
+            window.addEventListener('keydown', e => {
                 if (dilemmaActive) {
                     if (e.key === '1' || e.key === 'ArrowLeft') resolveDilemma('good');
                     if (e.key === '2' || e.key === 'ArrowRight') resolveDilemma('bad');
                     return;
                 }
-                if (isGameOver) {
-                    startNewGame();
-                    return;
-                }
-                if (e.key === 'ArrowLeft' || e.key === 'a') {
-                    playerCol = Math.max(0, playerCol - 1);
-                    playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-                } else if (e.key === 'ArrowRight' || e.key === 'd') {
-                    playerCol = Math.min(COL_COUNT - 1, playerCol + 1);
-                    playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-                }
+                if (isGameOver) { startNewGame(); return; }
+                if (e.key === 'ArrowLeft' || e.key === 'a') playerCol = Math.max(0, playerCol - 1);
+                else if (e.key === 'ArrowRight' || e.key === 'd') playerCol = Math.min(COL_COUNT - 1, playerCol + 1);
+                playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
             });
 
             CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
