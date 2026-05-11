@@ -296,47 +296,93 @@
                 
                 const questionsRu = ["Что сделаешь?", "Твой выбор?", "Как поступишь?"];
                 const questionsEn = ["What will you do?", "Your choice?", "How will you act?"];
-                
+
+                // Расширенные наборы ответов (по 15 вариантов)
                 const goodLabelsRu = [
                     "Откажусь и расскажу родителям",
                     "Поговорю с учителем или психологом",
                     "Обращусь на линию доверия",
-                    "Просто уйду и заблокирую контакт"
+                    "Просто уйду и заблокирую контакт",
+                    "Позвоню родителям и спрошу совета",
+                    "Посоветуюсь со старшим братом или сестрой",
+                    "Поговорю с другом, которому доверяю",
+                    "Напишу в службу поддержки",
+                    "Позвоню на горячую линию",
+                    "Расскажу всё классному руководителю",
+                    "Скажу твёрдое «нет» и уйду",
+                    "Объясню, что это опасно",
+                    "Предложу другое, безопасное занятие",
+                    "Сообщу администрации школы",
+                    "Скачаю приложение для безопасности"
                 ];
                 const badLabelsRu = [
                     "Соглашусь, чтобы не быть белой вороной",
                     "Промолчу и сделаю вид, что согласен",
                     "Выполню, чтобы доказать свою крутость",
-                    "Поддержу, ведь все так делают"
+                    "Поддержу, ведь все так делают",
+                    "Скажу, что подумаю, но ничего не сделаю",
+                    "Сделаю, чтобы не потерять друзей",
+                    "Подумаю, что это не моё дело",
+                    "Посмеюсь вместе со всеми",
+                    "Приму предложение, ведь это весело",
+                    "Сделаю, чтобы меня не считали слабаком",
+                    "Промолчу, чтобы не выделяться",
+                    "Приму участие, чтобы не обидеть",
+                    "Сделаю вид, что не слышал",
+                    "Понадеюсь, что никто не узнает",
+                    "Скажу, что я в деле"
                 ];
                 const goodLabelsEn = [
                     "Refuse and tell parents",
                     "Talk to a teacher or counselor",
                     "Call a helpline",
-                    "Just walk away and block the contact"
+                    "Just walk away and block the contact",
+                    "Call parents and ask for advice",
+                    "Consult an older sibling",
+                    "Talk to a trusted friend",
+                    "Write to support service",
+                    "Call a hotline",
+                    "Report to the homeroom teacher",
+                    "Say a firm 'no' and walk away",
+                    "Explain that it's dangerous",
+                    "Suggest a safer activity instead",
+                    "Report to the school administration",
+                    "Download a safety app"
                 ];
                 const badLabelsEn = [
                     "Agree to not stand out",
                     "Stay silent and pretend to agree",
                     "Do it to prove my toughness",
-                    "Support it, since everyone does"
+                    "Support it, since everyone does",
+                    "Say I'll think about it but do nothing",
+                    "Do it so I don't lose friends",
+                    "Think it's none of my business",
+                    "Laugh along with everyone",
+                    "Accept the offer because it's fun",
+                    "Do it so I'm not considered weak",
+                    "Stay silent to not stand out",
+                    "Join in to not offend anyone",
+                    "Pretend I didn't hear",
+                    "Hope that nobody finds out",
+                    "Say I'm in"
                 ];
 
                 const dilemmas = [];
                 const situations = lang === 'ru' ? situationsRu : situationsEn;
                 const questions = lang === 'ru' ? questionsRu : questionsEn;
-                const goodLabels = lang === 'ru' ? goodLabelsRu : goodLabelsEn;
-                const badLabels = lang === 'ru' ? badLabelsRu : badLabelsEn;
+                const gLabels = lang === 'ru' ? goodLabelsRu : goodLabelsEn;
+                const bLabels = lang === 'ru' ? badLabelsRu : badLabelsEn;
 
+                // Создаём 120+ уникальных комбинаций
                 for (let i = 0; i < 120; i++) {
                     const sitIdx = i % situations.length;
                     const qIdx = i % questions.length;
-                    const gIdx = Math.floor(i / situations.length) % goodLabels.length;
-                    const bIdx = Math.floor(i / (situations.length * 2)) % badLabels.length;
+                    const gIdx = Math.floor(Math.random() * gLabels.length);
+                    const bIdx = Math.floor(Math.random() * bLabels.length);
                     
                     const text = situations[sitIdx] + ' ' + questions[qIdx];
-                    const goodLabel = goodLabels[gIdx];
-                    const badLabel = badLabels[bIdx];
+                    const goodLabel = gLabels[gIdx];
+                    const badLabel = bLabels[bIdx];
 
                     dilemmas.push({
                         text: text,
@@ -739,15 +785,21 @@
                 const goodY = startTextY + textHeight + 10;
                 const badY = goodY + buttonHeight + 8;
 
+                // Случайный порядок кнопок
+                const choices = [
+                    { label: dilemmaData.good.label, choice: 'good' },
+                    { label: dilemmaData.bad.label, choice: 'bad' }
+                ];
+                if (Math.random() < 0.5) choices.reverse(); // перемешиваем
+
                 dilemmaButtons = [
-                    { x: buttonX, y: goodY, w: buttonWidth, h: buttonHeight, choice: 'good' },
-                    { x: buttonX, y: badY, w: buttonWidth, h: buttonHeight, choice: 'bad' }
+                    { x: buttonX, y: goodY, w: buttonWidth, h: buttonHeight, choice: choices[0].choice },
+                    { x: buttonX, y: badY, w: buttonWidth, h: buttonHeight, choice: choices[1].choice }
                 ];
 
-                // Обе кнопки теперь одного нейтрального цвета
                 const neutralColor = '#4e5b8c';
-                drawButton(ctx, buttonX, goodY, buttonWidth, buttonHeight, dilemmaData.good.label, neutralColor);
-                drawButton(ctx, buttonX, badY, buttonWidth, buttonHeight, dilemmaData.bad.label, neutralColor);
+                drawButton(ctx, buttonX, goodY, buttonWidth, buttonHeight, choices[0].label, neutralColor);
+                drawButton(ctx, buttonX, badY, buttonWidth, buttonHeight, choices[1].label, neutralColor);
                 ctx.restore();
             }
 
@@ -880,8 +932,8 @@
 
             window.addEventListener('keydown', e => {
                 if (dilemmaActive) {
-                    if (e.key === '1' || e.key === 'ArrowLeft') resolveDilemma('good');
-                    if (e.key === '2' || e.key === 'ArrowRight') resolveDilemma('bad');
+                    if (e.key === '1' || e.key === 'ArrowLeft') resolveDilemma(choices[0]?.choice);
+                    if (e.key === '2' || e.key === 'ArrowRight') resolveDilemma(choices[1]?.choice);
                     return;
                 }
                 if (isGameOver) { startNewGame(); return; }
