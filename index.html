@@ -7,90 +7,37 @@
     <script src="https://yandex.ru/games/sdk/v2"></script>
     <style>
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-touch-callout: none;
-            -webkit-tap-highlight-color: transparent;
+            margin: 0; padding: 0; box-sizing: border-box;
+            user-select: none; -webkit-user-select: none;
+            -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;
         }
         body {
-            background: #1a1a2e;
-            font-family: 'Arial', sans-serif;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            touch-action: none;
-            overscroll-behavior: none;
-            -webkit-overflow-scrolling: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
+            background: #1a1a2e; font-family: 'Arial', sans-serif;
+            height: 100vh; width: 100vw; overflow: hidden;
+            touch-action: none; overscroll-behavior: none;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
         }
         #gameContainer {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex-grow: 1;
+            width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1;
         }
         canvas {
-            display: block;
-            border: 3px solid #e94560;
-            border-radius: 20px;
-            box-shadow: 0 0 30px #e94560;
-            margin-top: 5px;
-            max-width: 95%;
-            max-height: 75vh;
-            touch-action: none;
+            display: block; border: 3px solid #e94560; border-radius: 20px;
+            box-shadow: 0 0 30px #e94560; margin-top: 5px;
+            max-width: 95%; max-height: 75vh; touch-action: none;
         }
         #ui {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            background: rgba(0,0,0,0.6);
-            padding: 4px 12px;
-            border-radius: 20px;
-            z-index: 10;
-            pointer-events: none;
-            display: flex;
-            gap: 12px;
+            position: absolute; top: 10px; left: 10px; color: white; font-size: 16px; font-weight: bold;
+            background: rgba(0,0,0,0.6); padding: 4px 12px; border-radius: 20px; z-index: 10;
+            pointer-events: none; display: flex; gap: 12px;
         }
-        #bottomUI {
-            width: 95%;
-            max-width: 400px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 8px;
-        }
+        #bottomUI { width: 95%; max-width: 400px; display: flex; flex-direction: column; align-items: center; margin-top: 8px; }
         #restartBtn {
-            background: #e94560;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 30px;
-            box-shadow: 0 0 20px #ff4d6d;
-            cursor: pointer;
-            white-space: nowrap;
-            display: none;
-            margin: 5px 0;
+            background: #e94560; color: white; border: none; padding: 12px 25px; font-size: 20px; font-weight: bold;
+            border-radius: 30px; box-shadow: 0 0 20px #ff4d6d; cursor: pointer; white-space: nowrap; display: none; margin: 5px 0;
         }
         #hint {
-            color: rgba(255,255,255,0.8);
-            font-size: 13px;
-            text-align: center;
-            background: rgba(0,0,0,0.4);
-            padding: 4px 12px;
-            border-radius: 15px;
+            color: rgba(255,255,255,0.8); font-size: 13px; text-align: center;
+            background: rgba(0,0,0,0.4); padding: 4px 12px; border-radius: 15px;
         }
     </style>
 </head>
@@ -118,22 +65,21 @@
             const restartBtn = document.getElementById('restartBtn');
             const hintDiv = document.getElementById('hint');
 
-            // Глобальные размеры игрового поля
-            let W, H;
-
+            // ---------- РАЗМЕРЫ ----------
             function resizeCanvas() {
-                W = Math.min(window.innerWidth - 20, 400);
-                H = Math.min(window.innerHeight * 0.75, 750);
-                canvas.width = W;
-                canvas.height = H;
+                const maxW = Math.min(window.innerWidth - 20, 400);
+                const maxH = Math.min(window.innerHeight * 0.75, 750);
+                canvas.width = maxW;
+                canvas.height = maxH;
+                // Пересчитаем переменные, зависящие от размера, если они уже существуют
                 if (typeof colWidth !== 'undefined') {
-                    colWidth = W / COL_COUNT;
+                    colWidth = canvas.width / COL_COUNT;
                     playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-                    playerY = H - playerHeight - 20;
+                    playerY = canvas.height - playerHeight - 20;
                 }
             }
             window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
+            resizeCanvas(); // сразу задаём размер
 
             // ---------- ПЕРЕМЕННЫЕ ИГРЫ ----------
             let ysdk = null;
@@ -144,14 +90,14 @@
             const MAX_DILEMMAS = 100;
             let dilemmaResolvedCount = 0;
             const MAX_LIVES = 5;
-
             const COL_COUNT = 3;
-            let colWidth = W / COL_COUNT;
+
+            let colWidth = canvas.width / COL_COUNT;
             let playerCol = 1;
             const playerWidth = 40;
             const playerHeight = 60;
             let playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-            let playerY = H - playerHeight - 20;
+            let playerY = canvas.height - playerHeight - 20;
 
             let obstacles = [];
             let goodItems = [];
@@ -183,7 +129,7 @@
             };
             let t = texts.ru;
 
-            // Генерация дилемм (полный набор)
+            // Генерация 120+ дилемм (используем 50 ситуаций и 15 ответов)
             function generateDilemmas(lang) {
                 const situationsRu = [
                     "Токсичный друг зовёт на опасный челлендж.",
@@ -273,10 +219,11 @@
                     "Скажу, что я в деле"
                 ];
 
-                const situationsEn = situationsRu.map(s => s); // заглушка
+                // Английские аналоги (упрощённо)
+                const situationsEn = situationsRu.map(s => "EN: " + s);
                 const questionsEn = ["What will you do?", "Your choice?", "How will you act?"];
-                const goodLabelsEn = goodLabelsRu.map(l => l);
-                const badLabelsEn = badLabelsRu.map(l => l);
+                const goodLabelsEn = goodLabelsRu.map(l => "EN: " + l);
+                const badLabelsEn = badLabelsRu.map(l => "EN: " + l);
 
                 const dilemmas = [];
                 const sits = lang === 'ru' ? situationsRu : situationsEn;
@@ -430,10 +377,10 @@
             }
 
             function initGame() {
-                colWidth = W / COL_COUNT;
+                colWidth = canvas.width / COL_COUNT;
                 playerCol = 1;
                 playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-                playerY = H - playerHeight - 20;
+                playerY = canvas.height - playerHeight - 20;
                 obstacles = [];
                 goodItems = [];
                 heartItems = [];
@@ -556,14 +503,14 @@
                 }
             }
 
-            // ---------- ОТРИСОВКА ----------
+            // ----- ОТРИСОВКА -----
             function drawBackground() {
-                const grad = ctx.createLinearGradient(0, 0, 0, H);
+                const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
                 grad.addColorStop(0, '#0f0c29');
                 grad.addColorStop(0.5, '#302b63');
                 grad.addColorStop(1, '#24243e');
                 ctx.fillStyle = grad;
-                ctx.fillRect(0, 0, W, H);
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                 ctx.strokeStyle = '#e94560';
                 ctx.lineWidth = 2;
@@ -572,7 +519,7 @@
                     const x = i * colWidth;
                     ctx.beginPath();
                     ctx.moveTo(x, 0);
-                    ctx.lineTo(x, H);
+                    ctx.lineTo(x, canvas.height);
                     ctx.stroke();
                 }
                 ctx.setLineDash([]);
@@ -602,22 +549,22 @@
 
             function drawGameOverOverlay() {
                 ctx.fillStyle = 'rgba(0,0,0,0.8)';
-                ctx.fillRect(0, 0, W, H);
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = 'white';
                 ctx.font = 'bold 26px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(
                     dilemmaResolvedCount >= MAX_DILEMMAS ? t.win : t.gameOver,
-                    W / 2,
-                    H / 2 - 30
+                    canvas.width / 2,
+                    canvas.height / 2 - 30
                 );
                 ctx.font = '18px Arial';
-                ctx.fillText('Рейтинг: ' + score, W / 2, H / 2 + 20);
+                ctx.fillText('Рейтинг: ' + score, canvas.width / 2, canvas.height / 2 + 20);
 
                 const bw = 200, bh = 50;
-                const bx = W / 2 - bw / 2;
-                const by = H / 2 + 50;
+                const bx = canvas.width / 2 - bw / 2;
+                const by = canvas.height / 2 + 50;
                 window._restartBtnCoords = { x: bx, y: by, w: bw, h: bh };
 
                 ctx.fillStyle = '#e94560';
@@ -632,7 +579,7 @@
                 ctx.font = 'bold 20px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(t.restart, W / 2, by + bh / 2);
+                ctx.fillText(t.restart, canvas.width / 2, by + bh / 2);
             }
 
             function drawDilemmaPopup() {
@@ -640,15 +587,15 @@
 
                 ctx.save();
                 ctx.font = 'bold 14px Arial';
-                const lines = wrapLines(dilemmaData.text, W * 0.7);
+                const lines = wrapLines(dilemmaData.text, canvas.width * 0.7);
                 const textH = lines.length * 20;
                 const boxH = Math.max(180, 80 + textH + 90);
-                const boxW = W * 0.85;
-                const boxX = (W - boxW) / 2;
-                const boxY = (H - boxH) / 2;
+                const boxW = canvas.width * 0.85;
+                const boxX = (canvas.width - boxW) / 2;
+                const boxY = (canvas.height - boxH) / 2;
 
                 ctx.fillStyle = 'rgba(0,0,0,0.7)';
-                ctx.fillRect(0, 0, W, H);
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                 ctx.fillStyle = '#2d2d44';
                 ctx.shadowColor = '#e94560';
@@ -664,7 +611,7 @@
                 ctx.textBaseline = 'top';
                 let yText = boxY + 30;
                 lines.forEach(line => {
-                    ctx.fillText(line, W / 2, yText);
+                    ctx.fillText(line, canvas.width / 2, yText);
                     yText += 20;
                 });
 
@@ -689,18 +636,14 @@
                 ctx.restore();
             }
 
-            function wrapLines(text, maxWidth) {
+            function wrapLines(text, maxW) {
                 const words = text.split(' ');
                 const lines = [];
                 let cur = '';
                 words.forEach(w => {
                     const test = cur ? cur + ' ' + w : w;
-                    if (ctx.measureText(test).width <= maxWidth) {
-                        cur = test;
-                    } else {
-                        if (cur) lines.push(cur);
-                        cur = w;
-                    }
+                    if (ctx.measureText(test).width <= maxW) cur = test;
+                    else { lines.push(cur); cur = w; }
                 });
                 if (cur) lines.push(cur);
                 return lines;
@@ -716,19 +659,18 @@
                 ctx.shadowColor = 'transparent';
                 ctx.shadowBlur = 0;
                 ctx.fillStyle = 'white';
-
-                let fontSize = 13;
-                ctx.font = `bold ${fontSize}px Arial`;
+                let fs = 13;
+                ctx.font = `bold ${fs}px Arial`;
                 if (ctx.measureText(text).width > w - 10) {
-                    fontSize = 11;
-                    ctx.font = `bold ${fontSize}px Arial`;
+                    fs = 11;
+                    ctx.font = `bold ${fs}px Arial`;
                 }
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(text, x + w / 2, y + h / 2);
+                ctx.fillText(text, x + w/2, y + h/2);
             }
 
-            // ---------- ИГРОВОЙ ЦИКЛ ----------
+            // ----- ИГРОВОЙ ЦИКЛ -----
             function gameLoop() {
                 if (isGameOver) {
                     drawBackground();
@@ -750,14 +692,15 @@
                     goodItems.forEach(g => g.update());
                     heartItems.forEach(h => h.update());
 
-                    obstacles = obstacles.filter(o => o.y < H + o.height);
-                    goodItems = goodItems.filter(g => g.y < H + g.size);
-                    heartItems = heartItems.filter(h => h.y < H + h.size);
+                    obstacles = obstacles.filter(o => o.y < canvas.height + o.height);
+                    goodItems = goodItems.filter(g => g.y < canvas.height + g.size);
+                    heartItems = heartItems.filter(h => h.y < canvas.height + h.size);
 
                     checkCollisions();
 
                     if (shieldActive && --shieldTimer <= 0) shieldActive = false;
 
+                    // Частота дилемм
                     if (frameCount === 90) {
                         activateDilemma();
                     } else if (frameCount > 90 && frameCount % 180 === 0 && Math.random() < 0.85) {
@@ -775,11 +718,11 @@
                 requestAnimationFrame(gameLoop);
             }
 
-            // ---------- УПРАВЛЕНИЕ ----------
+            // ----- УПРАВЛЕНИЕ -----
             function handleInteraction(cx, cy) {
                 const rect = canvas.getBoundingClientRect();
-                const sx = W / rect.width;
-                const sy = H / rect.height;
+                const sx = canvas.width / rect.width;
+                const sy = canvas.height / rect.height;
                 const mx = (cx - rect.left) * sx;
                 const my = (cy - rect.top) * sy;
 
