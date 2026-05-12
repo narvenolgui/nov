@@ -65,21 +65,22 @@
             const restartBtn = document.getElementById('restartBtn');
             const hintDiv = document.getElementById('hint');
 
-            // ---------- РАЗМЕРЫ ----------
+            // Глобальные размеры игрового поля
+            let W, H;
+
             function resizeCanvas() {
-                const maxW = Math.min(window.innerWidth - 20, 400);
-                const maxH = Math.min(window.innerHeight * 0.75, 750);
-                canvas.width = maxW;
-                canvas.height = maxH;
-                // Пересчитаем переменные, зависящие от размера, если они уже существуют
+                W = Math.min(window.innerWidth - 20, 400);
+                H = Math.min(window.innerHeight * 0.75, 750);
+                canvas.width = W;
+                canvas.height = H;
                 if (typeof colWidth !== 'undefined') {
-                    colWidth = canvas.width / COL_COUNT;
+                    colWidth = W / COL_COUNT;
                     playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-                    playerY = canvas.height - playerHeight - 20;
+                    playerY = H - playerHeight - 20;
                 }
             }
             window.addEventListener('resize', resizeCanvas);
-            resizeCanvas(); // сразу задаём размер
+            resizeCanvas();
 
             // ---------- ПЕРЕМЕННЫЕ ИГРЫ ----------
             let ysdk = null;
@@ -92,12 +93,12 @@
             const MAX_LIVES = 5;
             const COL_COUNT = 3;
 
-            let colWidth = canvas.width / COL_COUNT;
+            let colWidth = W / COL_COUNT;
             let playerCol = 1;
             const playerWidth = 40;
             const playerHeight = 60;
             let playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-            let playerY = canvas.height - playerHeight - 20;
+            let playerY = H - playerHeight - 20;
 
             let obstacles = [];
             let goodItems = [];
@@ -129,7 +130,7 @@
             };
             let t = texts.ru;
 
-            // Генерация 120+ дилемм (используем 50 ситуаций и 15 ответов)
+            // Генерация дилемм (полный набор из 50 ситуаций)
             function generateDilemmas(lang) {
                 const situationsRu = [
                     "Токсичный друг зовёт на опасный челлендж.",
@@ -219,32 +220,22 @@
                     "Скажу, что я в деле"
                 ];
 
-                // Английские аналоги (упрощённо)
-                const situationsEn = situationsRu.map(s => "EN: " + s);
-                const questionsEn = ["What will you do?", "Your choice?", "How will you act?"];
-                const goodLabelsEn = goodLabelsRu.map(l => "EN: " + l);
-                const badLabelsEn = badLabelsRu.map(l => "EN: " + l);
+                const sits = lang === 'ru' ? situationsRu : situationsRu.map(s => "EN: " + s);
+                const quess = lang === 'ru' ? questionsRu : ["What will you do?", "Your choice?", "How will you act?"];
+                const goods = lang === 'ru' ? goodLabelsRu : goodLabelsRu.map(l => "EN: " + l);
+                const bads = lang === 'ru' ? badLabelsRu : badLabelsRu.map(l => "EN: " + l);
 
                 const dilemmas = [];
-                const sits = lang === 'ru' ? situationsRu : situationsEn;
-                const quess = lang === 'ru' ? questionsRu : questionsEn;
-                const goods = lang === 'ru' ? goodLabelsRu : goodLabelsEn;
-                const bads = lang === 'ru' ? badLabelsRu : badLabelsEn;
-
                 for (let i = 0; i < 120; i++) {
-                    const sit = sits[i % sits.length];
-                    const ques = quess[i % quess.length];
-                    const goodLabel = goods[Math.floor(Math.random() * goods.length)];
-                    const badLabel = bads[Math.floor(Math.random() * bads.length)];
                     dilemmas.push({
-                        text: sit + ' ' + ques,
+                        text: sits[i % sits.length] + ' ' + quess[i % quess.length],
                         good: {
-                            label: goodLabel,
+                            label: goods[Math.floor(Math.random() * goods.length)],
                             points: 40 + Math.floor(Math.random() * 30),
                             shield: Math.random() < 0.4
                         },
                         bad: {
-                            label: badLabel,
+                            label: bads[Math.floor(Math.random() * bads.length)],
                             points: -20 - Math.floor(Math.random() * 40),
                             shake: true
                         }
@@ -377,10 +368,10 @@
             }
 
             function initGame() {
-                colWidth = canvas.width / COL_COUNT;
+                colWidth = W / COL_COUNT;
                 playerCol = 1;
                 playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-                playerY = canvas.height - playerHeight - 20;
+                playerY = H - playerHeight - 20;
                 obstacles = [];
                 goodItems = [];
                 heartItems = [];
@@ -424,10 +415,7 @@
                         }
                         loseLife();
                         obstacles.splice(i, 1);
-                        if (lives <= 0) {
-                            gameOver();
-                            return;
-                        }
+                        if (lives <= 0) { gameOver(); return; }
                     }
                 }
                 for (let i = goodItems.length - 1; i >= 0; i--) {
@@ -439,10 +427,7 @@
                 }
                 for (let i = heartItems.length - 1; i >= 0; i--) {
                     if (rectCollide(pb, heartItems[i].getBounds())) {
-                        if (lives < MAX_LIVES) {
-                            lives++;
-                            updateUI();
-                        }
+                        if (lives < MAX_LIVES) { lives++; updateUI(); }
                         heartItems.splice(i, 1);
                     }
                 }
@@ -467,10 +452,7 @@
             }
 
             function activateDilemma() {
-                if (dilemmaResolvedCount >= MAX_DILEMMAS) {
-                    gameOver();
-                    return;
-                }
+                if (dilemmaResolvedCount >= MAX_DILEMMAS) { gameOver(); return; }
                 if (!shuffledDilemmas.length) return;
                 dilemmaActive = true;
                 dilemmaData = shuffledDilemmas[dilemmaIndex % shuffledDilemmas.length];
@@ -486,10 +468,7 @@
                 dilemmaResolvedCount++;
                 updateUI();
 
-                if (res.shield) {
-                    shieldActive = true;
-                    shieldTimer = 180;
-                }
+                if (res.shield) { shieldActive = true; shieldTimer = 180; }
                 if (res.shake) {
                     canvas.style.transform = 'translate(5px, 3px)';
                     setTimeout(() => canvas.style.transform = '', 100);
@@ -498,19 +477,17 @@
                 dilemmaActive = false;
                 dilemmaData = null;
                 dilemmaButtons = [];
-                if (dilemmaResolvedCount >= MAX_DILEMMAS && !isGameOver) {
-                    gameOver();
-                }
+                if (dilemmaResolvedCount >= MAX_DILEMMAS && !isGameOver) { gameOver(); }
             }
 
             // ----- ОТРИСОВКА -----
             function drawBackground() {
-                const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                const grad = ctx.createLinearGradient(0, 0, 0, H);
                 grad.addColorStop(0, '#0f0c29');
                 grad.addColorStop(0.5, '#302b63');
                 grad.addColorStop(1, '#24243e');
                 ctx.fillStyle = grad;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillRect(0, 0, W, H);
 
                 ctx.strokeStyle = '#e94560';
                 ctx.lineWidth = 2;
@@ -519,7 +496,7 @@
                     const x = i * colWidth;
                     ctx.beginPath();
                     ctx.moveTo(x, 0);
-                    ctx.lineTo(x, canvas.height);
+                    ctx.lineTo(x, H);
                     ctx.stroke();
                 }
                 ctx.setLineDash([]);
@@ -549,22 +526,21 @@
 
             function drawGameOverOverlay() {
                 ctx.fillStyle = 'rgba(0,0,0,0.8)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillRect(0, 0, W, H);
                 ctx.fillStyle = 'white';
                 ctx.font = 'bold 26px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(
                     dilemmaResolvedCount >= MAX_DILEMMAS ? t.win : t.gameOver,
-                    canvas.width / 2,
-                    canvas.height / 2 - 30
+                    W / 2, H / 2 - 30
                 );
                 ctx.font = '18px Arial';
-                ctx.fillText('Рейтинг: ' + score, canvas.width / 2, canvas.height / 2 + 20);
+                ctx.fillText('Рейтинг: ' + score, W / 2, H / 2 + 20);
 
                 const bw = 200, bh = 50;
-                const bx = canvas.width / 2 - bw / 2;
-                const by = canvas.height / 2 + 50;
+                const bx = W / 2 - bw / 2;
+                const by = H / 2 + 50;
                 window._restartBtnCoords = { x: bx, y: by, w: bw, h: bh };
 
                 ctx.fillStyle = '#e94560';
@@ -579,7 +555,7 @@
                 ctx.font = 'bold 20px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(t.restart, canvas.width / 2, by + bh / 2);
+                ctx.fillText(t.restart, W / 2, by + bh / 2);
             }
 
             function drawDilemmaPopup() {
@@ -587,15 +563,15 @@
 
                 ctx.save();
                 ctx.font = 'bold 14px Arial';
-                const lines = wrapLines(dilemmaData.text, canvas.width * 0.7);
+                const lines = wrapLines(dilemmaData.text, W * 0.7);
                 const textH = lines.length * 20;
                 const boxH = Math.max(180, 80 + textH + 90);
-                const boxW = canvas.width * 0.85;
-                const boxX = (canvas.width - boxW) / 2;
-                const boxY = (canvas.height - boxH) / 2;
+                const boxW = W * 0.85;
+                const boxX = (W - boxW) / 2;
+                const boxY = (H - boxH) / 2;
 
                 ctx.fillStyle = 'rgba(0,0,0,0.7)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillRect(0, 0, W, H);
 
                 ctx.fillStyle = '#2d2d44';
                 ctx.shadowColor = '#e94560';
@@ -610,10 +586,7 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'top';
                 let yText = boxY + 30;
-                lines.forEach(line => {
-                    ctx.fillText(line, canvas.width / 2, yText);
-                    yText += 20;
-                });
+                lines.forEach(line => { ctx.fillText(line, W / 2, yText); yText += 20; });
 
                 const btnW = boxW - 60, btnH = 40;
                 const btnX = boxX + 30;
@@ -661,10 +634,7 @@
                 ctx.fillStyle = 'white';
                 let fs = 13;
                 ctx.font = `bold ${fs}px Arial`;
-                if (ctx.measureText(text).width > w - 10) {
-                    fs = 11;
-                    ctx.font = `bold ${fs}px Arial`;
-                }
+                if (ctx.measureText(text).width > w - 10) { fs = 11; ctx.font = `bold ${fs}px Arial`; }
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(text, x + w/2, y + h/2);
@@ -692,15 +662,14 @@
                     goodItems.forEach(g => g.update());
                     heartItems.forEach(h => h.update());
 
-                    obstacles = obstacles.filter(o => o.y < canvas.height + o.height);
-                    goodItems = goodItems.filter(g => g.y < canvas.height + g.size);
-                    heartItems = heartItems.filter(h => h.y < canvas.height + h.size);
+                    obstacles = obstacles.filter(o => o.y < H + o.height);
+                    goodItems = goodItems.filter(g => g.y < H + g.size);
+                    heartItems = heartItems.filter(h => h.y < H + h.size);
 
                     checkCollisions();
 
                     if (shieldActive && --shieldTimer <= 0) shieldActive = false;
 
-                    // Частота дилемм
                     if (frameCount === 90) {
                         activateDilemma();
                     } else if (frameCount > 90 && frameCount % 180 === 0 && Math.random() < 0.85) {
@@ -721,8 +690,8 @@
             // ----- УПРАВЛЕНИЕ -----
             function handleInteraction(cx, cy) {
                 const rect = canvas.getBoundingClientRect();
-                const sx = canvas.width / rect.width;
-                const sy = canvas.height / rect.height;
+                const sx = W / rect.width;
+                const sy = H / rect.height;
                 const mx = (cx - rect.left) * sx;
                 const my = (cy - rect.top) * sy;
 
@@ -760,10 +729,7 @@
             }, { passive: false });
 
             restartBtn.addEventListener('click', () => { if (isGameOver) startNewGame(); });
-            restartBtn.addEventListener('touchend', e => {
-                e.preventDefault();
-                if (isGameOver) startNewGame();
-            });
+            restartBtn.addEventListener('touchend', e => { e.preventDefault(); if (isGameOver) startNewGame(); });
 
             window.addEventListener('keydown', e => {
                 if (dilemmaActive) {
