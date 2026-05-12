@@ -69,6 +69,7 @@
 
             let allDilemmas = [], shuffledDilemmas = [], dilemmaIndex = 0, dilemmaResolvedCount = 0;
             let playerLang = 'ru';
+            let ysdkGlobal = null;
 
             const texts = {
                 ru: { hint: '👈 Нажимай левее/правее, чтобы менять дорожку! Лови 👍 и ❤️', restart: '🔄 Начать заново', gameOver: 'Группировка затянула...', win: 'Ты вырвался! Поздравляем!' },
@@ -129,35 +130,143 @@
                     "Сказали, что твой парень/девушка тебе изменяет, и надо отомстить.",
                     "Вынуждают врать ради общего дела."
                 ];
-                const questionsRu = ["Что сделаешь?", "Твой выбор?", "Как поступишь?"];
-                const goodLabelsRu = [
-                    "Откажусь и расскажу родителям", "Поговорю с учителем или психологом", "Обращусь на линию доверия",
-                    "Просто уйду и заблокирую контакт", "Позвоню родителям и спрошу совета",
-                    "Посоветуюсь со старшим братом или сестрой", "Поговорю с другом, которому доверяю",
-                    "Напишу в службу поддержки", "Позвоню на горячую линию", "Расскажу всё классному руководителю",
-                    "Скажу твёрдое «нет» и уйду", "Объясню, что это опасно", "Предложу другое, безопасное занятие",
-                    "Сообщу администрации школы", "Скачаю приложение для безопасности"
-                ];
-                const badLabelsRu = [
-                    "Соглашусь, чтобы не быть белой вороной", "Промолчу и сделаю вид, что согласен",
-                    "Выполню, чтобы доказать свою крутость", "Поддержу, ведь все так делают",
-                    "Скажу, что подумаю, но ничего не сделаю", "Сделаю, чтобы не потерять друзей",
-                    "Подумаю, что это не моё дело", "Посмеюсь вместе со всеми", "Приму предложение, ведь это весело",
-                    "Сделаю, чтобы меня не считали слабаком", "Промолчу, чтобы не выделяться",
-                    "Приму участие, чтобы не обидеть", "Сделаю вид, что не слышал",
-                    "Понадеюсь, что никто не узнает", "Скажу, что я в деле"
+                const situationsEn = [
+                    "A toxic friend invites you to a dangerous challenge.",
+                    "A classmate is being bullied on social media.",
+                    "A stranger offers easy money for a strange task.",
+                    "The group demands proof of loyalty.",
+                    "You are offered to try cigarettes for company.",
+                    "Classmates invite you to skip classes.",
+                    "Nasty things about the teacher are written in chat.",
+                    "A friend asks to copy on an exam.",
+                    "They offer to steal a small item from a store.",
+                    "You are invited to a party where there will be alcohol.",
+                    "A stranger online asks for your personal data.",
+                    "Someone proposes to hack someone else's account.",
+                    "A friend pressures you to try drugs.",
+                    "They suggest joining in bullying a newcomer.",
+                    "You are pushed to vandalize a park.",
+                    "A group calls you to take a dangerous rooftop selfie.",
+                    "Someone asks you to deliver a suspicious package.",
+                    "You are prompted to lie to a teacher about being sick.",
+                    "They urge you not to be friends with 'wrong' people.",
+                    "You are promised many likes for a risky stunt.",
+                    "They say your friend betrayed you and demand you cut ties.",
+                    "They show a violent video and laugh.",
+                    "You are forced to write an insulting comment.",
+                    "They said all 'insiders' wear a certain sign.",
+                    "They threaten to spread a rumor if you don't complete a task.",
+                    "They suggest getting anonymous revenge on an offender.",
+                    "They call for a boycott of a classmate.",
+                    "They invite you to break into an abandoned building.",
+                    "They promise secret membership in a cool club.",
+                    "You are asked to hide someone else's item.",
+                    "They entice you to gamble with cards for money.",
+                    "They encourage you to disobey parents.",
+                    "They say you must prove your toughness.",
+                    "They dare you to steal the test answers.",
+                    "They demand you send an intimate photo.",
+                    "They propose framing another student.",
+                    "They convince you that laws are for the weak.",
+                    "They call you to start a fight with another class.",
+                    "They show how to bypass the school internet filter.",
+                    "They promise easy money from strange transfers.",
+                    "They say it's the only way to become one of them.",
+                    "They demand you insult the teacher to their face.",
+                    "They insist you delete all social media.",
+                    "They offer money to distribute flyers.",
+                    "They pressure you to carry a hidden weapon.",
+                    "They invite you to a nighttime 'operation'.",
+                    "They assure you your friends are using you.",
+                    "They offer to try a 'soft' drug.",
+                    "They said your partner is cheating and you should take revenge.",
+                    "They force you to lie for the common cause."
                 ];
 
-                const sits = lang === 'ru' ? situationsRu : situationsRu.map(s => "EN: " + s);
-                const quess = lang === 'ru' ? questionsRu : ["What will you do?", "Your choice?", "How will you act?"];
-                const goods = lang === 'ru' ? goodLabelsRu : goodLabelsRu.map(l => "EN: " + l);
-                const bads = lang === 'ru' ? badLabelsRu : badLabelsRu.map(l => "EN: " + l);
+                const questionsRu = ["Что сделаешь?", "Твой выбор?", "Как поступишь?"];
+                const questionsEn = ["What will you do?", "Your choice?", "How will you act?"];
+
+                // НОВЫЕ правильные ответы — акцент на самостоятельность и силу характера
+                const goodLabelsRu = [
+                    "Скажу твёрдое «нет» и пойду своей дорогой",
+                    "Объясню, почему это плохая идея, и откажусь",
+                    "Предложу заняться чем-то реально крутым вместо этого",
+                    "Просто уйду и заблокирую контакт",
+                    "Скажу, что мне это неинтересно, и займусь своим делом",
+                    "Пошлю смешной мем в ответ и выйду из чата",
+                    "Подумаю, чем это может закончиться, и откажусь",
+                    "Скажу, что у меня свои правила, и не поведусь",
+                    "Выйду из ситуации и никому ничего не должен объяснять",
+                    "Скажу, что мне нужно подумать, и потом откажусь",
+                    "Вспомню, чему меня учили про манипуляции, и не поддамся",
+                    "Сделаю вид, что не понял, и переведу тему",
+                    "Поставлю себя на место жертвы и откажусь участвовать",
+                    "Скажу, что это не моё дело, и не буду в это лезть",
+                    "Расскажу родителям или тому, кому доверяю, чтобы посоветоваться"
+                ];
+                const goodLabelsEn = [
+                    "Say a firm 'no' and walk my own way",
+                    "Explain why it's a bad idea and refuse",
+                    "Suggest doing something actually cool instead",
+                    "Just leave and block the contact",
+                    "Say I'm not interested and do my own thing",
+                    "Send a funny meme back and exit the chat",
+                    "Think about the consequences and say no",
+                    "Say I have my own rules and won't fall for it",
+                    "Exit the situation and owe no one an explanation",
+                    "Say I need to think, then refuse later",
+                    "Remember what I learned about manipulation and resist",
+                    "Pretend I didn't get it and change the subject",
+                    "Put myself in the victim's shoes and refuse to join",
+                    "Say it's not my business and stay out of it",
+                    "Tell my parents or someone I trust to get advice"
+                ];
+
+                const badLabelsRu = [
+                    "Соглашусь, чтобы не быть белой вороной",
+                    "Промолчу и сделаю вид, что согласен",
+                    "Выполню, чтобы доказать свою крутость",
+                    "Поддержу, ведь все так делают",
+                    "Скажу, что подумаю, но ничего не сделаю",
+                    "Сделаю, чтобы не потерять друзей",
+                    "Подумаю, что это не моё дело",
+                    "Посмеюсь вместе со всеми",
+                    "Приму предложение, ведь это весело",
+                    "Сделаю, чтобы меня не считали слабаком",
+                    "Промолчу, чтобы не выделяться",
+                    "Приму участие, чтобы не обидеть",
+                    "Сделаю вид, что не слышал",
+                    "Понадеюсь, что никто не узнает",
+                    "Скажу, что я в деле"
+                ];
+                const badLabelsEn = [
+                    "Agree not to stand out",
+                    "Stay silent and pretend to agree",
+                    "Do it to prove my toughness",
+                    "Support it, since everyone does",
+                    "Say I'll think about it but do nothing",
+                    "Do it so I don't lose friends",
+                    "Think it's none of my business",
+                    "Laugh along with everyone",
+                    "Accept the offer because it's fun",
+                    "Do it so I'm not considered weak",
+                    "Stay silent to not stand out",
+                    "Join in to not offend anyone",
+                    "Pretend I didn't hear",
+                    "Hope that nobody finds out",
+                    "Say I'm in"
+                ];
+
+                const sits = lang === 'ru' ? situationsRu : situationsEn;
+                const quess = lang === 'ru' ? questionsRu : questionsEn;
+                const goods = lang === 'ru' ? goodLabelsRu : goodLabelsEn;
+                const bads = lang === 'ru' ? badLabelsRu : badLabelsEn;
 
                 const dilemmas = [];
                 for (let i = 0; i < 120; i++) {
                     dilemmas.push({
                         text: sits[i % sits.length] + ' ' + quess[i % quess.length],
-                        good: { label: goods[Math.floor(Math.random() * goods.length)], points: 40 + Math.floor(Math.random() * 30), shield: Math.random() < 0.4 },
+                        good: { label: goods[Math.floor(Math.random() * goods.length)], points: 40 + Math.floor(Math.random() * 30), shield: true },
                         bad: { label: bads[Math.floor(Math.random() * bads.length)], points: -20 - Math.floor(Math.random() * 40), shake: true }
                     });
                 }
@@ -169,8 +278,8 @@
             async function initSDK() {
                 try {
                     if (typeof YaGames !== 'undefined') {
-                        const ysdk = await YaGames.init();
-                        const lang = ysdk.environment.i18n.lang;
+                        ysdkGlobal = await YaGames.init();
+                        const lang = ysdkGlobal.environment.i18n.lang;
                         const newLang = (lang === 'en' || lang.startsWith('en-')) ? 'en' : 'ru';
                         if (newLang !== playerLang) {
                             playerLang = newLang;
@@ -178,7 +287,6 @@
                             allDilemmas = generateDilemmas(playerLang);
                             startNewGame();
                         }
-                        ysdk.features.LoadingAPI?.ready();
                         hintDiv.textContent = t.hint;
                         restartBtn.textContent = t.restart;
                     }
@@ -256,6 +364,10 @@
                 frameCount = 0; dilemmaButtons = [];
                 restartBtn.style.display = 'none'; hintDiv.style.display = 'block';
                 updateUI();
+
+                if (ysdkGlobal && ysdkGlobal.features && ysdkGlobal.features.LoadingAPI) {
+                    ysdkGlobal.features.LoadingAPI.ready();
+                }
             }
 
             function updateUI() {
@@ -299,19 +411,16 @@
                 dilemmaData = shuffledDilemmas[dilemmaIndex % shuffledDilemmas.length];
                 dilemmaIndex++;
 
-                // Формируем массив кнопок один раз со случайным порядком
                 const choices = [
                     { label: dilemmaData.good.label, choice: 'good' },
                     { label: dilemmaData.bad.label, choice: 'bad' }
                 ];
                 if (Math.random() < 0.5) choices.reverse();
 
-                // Здесь зададим координаты позже, при отрисовке, а пока сохраним метки и выбор
                 dilemmaButtons = [
                     { label: choices[0].label, choice: choices[0].choice },
                     { label: choices[1].label, choice: choices[1].choice }
                 ];
-                // Координаты будут вычислены в drawDilemmaPopup
             }
 
             function resolveDilemma(choice) {
@@ -325,7 +434,6 @@
                 if (dilemmaResolvedCount >= MAX_DILEMMAS && !isGameOver) { gameOver(); }
             }
 
-            // Отрисовка
             function drawBackground() {
                 const grad = ctx.createLinearGradient(0,0,0,H);
                 grad.addColorStop(0,'#0f0c29'); grad.addColorStop(0.5,'#302b63'); grad.addColorStop(1,'#24243e');
@@ -379,19 +487,8 @@
                 const btnY1 = yText + 20;
                 const btnY2 = btnY1 + btnH + 10;
 
-                // Обновляем координаты кнопок, сохраняя уже установленные метки и выбор
-                if (dilemmaButtons[0]) {
-                    dilemmaButtons[0].x = btnX;
-                    dilemmaButtons[0].y = btnY1;
-                    dilemmaButtons[0].w = btnW;
-                    dilemmaButtons[0].h = btnH;
-                }
-                if (dilemmaButtons[1]) {
-                    dilemmaButtons[1].x = btnX;
-                    dilemmaButtons[1].y = btnY2;
-                    dilemmaButtons[1].w = btnW;
-                    dilemmaButtons[1].h = btnH;
-                }
+                if (dilemmaButtons[0]) { dilemmaButtons[0].x = btnX; dilemmaButtons[0].y = btnY1; dilemmaButtons[0].w = btnW; dilemmaButtons[0].h = btnH; }
+                if (dilemmaButtons[1]) { dilemmaButtons[1].x = btnX; dilemmaButtons[1].y = btnY2; dilemmaButtons[1].w = btnW; dilemmaButtons[1].h = btnH; }
 
                 drawButton(ctx, btnX, btnY1, btnW, btnH, dilemmaButtons[0].label, '#4e5b8c');
                 drawButton(ctx, btnX, btnY2, btnW, btnH, dilemmaButtons[1].label, '#4e5b8c');
@@ -414,7 +511,6 @@
                 ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(text, x+w/2, y+h/2);
             }
 
-            // Игровой цикл
             function gameLoop() {
                 if (isGameOver) {
                     drawBackground();
@@ -451,7 +547,6 @@
                 requestAnimationFrame(gameLoop);
             }
 
-            // Управление
             function handleInteraction(cx, cy) {
                 const rect = canvas.getBoundingClientRect();
                 const sx = W / rect.width, sy = H / rect.height;
@@ -463,10 +558,7 @@
                 }
                 if (dilemmaActive && dilemmaButtons.length === 2) {
                     for (let btn of dilemmaButtons) {
-                        if (mx >= btn.x && mx <= btn.x + btn.w && my >= btn.y && my <= btn.y + btn.h) {
-                            resolveDilemma(btn.choice);
-                            return;
-                        }
+                        if (mx >= btn.x && mx <= btn.x + btn.w && my >= btn.y && my <= btn.y + btn.h) { resolveDilemma(btn.choice); return; }
                     }
                     return;
                 }
@@ -521,7 +613,6 @@
             initGame();
             gameLoop();
             initSDK();
-
         })();
     </script>
 </body>
