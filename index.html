@@ -71,11 +71,71 @@
             let playerLang = 'ru';
             let ysdkGlobal = null;
 
+            // Тосты — «чатик»
+            let toastMessage = null;
+            let toastTimer = 0;
+            const TOAST_DURATION = 120; // ~2 секунды при 60 fps
+
             const texts = {
                 ru: { hint: '👈 Нажимай левее/правее, чтобы менять дорожку! Лови 👍 и ❤️', restart: '🔄 Начать заново', gameOver: 'Группировка затянула...', win: 'Ты вырвался! Поздравляем!' },
                 en: { hint: '👈 Tap left/right to change lane! Catch 👍 and ❤️', restart: '🔄 Restart', gameOver: 'The group pulled you in...', win: 'You broke free! Congratulations!' }
             };
+
+            // Наборы тостов (правильные и неправильные, RU/EN)
+            const toastGoodRu = [
+                "Вау, ты мыслишь ответственно!",
+                "Это по-взрослому!",
+                "Ты не поддался!",
+                "Круто, ты сделал свой выбор!",
+                "Так держать, ты сильнее!",
+                "Вот это характер!",
+                "Ты реально крут!",
+                "Уважаю твоё решение!"
+            ];
+            const toastGoodEn = [
+                "Wow, you're thinking responsibly!",
+                "That's so mature!",
+                "You didn't give in!",
+                "Cool, you made your own choice!",
+                "Keep it up, you're stronger!",
+                "What a character!",
+                "You're really awesome!",
+                "I respect your decision!"
+            ];
+            const toastBadRu = [
+                "Так ответили 80% — это развод…",
+                "Бывает, тебя развели как и многих",
+                "Ты попался на ту же удочку, что и большинство",
+                "Многие ведутся, но ты можешь иначе",
+                "Тебя только что использовали, как и 90% ребят",
+                "Это ловушка, в которую попадаются почти все",
+                "Тебя развели, но в следующий раз ты заметишь",
+                "Почти все так ошибаются, главное — понять"
+            ];
+            const toastBadEn = [
+                "80% answered like that — it's a trick…",
+                "It happens, you got played like many others",
+                "You fell for the same bait as most people",
+                "Many fall for it, but you can do differently",
+                "You just got used, like 90% of kids",
+                "It's a trap almost everyone walks into",
+                "You got tricked, but next time you'll notice",
+                "Almost everyone makes that mistake, the key is to learn"
+            ];
+
             let t = texts.ru;
+            let toastGood = toastGoodRu;
+            let toastBad = toastBadRu;
+
+            // Установить язык
+            function setLanguage(lang) {
+                playerLang = lang;
+                t = texts[lang];
+                toastGood = lang === 'ru' ? toastGoodRu : toastGoodEn;
+                toastBad = lang === 'ru' ? toastBadRu : toastBadEn;
+                hintDiv.textContent = t.hint;
+                restartBtn.textContent = t.restart;
+            }
 
             function generateDilemmas(lang) {
                 const situationsRu = [
@@ -182,11 +242,8 @@
                     "They said your partner is cheating and you should take revenge.",
                     "They force you to lie for the common cause."
                 ];
-
                 const questionsRu = ["Что сделаешь?", "Твой выбор?", "Как поступишь?"];
                 const questionsEn = ["What will you do?", "Your choice?", "How will you act?"];
-
-                // НОВЫЕ правильные ответы — акцент на самостоятельность и силу характера
                 const goodLabelsRu = [
                     "Скажу твёрдое «нет» и пойду своей дорогой",
                     "Объясню, почему это плохая идея, и откажусь",
@@ -221,7 +278,6 @@
                     "Say it's not my business and stay out of it",
                     "Tell my parents or someone I trust to get advice"
                 ];
-
                 const badLabelsRu = [
                     "Соглашусь, чтобы не быть белой вороной",
                     "Промолчу и сделаю вид, что согласен",
@@ -282,13 +338,10 @@
                         const lang = ysdkGlobal.environment.i18n.lang;
                         const newLang = (lang === 'en' || lang.startsWith('en-')) ? 'en' : 'ru';
                         if (newLang !== playerLang) {
-                            playerLang = newLang;
-                            t = texts[playerLang];
+                            setLanguage(newLang);
                             allDilemmas = generateDilemmas(playerLang);
                             startNewGame();
                         }
-                        hintDiv.textContent = t.hint;
-                        restartBtn.textContent = t.restart;
                     }
                 } catch (e) { console.log('SDK offline'); }
             }
@@ -362,6 +415,7 @@
                 dilemmaActive = false; dilemmaData = null;
                 shieldActive = false; shieldTimer = 0;
                 frameCount = 0; dilemmaButtons = [];
+                toastMessage = null; toastTimer = 0;
                 restartBtn.style.display = 'none'; hintDiv.style.display = 'block';
                 updateUI();
 
@@ -404,6 +458,12 @@
 
             function gameOver() { isGameOver = true; dilemmaActive = false; restartBtn.style.display = 'block'; hintDiv.style.display = 'none'; }
 
+            function showToast(choice) {
+                const arr = choice === 'good' ? toastGood : toastBad;
+                toastMessage = arr[Math.floor(Math.random() * arr.length)];
+                toastTimer = TOAST_DURATION;
+            }
+
             function activateDilemma() {
                 if (dilemmaResolvedCount >= MAX_DILEMMAS) { gameOver(); return; }
                 if (!shuffledDilemmas.length) return;
@@ -430,8 +490,32 @@
                 dilemmaResolvedCount++; updateUI();
                 if (res.shield) { shieldActive = true; shieldTimer = 180; }
                 if (res.shake) { canvas.style.transform = 'translate(5px, 3px)'; setTimeout(() => canvas.style.transform = '', 100); }
+                showToast(choice);
                 dilemmaActive = false; dilemmaData = null; dilemmaButtons = [];
                 if (dilemmaResolvedCount >= MAX_DILEMMAS && !isGameOver) { gameOver(); }
+            }
+
+            function drawToast() {
+                if (!toastMessage || toastTimer <= 0) return;
+                const alpha = Math.min(1, toastTimer / 30); // плавное появление
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                const tw = ctx.measureText(toastMessage).width + 40;
+                const th = 50;
+                const tx = W/2 - tw/2;
+                const ty = 50;
+                ctx.fillStyle = '#333344';
+                ctx.shadowColor = '#000000'; ctx.shadowBlur = 15;
+                ctx.beginPath(); ctx.roundRect(tx, ty, tw, th, 15); ctx.fill();
+                ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
+                ctx.fillStyle = '#FFD966';
+                ctx.font = 'bold 15px Arial';
+                ctx.fillText(toastMessage, W/2, ty + th/2);
+                ctx.restore();
             }
 
             function drawBackground() {
@@ -539,10 +623,14 @@
                     else if (frameCount > 90 && frameCount % 180 === 0 && Math.random() < 0.85) activateDilemma();
                 }
 
+                // Таймер тоста
+                if (toastTimer > 0) toastTimer--;
+
                 drawBackground();
                 obstacles.forEach(o=>o.draw(ctx)); goodItems.forEach(g=>g.draw(ctx)); heartItems.forEach(h=>h.draw(ctx));
                 drawPlayer();
                 drawDilemmaPopup();
+                drawToast();
 
                 requestAnimationFrame(gameLoop);
             }
