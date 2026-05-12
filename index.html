@@ -118,7 +118,7 @@
             const restartBtn = document.getElementById('restartBtn');
             const hintDiv = document.getElementById('hint');
 
-            // Размеры canvas (без DPR, чтобы не ломать отрисовку)
+            // Адаптивный размер (без W/H, всё через canvas.width/height)
             function resizeCanvas() {
                 const maxWidth = Math.min(window.innerWidth - 20, 400);
                 const maxHeight = Math.min(window.innerHeight * 0.75, 750);
@@ -181,7 +181,7 @@
             };
             let t = texts.ru;
 
-            // Генерация дилемм (полный набор ситуаций)
+            // Генерация дилемм (полный набор из 50 ситуаций)
             function generateDilemmas(lang) {
                 const situationsRu = [
                     "Токсичный друг зовёт на опасный челлендж.",
@@ -270,11 +270,12 @@
                     "Понадеюсь, что никто не узнает",
                     "Скажу, что я в деле"
                 ];
-                // Английские аналоги (сокращённо, для примера)
-                const situationsEn = situationsRu.map(s => "EN: " + s); // просто заглушка, можно заменить на настоящие переводы
+
+                // Для английского пока используем те же (или можно добавить переводы)
+                const situationsEn = situationsRu.map(s => s); // заглушка
                 const questionsEn = ["What will you do?", "Your choice?", "How will you act?"];
-                const goodLabelsEn = goodLabelsRu.map(l => "EN: " + l);
-                const badLabelsEn = badLabelsRu.map(l => "EN: " + l);
+                const goodLabelsEn = goodLabelsRu.map(l => l);
+                const badLabelsEn = badLabelsRu.map(l => l);
 
                 const dilemmas = [];
                 const sits = lang === 'ru' ? situationsRu : situationsEn;
@@ -682,7 +683,7 @@
                     { x: btnX, y: btnY2, w: btnW, h: btnH, choice: choices[1].choice }
                 ];
 
-                // Обе кнопки одного цвета (нейтральный сине-фиолетовый)
+                // Обе кнопки одного нейтрального цвета
                 drawButton(ctx, btnX, btnY1, btnW, btnH, choices[0].label, '#4e5b8c');
                 drawButton(ctx, btnX, btnY2, btnW, btnH, choices[1].label, '#4e5b8c');
                 ctx.restore();
@@ -712,7 +713,7 @@
                 ctx.beginPath();
                 ctx.roundRect(x, y, w, h, 10);
                 ctx.fill();
-                // Убираем тень, чтобы текст был чётким
+                // Убираем тень для чёткого текста
                 ctx.shadowColor = 'transparent';
                 ctx.shadowBlur = 0;
                 ctx.fillStyle = 'white';
