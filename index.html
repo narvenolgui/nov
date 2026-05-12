@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, touch-action: manipulation, viewport-fit=cover">
     <title>Разрыв — вырвись из круга</title>
-    <script src="https://yandex.ru/games/sdk/v2"></script>
+    <script src="https://yandex.ru/games/sdk/v2" async></script>
     <style>
         * {
             margin: 0; padding: 0; box-sizing: border-box;
@@ -63,29 +63,30 @@
             const restartBtn = document.getElementById('restartBtn');
             const hintDiv = document.getElementById('hint');
 
-            // ---------- АДАПТИВНЫЙ РАЗМЕР ----------
+            // Глобальные размеры
+            let W, H;
+
             function resizeCanvas() {
-                const maxW = Math.min(window.innerWidth - 20, 400);
-                const maxH = Math.min(window.innerHeight * 0.75, 750);
-                canvas.width = maxW;
-                canvas.height = maxH;
-                // Обновим параметры, зависящие от размера (если уже были инициализированы)
+                W = Math.min(window.innerWidth - 20, 400);
+                H = Math.min(window.innerHeight * 0.75, 750);
+                canvas.width = W;
+                canvas.height = H;
                 if (typeof colWidth !== 'undefined') {
-                    colWidth = canvas.width / COL_COUNT;
+                    colWidth = W / COL_COUNT;
                     playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-                    playerY = canvas.height - playerHeight - 20;
+                    playerY = H - playerHeight - 20;
                 }
             }
             window.addEventListener('resize', resizeCanvas);
-            resizeCanvas(); // сразу задаём размеры, canvas.width/height становятся реальными
+            resizeCanvas();
 
-            // ---------- ПЕРЕМЕННЫЕ ИГРЫ ----------
+            // --------- ИГРОВЫЕ ПЕРЕМЕННЫЕ ---------
             const COL_COUNT = 3;
-            let colWidth = canvas.width / COL_COUNT;   // теперь canvas.width уже корректен
+            let colWidth = W / COL_COUNT;
             let playerCol = 1;
             const playerWidth = 40, playerHeight = 60;
             let playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-            let playerY = canvas.height - playerHeight - 20;
+            let playerY = H - playerHeight - 20;
 
             let obstacles = [], goodItems = [], heartItems = [];
             let score = 0, lives = 3, gameSpeed = 5;
@@ -95,8 +96,6 @@
             const MAX_LIVES = 5;
             const MAX_DILEMMAS = 100;
 
-            // SDK и язык
-            let ysdk = null, playerLang = 'ru';
             let allDilemmas = [], shuffledDilemmas = [], dilemmaIndex = 0, dilemmaResolvedCount = 0;
 
             const texts = {
@@ -115,7 +114,7 @@
             };
             let t = texts.ru;
 
-            // Генерация 120+ дилемм с разнообразными ответами
+            // Генерация дилемм
             function generateDilemmas(lang) {
                 const situationsRu = [
                     "Токсичный друг зовёт на опасный челлендж.",
@@ -237,29 +236,27 @@
                 return arr;
             }
 
+            // Инициализация SDK (не блокирует запуск игры)
             async function initSDK() {
                 try {
-                    ysdk = await YaGames.init();
-                    const lang = ysdk.environment.i18n.lang;
-                    playerLang = (lang === 'en' || lang.startsWith('en-')) ? 'en' : 'ru';
-                    t = texts[playerLang];
-                    allDilemmas = generateDilemmas(playerLang);
-                    ysdk.features.LoadingAPI?.ready();
+                    if (typeof YaGames !== 'undefined') {
+                        const ysdk = await YaGames.init();
+                        const lang = ysdk.environment.i18n.lang;
+                        const newLang = (lang === 'en' || lang.startsWith('en-')) ? 'en' : 'ru';
+                        if (newLang !== playerLang) {
+                            playerLang = newLang;
+                            t = texts[playerLang];
+                            allDilemmas = generateDilemmas(playerLang);
+                            startNewGame();
+                        }
+                        ysdk.features.LoadingAPI?.ready();
+                        // Обновим подсказку при смене языка
+                        hintDiv.textContent = t.hint;
+                        restartBtn.textContent = t.restart;
+                    }
                 } catch (e) {
-                    allDilemmas = generateDilemmas('ru');
-                    t = texts.ru;
+                    console.log('SDK не загружен, игра работает в оффлайн-режиме');
                 }
-                hintDiv.textContent = t.hint;
-                restartBtn.textContent = t.restart;
-                startNewGame();
-                gameLoop();
-            }
-
-            function startNewGame() {
-                shuffledDilemmas = shuffleArray([...allDilemmas]);
-                dilemmaIndex = 0;
-                dilemmaResolvedCount = 0;
-                initGame();
             }
 
             class Obstacle {
@@ -345,10 +342,10 @@
             }
 
             function initGame() {
-                colWidth = canvas.width / COL_COUNT;
+                colWidth = W / COL_COUNT;
                 playerCol = 1;
                 playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-                playerY = canvas.height - playerHeight - 20;
+                playerY = H - playerHeight - 20;
                 obstacles = [];
                 goodItems = [];
                 heartItems = [];
@@ -455,14 +452,14 @@
                 if (dilemmaResolvedCount >= MAX_DILEMMAS && !isGameOver) { gameOver(); }
             }
 
-            // ----- ОТРИСОВКА (все координаты используют canvas.width/height и colWidth) -----
+            // Отрисовка
             function drawBackground() {
-                const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                const grad = ctx.createLinearGradient(0, 0, 0, H);
                 grad.addColorStop(0, '#0f0c29');
                 grad.addColorStop(0.5, '#302b63');
                 grad.addColorStop(1, '#24243e');
                 ctx.fillStyle = grad;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillRect(0, 0, W, H);
 
                 ctx.strokeStyle = '#e94560';
                 ctx.lineWidth = 2;
@@ -471,7 +468,7 @@
                     const x = i * colWidth;
                     ctx.beginPath();
                     ctx.moveTo(x, 0);
-                    ctx.lineTo(x, canvas.height);
+                    ctx.lineTo(x, H);
                     ctx.stroke();
                 }
                 ctx.setLineDash([]);
@@ -495,20 +492,20 @@
 
             function drawGameOverOverlay() {
                 ctx.fillStyle = 'rgba(0,0,0,0.8)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillRect(0, 0, W, H);
                 ctx.fillStyle = 'white';
                 ctx.font = 'bold 26px Arial';
                 ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                 ctx.fillText(
                     dilemmaResolvedCount >= MAX_DILEMMAS ? t.win : t.gameOver,
-                    canvas.width / 2, canvas.height / 2 - 30
+                    W / 2, H / 2 - 30
                 );
                 ctx.font = '18px Arial';
-                ctx.fillText('Рейтинг: ' + score, canvas.width / 2, canvas.height / 2 + 20);
+                ctx.fillText('Рейтинг: ' + score, W / 2, H / 2 + 20);
 
                 const bw = 200, bh = 50;
-                const bx = canvas.width / 2 - bw / 2;
-                const by = canvas.height / 2 + 50;
+                const bx = W / 2 - bw / 2;
+                const by = H / 2 + 50;
                 window._restartBtnCoords = { x: bx, y: by, w: bw, h: bh };
 
                 ctx.fillStyle = '#e94560';
@@ -520,22 +517,22 @@
                 ctx.fillStyle = 'white';
                 ctx.font = 'bold 20px Arial';
                 ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                ctx.fillText(t.restart, canvas.width / 2, by + bh / 2);
+                ctx.fillText(t.restart, W / 2, by + bh / 2);
             }
 
             function drawDilemmaPopup() {
                 if (!dilemmaActive || !dilemmaData) return;
                 ctx.save();
                 ctx.font = 'bold 14px Arial';
-                const lines = wrapLines(dilemmaData.text, canvas.width * 0.7);
+                const lines = wrapLines(dilemmaData.text, W * 0.7);
                 const textH = lines.length * 20;
                 const boxH = Math.max(180, 80 + textH + 90);
-                const boxW = canvas.width * 0.85;
-                const boxX = (canvas.width - boxW) / 2;
-                const boxY = (canvas.height - boxH) / 2;
+                const boxW = W * 0.85;
+                const boxX = (W - boxW) / 2;
+                const boxY = (H - boxH) / 2;
 
                 ctx.fillStyle = 'rgba(0,0,0,0.7)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillRect(0, 0, W, H);
 
                 ctx.fillStyle = '#2d2d44';
                 ctx.shadowColor = '#e94560'; ctx.shadowBlur = 30;
@@ -547,7 +544,7 @@
                 ctx.fillStyle = 'white';
                 ctx.textAlign = 'center'; ctx.textBaseline = 'top';
                 let yText = boxY + 30;
-                lines.forEach(line => { ctx.fillText(line, canvas.width / 2, yText); yText += 20; });
+                lines.forEach(line => { ctx.fillText(line, W / 2, yText); yText += 20; });
 
                 const btnW = boxW - 60, btnH = 40;
                 const btnX = boxX + 30;
@@ -598,7 +595,6 @@
                 ctx.fillText(text, x + w/2, y + h/2);
             }
 
-            // ----- ИГРОВОЙ ЦИКЛ -----
             function gameLoop() {
                 if (isGameOver) {
                     drawBackground();
@@ -620,15 +616,14 @@
                     goodItems.forEach(g => g.update());
                     heartItems.forEach(h => h.update());
 
-                    obstacles = obstacles.filter(o => o.y < canvas.height + o.height);
-                    goodItems = goodItems.filter(g => g.y < canvas.height + g.size);
-                    heartItems = heartItems.filter(h => h.y < canvas.height + h.size);
+                    obstacles = obstacles.filter(o => o.y < H + o.height);
+                    goodItems = goodItems.filter(g => g.y < H + g.size);
+                    heartItems = heartItems.filter(h => h.y < H + h.size);
 
                     checkCollisions();
 
                     if (shieldActive && --shieldTimer <= 0) shieldActive = false;
 
-                    // Частота дилемм: первая через 1.5 сек, затем каждые 3 сек
                     if (frameCount === 90) {
                         activateDilemma();
                     } else if (frameCount > 90 && frameCount % 180 === 0 && Math.random() < 0.85) {
@@ -646,11 +641,11 @@
                 requestAnimationFrame(gameLoop);
             }
 
-            // ----- УПРАВЛЕНИЕ -----
+            // Управление
             function handleInteraction(cx, cy) {
                 const rect = canvas.getBoundingClientRect();
-                const sx = canvas.width / rect.width;
-                const sy = canvas.height / rect.height;
+                const sx = W / rect.width;
+                const sy = H / rect.height;
                 const mx = (cx - rect.left) * sx;
                 const my = (cy - rect.top) * sy;
 
@@ -721,7 +716,21 @@
                 return this;
             };
 
-            initSDK();
+            // ---------- ЗАПУСК ИГРЫ ----------
+            // Рисуем тестовую надпись, пока не началась игра
+            ctx.fillStyle = 'white';
+            ctx.font = '20px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Загрузка...', W/2, H/2);
+            console.log('Инициализация игры...');
+
+            allDilemmas = generateDilemmas('ru');
+            shuffledDilemmas = shuffleArray([...allDilemmas]);
+            initGame();
+            gameLoop();
+
+            // Пытаемся инициализировать SDK (не критично для работы)
+            setTimeout(initSDK, 100); // дадим время на загрузку скрипта
         })();
     </script>
 </body>
