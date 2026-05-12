@@ -17,9 +17,7 @@
             touch-action: none; overscroll-behavior: none;
             display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
         }
-        #gameContainer {
-            width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1;
-        }
+        #gameContainer { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; }
         canvas {
             display: block; border: 3px solid #e94560; border-radius: 20px;
             box-shadow: 0 0 30px #e94560; margin-top: 5px;
@@ -65,13 +63,13 @@
             const restartBtn = document.getElementById('restartBtn');
             const hintDiv = document.getElementById('hint');
 
-            // ---------- РАЗМЕРЫ ----------
+            // ---------- АДАПТИВНЫЙ РАЗМЕР ----------
             function resizeCanvas() {
                 const maxW = Math.min(window.innerWidth - 20, 400);
                 const maxH = Math.min(window.innerHeight * 0.75, 750);
                 canvas.width = maxW;
                 canvas.height = maxH;
-                // Обновляем переменные, зависящие от размера
+                // Обновим параметры, зависящие от размера (если уже были инициализированы)
                 if (typeof colWidth !== 'undefined') {
                     colWidth = canvas.width / COL_COUNT;
                     playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
@@ -79,35 +77,28 @@
                 }
             }
             window.addEventListener('resize', resizeCanvas);
-            resizeCanvas(); // задаём начальный размер
+            resizeCanvas(); // сразу задаём размеры, canvas.width/height становятся реальными
 
             // ---------- ПЕРЕМЕННЫЕ ИГРЫ ----------
-            let ysdk = null;
-            let playerLang = 'ru';
-            let allDilemmas = [];
-            let shuffledDilemmas = [];
-            let dilemmaIndex = 0;
-            const MAX_DILEMMAS = 100;
-            let dilemmaResolvedCount = 0;
-            const MAX_LIVES = 5;
             const COL_COUNT = 3;
-
-            // Эти переменные будут пересчитаны после resizeCanvas
-            let colWidth, playerCol = 1, playerX, playerY;
+            let colWidth = canvas.width / COL_COUNT;   // теперь canvas.width уже корректен
+            let playerCol = 1;
             const playerWidth = 40, playerHeight = 60;
+            let playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
+            let playerY = canvas.height - playerHeight - 20;
 
             let obstacles = [], goodItems = [], heartItems = [];
             let score = 0, lives = 3, gameSpeed = 5;
             let isGameOver = false, dilemmaActive = false, dilemmaData = null;
             let shieldActive = false, shieldTimer = 0;
             let frameCount = 0, dilemmaButtons = [];
+            const MAX_LIVES = 5;
+            const MAX_DILEMMAS = 100;
 
-            // Пересчитаем начальные значения
-            colWidth = canvas.width / COL_COUNT;
-            playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-            playerY = canvas.height - playerHeight - 20;
+            // SDK и язык
+            let ysdk = null, playerLang = 'ru';
+            let allDilemmas = [], shuffledDilemmas = [], dilemmaIndex = 0, dilemmaResolvedCount = 0;
 
-            // Локализация
             const texts = {
                 ru: {
                     hint: '👈 Нажимай левее/правее, чтобы менять дорожку! Лови 👍 и ❤️',
@@ -124,7 +115,7 @@
             };
             let t = texts.ru;
 
-            // Генерация 120+ дилемм с разными ответами
+            // Генерация 120+ дилемм с разнообразными ответами
             function generateDilemmas(lang) {
                 const situationsRu = [
                     "Токсичный друг зовёт на опасный челлендж.",
@@ -464,7 +455,7 @@
                 if (dilemmaResolvedCount >= MAX_DILEMMAS && !isGameOver) { gameOver(); }
             }
 
-            // ----- ОТРИСОВКА ВСЕГДА ИСПОЛЬЗУЕТ canvas.width / canvas.height -----
+            // ----- ОТРИСОВКА (все координаты используют canvas.width/height и colWidth) -----
             function drawBackground() {
                 const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
                 grad.addColorStop(0, '#0f0c29');
@@ -637,6 +628,7 @@
 
                     if (shieldActive && --shieldTimer <= 0) shieldActive = false;
 
+                    // Частота дилемм: первая через 1.5 сек, затем каждые 3 сек
                     if (frameCount === 90) {
                         activateDilemma();
                     } else if (frameCount > 90 && frameCount % 180 === 0 && Math.random() < 0.85) {
@@ -654,7 +646,7 @@
                 requestAnimationFrame(gameLoop);
             }
 
-            // ----- УПРАВЛЕНИЕ (используем canvas.width/height для масштабирования) -----
+            // ----- УПРАВЛЕНИЕ -----
             function handleInteraction(cx, cy) {
                 const rect = canvas.getBoundingClientRect();
                 const sx = canvas.width / rect.width;
