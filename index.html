@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, touch-action: manipulation, viewport-fit=cover">
     <title>Разрыв — вырвись из круга</title>
-    <script src="https://yandex.ru/games/sdk/v2" async></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
-        body { background: #1a1a2e; font-family: 'Arial', sans-serif; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; overscroll-behavior: none; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+        body { background: #1a1a2e; font-family: 'Arial', sans-serif; height: 100vh; width: 100vw; overflow: hidden; touch-action: none; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
         #gameContainer { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; }
         canvas { display: block; border: 3px solid #e94560; border-radius: 20px; box-shadow: 0 0 30px #e94560; margin-top: 5px; max-width: 95%; max-height: 75vh; touch-action: none; }
         #ui { position: absolute; top: 10px; left: 10px; color: white; font-size: 16px; font-weight: bold; background: rgba(0,0,0,0.6); padding: 4px 12px; border-radius: 20px; z-index: 10; pointer-events: none; display: flex; gap: 12px; }
@@ -20,14 +19,13 @@
     <div id="gameContainer">
         <canvas id="gameCanvas"></canvas>
         <div id="bottomUI">
-            <div id="hint">👈 Нажимай левее/правее, чтобы менять дорожку! Лови 👍 и ❤️</div>
+            <div id="hint">👈 Нажимай левее/правее, чтобы менять дорожку! Лови 👍 и уворачивайся</div>
             <button id="restartBtn">🔄 Начать заново</button>
         </div>
     </div>
     <div id="ui">
         <span>⭐ <span id="scoreDisplay">0</span></span>
         <span>❤️ <span id="livesDisplay">3</span></span>
-        <span>📋 <span id="dilemmaCountDisplay">0/100</span></span>
     </div>
 
     <script>
@@ -36,11 +34,9 @@
             const ctx = canvas.getContext('2d');
             const scoreSpan = document.getElementById('scoreDisplay');
             const livesSpan = document.getElementById('livesDisplay');
-            const dilemmaCountSpan = document.getElementById('dilemmaCountDisplay');
             const restartBtn = document.getElementById('restartBtn');
             const hintDiv = document.getElementById('hint');
 
-            // Глобальные размеры
             let W, H;
 
             function resizeCanvas() {
@@ -49,110 +45,23 @@
                 canvas.width = W;
                 canvas.height = H;
                 if (typeof colWidth !== 'undefined') {
-                    colWidth = W / COL_COUNT;
-                    playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-                    playerY = H - playerHeight - 20;
+                    colWidth = W / 3;
+                    playerX = playerCol * colWidth + colWidth/2 - 20;
+                    playerY = H - 60 - 20;
                 }
             }
             window.addEventListener('resize', resizeCanvas);
-            resizeCanvas(); // сразу задаём размеры
+            resizeCanvas();
 
-            // --------- ПЕРЕМЕННЫЕ ИГРЫ ---------
-            const COL_COUNT = 3;
-            let colWidth = W / COL_COUNT;
-            let playerCol = 1;
             const playerWidth = 40, playerHeight = 60;
+            let colWidth = W / 3;
+            let playerCol = 1;
             let playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
             let playerY = H - playerHeight - 20;
-
-            let obstacles = [], goodItems = [], heartItems = [];
+            let obstacles = [], goodItems = [];
             let score = 0, lives = 3, gameSpeed = 5;
-            let isGameOver = false, dilemmaActive = false, dilemmaData = null;
-            let shieldActive = false, shieldTimer = 0;
-            let frameCount = 0, dilemmaButtons = [];
-            const MAX_LIVES = 5;
-            const MAX_DILEMMAS = 100;
-
-            let allDilemmas = [], shuffledDilemmas = [], dilemmaIndex = 0, dilemmaResolvedCount = 0;
-
-            const texts = {
-                ru: { hint: '👈 Нажимай левее/правее, чтобы менять дорожку! Лови 👍 и ❤️', restart: '🔄 Начать заново', gameOver: 'Группировка затянула...', win: 'Ты вырвался! Поздравляем!' },
-                en: { hint: '👈 Tap left/right to change lane! Catch 👍 and ❤️', restart: '🔄 Restart', gameOver: 'The group pulled you in...', win: 'You broke free! Congratulations!' }
-            };
-            let t = texts.ru;
-
-            function generateDilemmas(lang) {
-                const situationsRu = [
-                    "Токсичный друг зовёт на опасный челлендж.", "В соцсетях травят одноклассника.", "Незнакомец предлагает лёгкие деньги за странное задание.",
-                    "Группировка требует доказать верность.", "Тебе предлагают попробовать сигареты за компанию.", "Одноклассники зовут прогулять уроки.",
-                    "В чате пишут гадости про учителя.", "Друг просит списать на экзамене.", "Предлагают украсть мелочь из магазина.",
-                    "Зовут на вечеринку, где будет алкоголь.", "Незнакомец в сети просит твои личные данные.", "Кто-то предлагает взломать чужой аккаунт.",
-                    "Друг уговаривает попробовать наркотики.", "Предлагают поучаствовать в травле новичка.", "Тебя склоняют к вандализму в парке.",
-                    "Зовут на опасную крышу сделать селфи.", "Просят передать подозрительный пакет.", "Предлагают солгать учителю о болезни.",
-                    "Уговаривают не дружить с «неправильными» людьми.", "Обещают много лайков за опасный трюк.", "Говорят, что твой друг предатель, и требуют порвать с ним.",
-                    "Показывают жестокое видео и смеются.", "Принуждают написать оскорбительный комментарий.", "Сказали, что все «свои» носят определённый знак.",
-                    "Угрожают распространить слух, если не сделаешь задание.", "Предлагают отомстить обидчику анонимно.", "Призывают бойкотировать одноклассника.",
-                    "Зовут проникнуть в заброшенное здание.", "Обещают секретное членство в крутом клубе.", "Просят спрятать чужую вещь.",
-                    "Склоняют к игре в карты на деньги.", "Призывают не слушаться родителей.", "Говорят, что ты обязан доказать свою крутость.",
-                    "Подначивают украсть ответы к контрольной.", "Требуют скинуть интимное фото.", "Предлагают подставить другого ученика.",
-                    "Убеждают, что законы — для слабаков.", "Зовут устроить драку с параллельным классом.", "Показывают, как обойти школьный интернет-фильтр.",
-                    "Сулят лёгкий заработок на странных переводах.", "Говорят, что только так ты станешь своим.", "Требуют оскорбить учителя в лицо.",
-                    "Настаивают, чтобы ты удалил все соцсети.", "Предлагают за деньги распространить листовки.", "Принуждают носить скрытое оружие.",
-                    "Зовут на ночную «операцию».", "Уверяют, что твои друзья тебя используют.", "Предлагают попробовать «лёгкий» наркотик.",
-                    "Сказали, что твой парень/девушка тебе изменяет, и надо отомстить.", "Вынуждают врать ради общего дела."
-                ];
-                const questionsRu = ["Что сделаешь?", "Твой выбор?", "Как поступишь?"];
-                const goodLabelsRu = [
-                    "Откажусь и расскажу родителям", "Поговорю с учителем или психологом", "Обращусь на линию доверия", "Просто уйду и заблокирую контакт",
-                    "Позвоню родителям и спрошу совета", "Посоветуюсь со старшим братом или сестрой", "Поговорю с другом, которому доверяю",
-                    "Напишу в службу поддержки", "Позвоню на горячую линию", "Расскажу всё классному руководителю", "Скажу твёрдое «нет» и уйду",
-                    "Объясню, что это опасно", "Предложу другое, безопасное занятие", "Сообщу администрации школы", "Скачаю приложение для безопасности"
-                ];
-                const badLabelsRu = [
-                    "Соглашусь, чтобы не быть белой вороной", "Промолчу и сделаю вид, что согласен", "Выполню, чтобы доказать свою крутость",
-                    "Поддержу, ведь все так делают", "Скажу, что подумаю, но ничего не сделаю", "Сделаю, чтобы не потерять друзей",
-                    "Подумаю, что это не моё дело", "Посмеюсь вместе со всеми", "Приму предложение, ведь это весело",
-                    "Сделаю, чтобы меня не считали слабаком", "Промолчу, чтобы не выделяться", "Приму участие, чтобы не обидеть",
-                    "Сделаю вид, что не слышал", "Понадеюсь, что никто не узнает", "Скажу, что я в деле"
-                ];
-
-                const sits = lang === 'ru' ? situationsRu : situationsRu.map(s => "EN: " + s);
-                const quess = lang === 'ru' ? questionsRu : ["What will you do?", "Your choice?", "How will you act?"];
-                const goods = lang === 'ru' ? goodLabelsRu : goodLabelsRu.map(l => "EN: " + l);
-                const bads = lang === 'ru' ? badLabelsRu : badLabelsRu.map(l => "EN: " + l);
-
-                const dilemmas = [];
-                for (let i = 0; i < 120; i++) {
-                    dilemmas.push({
-                        text: sits[i % sits.length] + ' ' + quess[i % quess.length],
-                        good: { label: goods[Math.floor(Math.random() * goods.length)], points: 40 + Math.floor(Math.random() * 30), shield: Math.random() < 0.4 },
-                        bad: { label: bads[Math.floor(Math.random() * bads.length)], points: -20 - Math.floor(Math.random() * 40), shake: true }
-                    });
-                }
-                return dilemmas;
-            }
-
-            function shuffleArray(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
-
-            // SDK
-            async function initSDK() {
-                try {
-                    if (typeof YaGames !== 'undefined') {
-                        const ysdk = await YaGames.init();
-                        const lang = ysdk.environment.i18n.lang;
-                        const newLang = (lang === 'en' || lang.startsWith('en-')) ? 'en' : 'ru';
-                        if (newLang !== playerLang) {
-                            playerLang = newLang;
-                            t = texts[playerLang];
-                            allDilemmas = generateDilemmas(playerLang);
-                            startNewGame();
-                        }
-                        ysdk.features.LoadingAPI?.ready();
-                        hintDiv.textContent = t.hint;
-                        restartBtn.textContent = t.restart;
-                    }
-                } catch (e) { console.log('SDK offline'); }
-            }
+            let isGameOver = false;
+            let frameCount = 0;
 
             class Obstacle {
                 constructor(col) {
@@ -160,22 +69,18 @@
                     this.col = col;
                     this.x = col * colWidth + (colWidth - this.width) / 2;
                     this.y = -this.height;
-                    this.type = Math.random() < 0.5 ? 'toxic' : 'virus';
                 }
                 update() { this.y += gameSpeed; }
                 draw(ctx) {
-                    ctx.save();
-                    if (this.type === 'toxic') {
-                        ctx.fillStyle = '#333'; ctx.shadowColor = '#ff0000'; ctx.shadowBlur = 15;
-                        ctx.fillRect(this.x, this.y, this.width, this.height);
-                        ctx.fillStyle = 'white'; ctx.fillRect(this.x+5, this.y+15, 8, 8); ctx.fillRect(this.x+22, this.y+15, 8, 8);
-                        ctx.fillStyle = 'red'; ctx.fillRect(this.x+7, this.y+17, 4, 4); ctx.fillRect(this.x+24, this.y+17, 4, 4);
-                    } else {
-                        ctx.fillStyle = '#a020f0'; ctx.shadowColor = '#ff00ff'; ctx.shadowBlur = 20;
-                        ctx.beginPath(); ctx.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI*2); ctx.fill();
-                        ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(this.x+15, this.y+5); ctx.lineTo(this.x+25, this.y-5); ctx.stroke();
-                    }
-                    ctx.restore();
+                    ctx.fillStyle = '#333';
+                    ctx.shadowColor = '#ff0000'; ctx.shadowBlur = 15;
+                    ctx.fillRect(this.x, this.y, this.width, this.height);
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(this.x+5, this.y+15, 8, 8);
+                    ctx.fillRect(this.x+22, this.y+15, 8, 8);
+                    ctx.fillStyle = 'red';
+                    ctx.fillRect(this.x+7, this.y+17, 4, 4);
+                    ctx.fillRect(this.x+24, this.y+17, 4, 4);
                 }
                 getBounds() { return {x: this.x, y: this.y, w: this.width, h: this.height}; }
             }
@@ -188,189 +93,98 @@
                 }
                 update() { this.y += gameSpeed; }
                 draw(ctx) {
-                    ctx.save(); ctx.shadowColor = '#ffdd00'; ctx.shadowBlur = 25; ctx.fillStyle = '#FFD700';
-                    ctx.beginPath(); ctx.arc(this.x + this.size/2, this.y + this.size/2, this.size/2, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = '#000'; ctx.font = 'bold 22px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                    ctx.fillStyle = '#FFD700';
+                    ctx.shadowColor = '#ffdd00'; ctx.shadowBlur = 25;
+                    ctx.beginPath();
+                    ctx.arc(this.x + this.size/2, this.y + this.size/2, this.size/2, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.fillStyle = '#000';
+                    ctx.font = 'bold 22px Arial';
+                    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                     ctx.fillText('👍', this.x + this.size/2, this.y + this.size/2);
-                    ctx.restore();
-                }
-                getBounds() { return {x: this.x, y: this.y, w: this.size, h: this.size}; }
-            }
-
-            class HeartItem {
-                constructor(col) {
-                    this.size = 34; this.col = col;
-                    this.x = col * colWidth + (colWidth - this.size) / 2;
-                    this.y = -this.size;
-                }
-                update() { this.y += gameSpeed; }
-                draw(ctx) {
-                    ctx.save(); ctx.shadowColor = '#ff4466'; ctx.shadowBlur = 20; ctx.fillStyle = '#ff3366';
-                    ctx.font = '28px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                    ctx.fillText('❤️', this.x + this.size/2, this.y + this.size/2);
-                    ctx.restore();
                 }
                 getBounds() { return {x: this.x, y: this.y, w: this.size, h: this.size}; }
             }
 
             function initGame() {
-                colWidth = W / COL_COUNT;
-                playerCol = 1;
-                playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-                playerY = H - playerHeight - 20;
-                obstacles = []; goodItems = []; heartItems = [];
-                score = 0; lives = 3; gameSpeed = 5; isGameOver = false; dilemmaActive = false; dilemmaData = null;
-                shieldActive = false; shieldTimer = 0; frameCount = 0; dilemmaButtons = [];
-                restartBtn.style.display = 'none'; hintDiv.style.display = 'block';
+                obstacles = []; goodItems = [];
+                score = 0; lives = 3; gameSpeed = 5; isGameOver = false;
+                restartBtn.style.display = 'none';
+                hintDiv.style.display = 'block';
                 updateUI();
             }
 
             function updateUI() {
                 scoreSpan.textContent = score;
                 livesSpan.textContent = lives;
-                dilemmaCountSpan.textContent = dilemmaResolvedCount + '/' + MAX_DILEMMAS;
             }
 
             function spawnObjects() {
-                if (Math.random() < 0.02) obstacles.push(new Obstacle(Math.floor(Math.random() * COL_COUNT)));
-                if (Math.random() < 0.015) goodItems.push(new GoodItem(Math.floor(Math.random() * COL_COUNT)));
-                if (Math.random() < 0.004) heartItems.push(new HeartItem(Math.floor(Math.random() * COL_COUNT)));
+                if (Math.random() < 0.02) obstacles.push(new Obstacle(Math.floor(Math.random() * 3)));
+                if (Math.random() < 0.02) goodItems.push(new GoodItem(Math.floor(Math.random() * 3)));
             }
 
             function checkCollisions() {
                 const pb = {x: playerX, y: playerY, w: playerWidth, h: playerHeight};
                 for (let i = obstacles.length-1; i >= 0; i--) {
-                    if (rectCollide(pb, obstacles[i].getBounds())) {
-                        if (shieldActive) { obstacles.splice(i,1); shieldActive = false; continue; }
-                        loseLife(); obstacles.splice(i,1);
-                        if (lives <= 0) { gameOver(); return; }
+                    if (pb.x < obstacles[i].x + obstacles[i].width && pb.x + pb.w > obstacles[i].x &&
+                        pb.y < obstacles[i].y + obstacles[i].height && pb.y + pb.h > obstacles[i].y) {
+                        lives--; obstacles.splice(i,1); updateUI();
+                        if (lives <= 0) { isGameOver = true; restartBtn.style.display = 'block'; hintDiv.style.display = 'none'; return; }
                     }
                 }
                 for (let i = goodItems.length-1; i >= 0; i--) {
-                    if (rectCollide(pb, goodItems[i].getBounds())) { score += 20; goodItems.splice(i,1); updateUI(); }
+                    if (pb.x < goodItems[i].x + goodItems[i].size && pb.x + pb.w > goodItems[i].x &&
+                        pb.y < goodItems[i].y + goodItems[i].size && pb.y + pb.h > goodItems[i].y) {
+                        score += 10; goodItems.splice(i,1); updateUI();
+                    }
                 }
-                for (let i = heartItems.length-1; i >= 0; i--) {
-                    if (rectCollide(pb, heartItems[i].getBounds())) { if (lives < MAX_LIVES) { lives++; updateUI(); } heartItems.splice(i,1); }
-                }
             }
 
-            function loseLife() { lives--; updateUI(); canvas.style.transform = 'translate(5px, 3px)'; setTimeout(() => canvas.style.transform = '', 100); }
-            function rectCollide(a,b) { return a.x < b.x+b.w && a.x+a.w > b.x && a.y < b.y+b.h && a.y+a.h > b.y; }
-
-            function gameOver() { isGameOver = true; dilemmaActive = false; restartBtn.style.display = 'block'; hintDiv.style.display = 'none'; }
-
-            function activateDilemma() {
-                if (dilemmaResolvedCount >= MAX_DILEMMAS) { gameOver(); return; }
-                if (!shuffledDilemmas.length) return;
-                dilemmaActive = true; dilemmaData = shuffledDilemmas[dilemmaIndex % shuffledDilemmas.length]; dilemmaIndex++; dilemmaButtons = [];
-            }
-
-            function resolveDilemma(choice) {
-                if (!dilemmaActive || !dilemmaData) return;
-                const res = choice === 'good' ? dilemmaData.good : dilemmaData.bad;
-                score += res.points; if (score < 0) score = 0;
-                dilemmaResolvedCount++; updateUI();
-                if (res.shield) { shieldActive = true; shieldTimer = 180; }
-                if (res.shake) { canvas.style.transform = 'translate(5px, 3px)'; setTimeout(() => canvas.style.transform = '', 100); }
-                dilemmaActive = false; dilemmaData = null; dilemmaButtons = [];
-                if (dilemmaResolvedCount >= MAX_DILEMMAS && !isGameOver) { gameOver(); }
-            }
-
-            // ----- ОТРИСОВКА -----
             function drawBackground() {
                 const grad = ctx.createLinearGradient(0,0,0,H);
                 grad.addColorStop(0,'#0f0c29'); grad.addColorStop(0.5,'#302b63'); grad.addColorStop(1,'#24243e');
                 ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
                 ctx.strokeStyle = '#e94560'; ctx.lineWidth = 2; ctx.setLineDash([15,10]);
-                for (let i=1; i<COL_COUNT; i++) { const x = i*colWidth; ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+                for (let i=1; i<3; i++) { const x = i*colWidth; ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
                 ctx.setLineDash([]);
             }
 
             function drawPlayer() {
-                ctx.save(); ctx.shadowColor = '#00ffff'; ctx.shadowBlur = 25;
-                if (shieldActive) { ctx.shadowColor = '#00ff00'; ctx.shadowBlur = 40; ctx.strokeStyle = '#00ff00'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(playerX+playerWidth/2, playerY+playerHeight/2, 40, 0, Math.PI*2); ctx.stroke(); }
-                ctx.font = '50px Arial'; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillText('🏃', playerX-5, playerY+45);
-                ctx.restore();
+                ctx.font = '50px Arial';
+                ctx.shadowColor = '#00ffff'; ctx.shadowBlur = 25;
+                ctx.fillText('🏃', playerX-5, playerY+45);
             }
 
-            function drawGameOverOverlay() {
-                ctx.fillStyle = 'rgba(0,0,0,0.8)'; ctx.fillRect(0,0,W,H);
-                ctx.fillStyle = 'white'; ctx.font = 'bold 26px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                ctx.fillText(dilemmaResolvedCount >= MAX_DILEMMAS ? t.win : t.gameOver, W/2, H/2-30);
-                ctx.font = '18px Arial'; ctx.fillText('Рейтинг: '+score, W/2, H/2+20);
-                const bw=200, bh=50, bx=W/2-bw/2, by=H/2+50;
-                window._restartBtnCoords = {x:bx, y:by, w:bw, h:bh};
-                ctx.fillStyle = '#e94560'; ctx.shadowColor='#ff4d6d'; ctx.shadowBlur=20;
-                ctx.beginPath(); ctx.roundRect(bx,by,bw,bh,30); ctx.fill();
-                ctx.shadowColor='transparent'; ctx.shadowBlur=0;
-                ctx.fillStyle='white'; ctx.font='bold 20px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(t.restart, W/2, by+bh/2);
-            }
-
-            function drawDilemmaPopup() {
-                if (!dilemmaActive || !dilemmaData) return;
-                ctx.save(); ctx.font = 'bold 14px Arial';
-                const lines = wrapLines(dilemmaData.text, W*0.7);
-                const textH = lines.length*20;
-                const boxH = Math.max(180, 80+textH+90);
-                const boxW = W*0.85, boxX = (W-boxW)/2, boxY = (H-boxH)/2;
-                ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0,0,W,H);
-                ctx.fillStyle = '#2d2d44'; ctx.shadowColor='#e94560'; ctx.shadowBlur=30;
-                ctx.beginPath(); ctx.roundRect(boxX, boxY, boxW, boxH, 20); ctx.fill();
-                ctx.shadowColor='transparent'; ctx.shadowBlur=0;
-                ctx.fillStyle='white'; ctx.textAlign='center'; ctx.textBaseline='top';
-                let yText = boxY+30;
-                lines.forEach(line => { ctx.fillText(line, W/2, yText); yText += 20; });
-                const btnW = boxW-60, btnH=40, btnX = boxX+30;
-                const btnY1 = yText+10, btnY2 = btnY1+btnH+8;
-                const choices = [{label: dilemmaData.good.label, choice:'good'}, {label: dilemmaData.bad.label, choice:'bad'}];
-                if (Math.random()<0.5) choices.reverse();
-                dilemmaButtons = [
-                    {x:btnX, y:btnY1, w:btnW, h:btnH, choice: choices[0].choice},
-                    {x:btnX, y:btnY2, w:btnW, h:btnH, choice: choices[1].choice}
-                ];
-                drawButton(ctx, btnX, btnY1, btnW, btnH, choices[0].label, '#4e5b8c');
-                drawButton(ctx, btnX, btnY2, btnW, btnH, choices[1].label, '#4e5b8c');
-                ctx.restore();
-            }
-
-            function wrapLines(text, maxW) {
-                const words = text.split(' '); const lines = []; let cur = '';
-                words.forEach(w => { const test = cur ? cur+' '+w : w; if (ctx.measureText(test).width <= maxW) cur = test; else { lines.push(cur); cur = w; } });
-                if (cur) lines.push(cur);
-                return lines;
-            }
-
-            function drawButton(ctx, x, y, w, h, text, color) {
-                ctx.fillStyle = color; ctx.shadowColor='#aaa'; ctx.shadowBlur=10;
-                ctx.beginPath(); ctx.roundRect(x,y,w,h,10); ctx.fill();
-                ctx.shadowColor='transparent'; ctx.shadowBlur=0;
-                ctx.fillStyle='white'; let fs = 13; ctx.font = `bold ${fs}px Arial`;
-                if (ctx.measureText(text).width > w-10) { fs = 11; ctx.font = `bold ${fs}px Arial`; }
-                ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(text, x+w/2, y+h/2);
-            }
-
-            // Игровой цикл
             function gameLoop() {
                 if (isGameOver) {
-                    drawBackground(); obstacles.forEach(o=>o.draw(ctx)); goodItems.forEach(g=>g.draw(ctx)); heartItems.forEach(h=>h.draw(ctx));
-                    drawPlayer(); drawGameOverOverlay();
-                    requestAnimationFrame(gameLoop); return;
+                    drawBackground();
+                    obstacles.forEach(o=>o.draw(ctx));
+                    goodItems.forEach(g=>g.draw(ctx));
+                    drawPlayer();
+                    ctx.fillStyle = 'rgba(0,0,0,0.8)'; ctx.fillRect(0,0,W,H);
+                    ctx.fillStyle = 'white'; ctx.font = 'bold 26px Arial'; ctx.textAlign = 'center';
+                    ctx.fillText('Игра окончена!', W/2, H/2-30);
+                    ctx.font = '18px Arial'; ctx.fillText('Рейтинг: '+score, W/2, H/2+20);
+                    requestAnimationFrame(gameLoop);
+                    return;
                 }
-                if (!dilemmaActive) {
-                    frameCount++;
-                    if (frameCount%60===0 && gameSpeed<12) gameSpeed+=0.2;
-                    spawnObjects();
-                    obstacles.forEach(o=>o.update()); goodItems.forEach(g=>g.update()); heartItems.forEach(h=>h.update());
-                    obstacles = obstacles.filter(o=>o.y < H+o.height);
-                    goodItems = goodItems.filter(g=>g.y < H+g.size);
-                    heartItems = heartItems.filter(h=>h.y < H+h.size);
-                    checkCollisions();
-                    if (shieldActive && --shieldTimer<=0) shieldActive = false;
-                    if (frameCount === 90) activateDilemma();
-                    else if (frameCount>90 && frameCount%180===0 && Math.random()<0.85) activateDilemma();
-                }
-                drawBackground(); obstacles.forEach(o=>o.draw(ctx)); goodItems.forEach(g=>g.draw(ctx)); heartItems.forEach(h=>h.draw(ctx));
-                drawPlayer(); drawDilemmaPopup();
+
+                frameCount++;
+                if (frameCount % 60 === 0 && gameSpeed < 12) gameSpeed += 0.2;
+
+                spawnObjects();
+                obstacles.forEach(o=>o.update());
+                goodItems.forEach(g=>g.update());
+                obstacles = obstacles.filter(o=>o.y < H+o.height);
+                goodItems = goodItems.filter(g=>g.y < H+g.size);
+                checkCollisions();
+
+                drawBackground();
+                obstacles.forEach(o=>o.draw(ctx));
+                goodItems.forEach(g=>g.draw(ctx));
+                drawPlayer();
+
                 requestAnimationFrame(gameLoop);
             }
 
@@ -378,18 +192,12 @@
             function handleInteraction(cx, cy) {
                 const rect = canvas.getBoundingClientRect();
                 const sx = W / rect.width, sy = H / rect.height;
-                const mx = (cx - rect.left)*sx, my = (cy - rect.top)*sy;
-                if (isGameOver && window._restartBtnCoords) {
-                    const b = window._restartBtnCoords;
-                    if (mx>=b.x && mx<=b.x+b.w && my>=b.y && my<=b.y+b.h) { startNewGame(); return; }
-                }
-                if (dilemmaActive && dilemmaButtons.length===2) {
-                    for (let btn of dilemmaButtons) {
-                        if (mx>=btn.x && mx<=btn.x+btn.w && my>=btn.y && my<=btn.y+btn.h) { resolveDilemma(btn.choice); return; }
-                    }
+                const mx = (cx - rect.left)*sx;
+                if (isGameOver) {
+                    // рестарт по нажатию в центр
+                    if (mx > W/4 && mx < 3*W/4) { initGame(); }
                     return;
                 }
-                if (isGameOver) return;
                 playerCol = mx < colWidth ? 0 : mx < 2*colWidth ? 1 : 2;
                 playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
             }
@@ -399,46 +207,11 @@
             canvas.addEventListener('mousedown', e=>handleInteraction(e.clientX, e.clientY));
             document.addEventListener('touchmove', e=>{ if (e.target===canvas) e.preventDefault(); }, {passive: false});
 
-            restartBtn.addEventListener('click', ()=>{ if(isGameOver) startNewGame(); });
-            restartBtn.addEventListener('touchend', e=>{ e.preventDefault(); if(isGameOver) startNewGame(); });
+            restartBtn.addEventListener('click', ()=>{ initGame(); });
+            restartBtn.addEventListener('touchend', e=>{ e.preventDefault(); initGame(); });
 
-            window.addEventListener('keydown', e=>{
-                if (dilemmaActive) {
-                    if (e.key==='1'||e.key==='ArrowLeft') resolveDilemma(dilemmaButtons[0]?.choice);
-                    if (e.key==='2'||e.key==='ArrowRight') resolveDilemma(dilemmaButtons[1]?.choice);
-                    return;
-                }
-                if (isGameOver) { startNewGame(); return; }
-                if (e.key==='ArrowLeft'||e.key==='a') playerCol = Math.max(0, playerCol-1);
-                else if (e.key==='ArrowRight'||e.key==='d') playerCol = Math.min(COL_COUNT-1, playerCol+1);
-                playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-            });
-
-            CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
-                if (w < 2 * r) r = w / 2;
-                if (h < 2 * r) r = h / 2;
-                this.beginPath();
-                this.moveTo(x + r, y);
-                this.arcTo(x + w, y, x + w, y + h, r);
-                this.arcTo(x + w, y + h, x, y + h, r);
-                this.arcTo(x, y + h, x, y, r);
-                this.arcTo(x, y, x + w, y, r);
-                this.closePath();
-                return this;
-            };
-
-            // Запуск
-            console.log('Starting game...');
-            allDilemmas = generateDilemmas('ru');
-            shuffledDilemmas = shuffleArray([...allDilemmas]);
-            startNewGame = function() {
-                shuffledDilemmas = shuffleArray([...allDilemmas]);
-                dilemmaIndex = 0; dilemmaResolvedCount = 0;
-                initGame();
-            };
             initGame();
             gameLoop();
-            initSDK();
         })();
     </script>
 </body>
