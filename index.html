@@ -41,28 +41,23 @@
             const hintDiv = document.getElementById('hint');
 
             let W, H;
+            const COL_COUNT = 3;
+            let colWidth;
+            const playerWidth = 40, playerHeight = 60;
+            let playerCol = 1;
+            let playerX, playerY;
 
             function resizeCanvas() {
                 W = Math.min(window.innerWidth - 20, 400);
                 H = Math.min(window.innerHeight * 0.75, 750);
                 canvas.width = W;
                 canvas.height = H;
-                if (typeof colWidth !== 'undefined') {
-                    colWidth = W / 3;
-                    playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-                    playerY = H - playerHeight - 20;
-                }
+                colWidth = W / COL_COUNT;
+                playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
+                playerY = H - playerHeight - 20;
             }
             window.addEventListener('resize', resizeCanvas);
             resizeCanvas();
-
-            // ----- ПЕРЕМЕННЫЕ ИГРЫ -----
-            const COL_COUNT = 3;
-            let colWidth = W / COL_COUNT;
-            let playerCol = 1;
-            const playerWidth = 40, playerHeight = 60;
-            let playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
-            let playerY = H - playerHeight - 20;
 
             let obstacles = [], goodItems = [], heartItems = [];
             let score = 0, lives = 3, gameSpeed = 5;
@@ -73,16 +68,14 @@
             const MAX_DILEMMAS = 100;
 
             let allDilemmas = [], shuffledDilemmas = [], dilemmaIndex = 0, dilemmaResolvedCount = 0;
+            let playerLang = 'ru';
 
-            // Локализация
             const texts = {
                 ru: { hint: '👈 Нажимай левее/правее, чтобы менять дорожку! Лови 👍 и ❤️', restart: '🔄 Начать заново', gameOver: 'Группировка затянула...', win: 'Ты вырвался! Поздравляем!' },
                 en: { hint: '👈 Tap left/right to change lane! Catch 👍 and ❤️', restart: '🔄 Restart', gameOver: 'The group pulled you in...', win: 'You broke free! Congratulations!' }
             };
             let t = texts.ru;
-            let playerLang = 'ru';
 
-            // Генерация дилемм (120+ уникальных)
             function generateDilemmas(lang) {
                 const situationsRu = [
                     "Токсичный друг зовёт на опасный челлендж.",
@@ -173,7 +166,6 @@
 
             function shuffleArray(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
 
-            // SDK (не блокирует запуск)
             async function initSDK() {
                 try {
                     if (typeof YaGames !== 'undefined') {
@@ -193,7 +185,6 @@
                 } catch (e) { console.log('SDK offline'); }
             }
 
-            // Классы объектов
             class Obstacle {
                 constructor(col) {
                     this.width = 35; this.height = 50; this.col = col;
@@ -255,7 +246,6 @@
             }
 
             function initGame() {
-                colWidth = W / COL_COUNT;
                 playerCol = 1;
                 playerX = playerCol * colWidth + colWidth/2 - playerWidth/2;
                 playerY = H - playerHeight - 20;
@@ -308,7 +298,20 @@
                 dilemmaActive = true;
                 dilemmaData = shuffledDilemmas[dilemmaIndex % shuffledDilemmas.length];
                 dilemmaIndex++;
-                dilemmaButtons = [];
+
+                // Формируем массив кнопок один раз со случайным порядком
+                const choices = [
+                    { label: dilemmaData.good.label, choice: 'good' },
+                    { label: dilemmaData.bad.label, choice: 'bad' }
+                ];
+                if (Math.random() < 0.5) choices.reverse();
+
+                // Здесь зададим координаты позже, при отрисовке, а пока сохраним метки и выбор
+                dilemmaButtons = [
+                    { label: choices[0].label, choice: choices[0].choice },
+                    { label: choices[1].label, choice: choices[1].choice }
+                ];
+                // Координаты будут вычислены в drawDilemmaPopup
             }
 
             function resolveDilemma(choice) {
@@ -322,7 +325,7 @@
                 if (dilemmaResolvedCount >= MAX_DILEMMAS && !isGameOver) { gameOver(); }
             }
 
-            // ---- ОТРИСОВКА ----
+            // Отрисовка
             function drawBackground() {
                 const grad = ctx.createLinearGradient(0,0,0,H);
                 grad.addColorStop(0,'#0f0c29'); grad.addColorStop(0.5,'#302b63'); grad.addColorStop(1,'#24243e');
@@ -354,12 +357,12 @@
             }
 
             function drawDilemmaPopup() {
-                if (!dilemmaActive || !dilemmaData) return;
+                if (!dilemmaActive || !dilemmaData || dilemmaButtons.length === 0) return;
                 ctx.save();
                 ctx.font = 'bold 14px Arial';
                 const lines = wrapLines(dilemmaData.text, W*0.7);
                 const textH = lines.length * 20;
-                const boxH = Math.max(180, 80 + textH + 90);
+                const boxH = Math.max(200, 100 + textH + 80);
                 const boxW = W * 0.85, boxX = (W - boxW) / 2, boxY = (H - boxH) / 2;
 
                 ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0,0,W,H);
@@ -371,22 +374,27 @@
                 let yText = boxY + 30;
                 lines.forEach(line => { ctx.fillText(line, W/2, yText); yText += 20; });
 
-                const btnW = boxW - 60, btnH = 40, btnX = boxX + 30;
-                const btnY1 = yText + 10, btnY2 = btnY1 + btnH + 8;
+                const btnW = boxW - 60, btnH = 45;
+                const btnX = boxX + 30;
+                const btnY1 = yText + 20;
+                const btnY2 = btnY1 + btnH + 10;
 
-                const choices = [
-                    { label: dilemmaData.good.label, choice: 'good' },
-                    { label: dilemmaData.bad.label, choice: 'bad' }
-                ];
-                if (Math.random() < 0.5) choices.reverse();
+                // Обновляем координаты кнопок, сохраняя уже установленные метки и выбор
+                if (dilemmaButtons[0]) {
+                    dilemmaButtons[0].x = btnX;
+                    dilemmaButtons[0].y = btnY1;
+                    dilemmaButtons[0].w = btnW;
+                    dilemmaButtons[0].h = btnH;
+                }
+                if (dilemmaButtons[1]) {
+                    dilemmaButtons[1].x = btnX;
+                    dilemmaButtons[1].y = btnY2;
+                    dilemmaButtons[1].w = btnW;
+                    dilemmaButtons[1].h = btnH;
+                }
 
-                dilemmaButtons = [
-                    { x: btnX, y: btnY1, w: btnW, h: btnH, choice: choices[0].choice },
-                    { x: btnX, y: btnY2, w: btnW, h: btnH, choice: choices[1].choice }
-                ];
-
-                drawButton(ctx, btnX, btnY1, btnW, btnH, choices[0].label, '#4e5b8c');
-                drawButton(ctx, btnX, btnY2, btnW, btnH, choices[1].label, '#4e5b8c');
+                drawButton(ctx, btnX, btnY1, btnW, btnH, dilemmaButtons[0].label, '#4e5b8c');
+                drawButton(ctx, btnX, btnY2, btnW, btnH, dilemmaButtons[1].label, '#4e5b8c');
                 ctx.restore();
             }
 
@@ -401,8 +409,8 @@
                 ctx.fillStyle = color; ctx.shadowColor='#aaa'; ctx.shadowBlur=10;
                 ctx.beginPath(); ctx.roundRect(x,y,w,h,10); ctx.fill();
                 ctx.shadowColor='transparent'; ctx.shadowBlur=0;
-                ctx.fillStyle='white'; let fs = 13; ctx.font = `bold ${fs}px Arial`;
-                if (ctx.measureText(text).width > w-10) { fs = 11; ctx.font = `bold ${fs}px Arial`; }
+                ctx.fillStyle='white'; let fs = 14; ctx.font = `bold ${fs}px Arial`;
+                if (ctx.measureText(text).width > w-10) { fs = 12; ctx.font = `bold ${fs}px Arial`; }
                 ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(text, x+w/2, y+h/2);
             }
 
@@ -431,7 +439,6 @@
 
                     if (shieldActive && --shieldTimer <= 0) shieldActive = false;
 
-                    // Дилеммы: первая через ~1.5 сек, затем каждые 3 сек
                     if (frameCount === 90) activateDilemma();
                     else if (frameCount > 90 && frameCount % 180 === 0 && Math.random() < 0.85) activateDilemma();
                 }
@@ -502,7 +509,6 @@
                 return this;
             };
 
-            // Запуск
             function startNewGame() {
                 shuffledDilemmas = shuffleArray([...allDilemmas]);
                 dilemmaIndex = 0;
